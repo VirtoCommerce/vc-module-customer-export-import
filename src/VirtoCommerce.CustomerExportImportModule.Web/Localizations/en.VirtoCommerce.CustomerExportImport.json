@@ -4,8 +4,8 @@
     }
   },
   "permissions": {
-    "export:access": "Export customers data",
-    "import:access": "Import customers data"
+    "customer:export": "Export customers data",
+    "customer:import": "Import customers data"
   },
   "settings": {
   }

@@ -16,9 +16,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
         {
             public static class Permissions
             {
-                public const string ExportAccess = "export:access";
+                public const string ExportAccess = "customer:export";
 
-                public const string ImportAccess = "import:access";
+                public const string ImportAccess = "customer:import";
 
                 public static string[] AllPermissions { get; } = { ExportAccess, ImportAccess };
             }

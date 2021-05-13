@@ -55,7 +55,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             permissionsProvider.RegisterPermissions(ModuleConstants.Security.Permissions.AllPermissions.Select(x =>
                 new Permission()
                 {
-                    GroupName = "VirtoCommerceCustomerExportImport",
+                    GroupName = "CustomerExportImport",
                     ModuleId = ModuleInfo.Id,
                     Name = x
                 }).ToArray());

@@ -1,0 +1,12 @@
+{
+  "virtoCommerce.customerExportImport": {
+    "blades": {
+    }
+  },
+  "permissions": {
+    "export:access": "Export customers data",
+    "import:access": "Import customers data"
+  },
+  "settings": {
+  }
+}

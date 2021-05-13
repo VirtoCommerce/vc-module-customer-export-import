@@ -63,7 +63,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             var featureStorage = appBuilder.ApplicationServices.GetService<IFeatureStorage>();
             featureStorage.TryAddFeatureDefinition(ModuleConstants.Features.CustomerExportImport, ModuleConstants.Features.DemoFeaturesPermission);
 
-
             // ensure that all pending migrations are applied
             using (var serviceScope = appBuilder.ApplicationServices.CreateScope())
             {

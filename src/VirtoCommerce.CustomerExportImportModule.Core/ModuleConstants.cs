@@ -57,7 +57,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
                     DefaultValue = 1 // MB
                 };
 
-
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get

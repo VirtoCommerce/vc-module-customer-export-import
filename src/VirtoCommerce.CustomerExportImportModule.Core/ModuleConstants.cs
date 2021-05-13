@@ -8,8 +8,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
         public static class Features
         {
             public const string CustomerExportImport = "CustomerExportImport";
-
-            public const string DemoFeaturesPermission = "features:developer";
         }
 
         public static class Security

@@ -11,6 +11,7 @@ using VirtoCommerce.FeatureManagementModule.Core.Services;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
+using featureManagementCore = VirtoCommerce.FeatureManagementModule.Core;
 
 namespace VirtoCommerce.CustomerExportImportModule.Web
 {
@@ -61,17 +62,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
                 }).ToArray());
 
             var featureStorage = appBuilder.ApplicationServices.GetService<IFeatureStorage>();
-            featureStorage.TryAddFeatureDefinition(ModuleConstants.Features.CustomerExportImport, ModuleConstants.Features.DemoFeaturesPermission);
+            featureStorage.TryAddFeatureDefinition(ModuleConstants.Features.CustomerExportImport, featureManagementCore.ModuleConstants.FeatureFilters.Developers);
 
             // ensure that all pending migrations are applied
-            using (var serviceScope = appBuilder.ApplicationServices.CreateScope())
-            {
-                using (var dbContext = serviceScope.ServiceProvider.GetRequiredService<VirtoCommerceCustomerExportImportDbContext>())
-                {
-                    dbContext.Database.EnsureCreated();
-                    dbContext.Database.Migrate();
-                }
-            }
+            using var serviceScope = appBuilder.ApplicationServices.CreateScope();
+            using var dbContext = serviceScope.ServiceProvider.GetRequiredService<VirtoCommerceCustomerExportImportDbContext>();
+            dbContext.Database.EnsureCreated();
+            dbContext.Database.Migrate();
         }
 
         public void Uninstall()

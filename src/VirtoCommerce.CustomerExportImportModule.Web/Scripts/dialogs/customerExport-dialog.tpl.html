@@ -1,0 +1,19 @@
+<div class="modal-header customer-export-import" ng-class="{'modal-warning': exportIsEmpty }">
+    <h3 class="modal-title">{{ 'customerExportImport.dialogs.customer-export.title' | translate }}</h3>
+</div>
+<div class="modal-body">
+    <p ng-if="!exportIsEmpty">
+        <b ng-if="exportAll">{{ 'customerExportImport.dialogs.customer-export.subtitle-all' | translate: {contactsCounter: selectedContactsCounter, organizationsCounter: selectedOrganizationsCounter} }}</b>
+        <b ng-if="!exportAll">{{ 'customerExportImport.dialogs.customer-export.subtitle-not-all' | translate: {contactsCounter: selectedContactsCounter, organizationsCounter: selectedOrganizationsCounter} }}</b>
+    </p>
+    <p ng-if="exportIsEmpty">
+        <b>{{ 'customerExportImport.dialogs.customer-export.subtitle-empty-export' | translate }}</b>
+    </p>
+</div>
+<div class="modal-footer customer-export-import" ng-if="!exportIsEmpty">
+    <button class="btn cancel-btn" ng-click="cancel()">{{ 'platform.commands.cancel' | translate }}</button>
+    <button class="btn" ng-click="yes()">{{ 'customerExportImport.dialogs.customer-export.export' | translate }}</button>
+</div>
+<div class="modal-footer" ng-if="exportIsEmpty">
+    <button class="btn" ng-click="cancel()">{{ 'platform.commands.ok' | translate }}</button>
+</div>

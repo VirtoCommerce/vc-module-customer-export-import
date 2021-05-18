@@ -1,0 +1,19 @@
+{
+  "customerExportImport": {
+    "blades": 123123,
+    "dialogs": {
+      "customer-export": {
+        "title": "Contacts export",
+        "subtitle-all": "All {{contactsCounter}} contacts & {{organizationsCounter}} organizations will be exported to csv file.",
+        "subtitle-not-all": "{{contactsCounter}} contacts & {{organizationsCounter}} organizations will be exported to csv file.",
+        "subtitle-empty-export": "No contacts or organizations are selected.",
+        "export": "Export"
+      }
+    }
+  },
+  "permissions": {
+    "customer:export": "Export customers data",
+    "customer:import": "Import customers data"
+  },
+  "settings": {}
+}

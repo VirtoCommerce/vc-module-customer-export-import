@@ -55,12 +55,34 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string ObjectType => typeof(ExportableOrganization).FullName;
         public ICollection<DynamicObjectProperty> DynamicProperties { get; set; }
 
-        public ExportableOrganization FromModel(Organization organization)
+        public ExportableOrganization FromModel(Organization organization, Organization parentOrganization)
         {
+
+            var address = organization.Addresses.FirstOrDefault();
+
             var result = new ExportableOrganization
             {
                 Id = organization.Id,
                 OrganizationName = organization.Name,
+                OrganizationOuterId = organization.OuterId,
+                ParentOrganizationName = parentOrganization.Name,
+                ParentOrganizationId = organization.ParentId,
+                ParentOrganizationOuterId = parentOrganization.OuterId,
+                AddressType = address?.AddressType.ToString(),
+                AddressFirstName = address?.FirstName,
+                AddressLastName = address?.LastName,
+                AddressCountry = address?.RegionName,
+                AddressCity = address?.City,
+                AddressAddressLine1 = address?.Line1,
+                AddressAddressLine2 = address?.Line2,
+                AddressZipCode = address?.Zip,
+                AddressEmail = address?.Email,
+                AddressPhone = address?.Phone,
+                Phones = string.Join(",", organization.Phones),
+                BusinessCategory = organization.BusinessCategory,
+                Description = organization.Description,
+                OrganizationGroups = string.Join(", ", organization.Groups),
+
                 DynamicProperties = organization.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
                     .ToArray()
             };

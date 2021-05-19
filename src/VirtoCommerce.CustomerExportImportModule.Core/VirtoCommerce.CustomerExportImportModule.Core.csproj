@@ -10,7 +10,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="CsvHelper" Version="12.2.2" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.28.0" />
         <PackageReference Include="VirtoCommerce.FeatureManagementModule.Core" Version="3.0.0" />
         <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.53.0" />
     </ItemGroup>

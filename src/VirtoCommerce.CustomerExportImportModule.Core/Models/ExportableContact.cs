@@ -4,6 +4,7 @@ using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.StoreModule.Core.Model;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
@@ -25,6 +26,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string OrganizationOuterId { get; set; }
         [Name("Organization Name")]
         public string OrganizationName { get; set; }
+        [Name("Account Id")]
+        public string AccountId { get; set; }
         [Name("Account Login")]
         public string AccountLogin { get; set; }
         [Name("Store Id")]
@@ -38,7 +41,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Account Status")]
         public string AccountStatus { get; set; }
         [Name("Email Verified")]
-        public bool EmailVerified { get; set; }
+        public bool? EmailVerified { get; set; }
         [Name("Contact Status")]
         public string ContactStatus { get; set; }
         [Name("Associated Organization Id")]
@@ -86,17 +89,50 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string ObjectType => typeof(ExportableContact).FullName;
         public ICollection<DynamicObjectProperty> DynamicProperties { get; set; }
 
-        public ExportableContact FromModel(Contact contact, Organization organization)
+        public ExportableContact FromModel(Contact contact, Organization organization, Store store)
         {
-            var result = new ExportableContact();
+            var account = contact.SecurityAccounts.FirstOrDefault();
+            var address = contact.Addresses.FirstOrDefault();
 
-            result.Id = contact.Id;
-            result.FirstName = contact.FirstName;
-            result.LastName = contact.LastName;
-            result.FullName = contact.FullName;
+            var result = new ExportableContact
+            {
+                Id = contact.Id,
+                FirstName = contact.FirstName,
+                LastName = contact.LastName,
+                FullName = contact.FullName,
+                ContactOuterId = contact.OuterId,
+                OrganizationId = organization.Id,
+                OrganizationOuterId = organization.OuterId,
+                OrganizationName = organization.Name,
+                AccountId = account?.Id,
+                StoreId = account?.StoreId,
+                StoreName = store.Name,
+                AccountLogin = account?.UserName,
+                AccountEmail = account?.StoreId,
+                AccountType = account?.UserType,
+                AccountStatus = account?.Status,
+                EmailVerified = account?.EmailConfirmed,
+                ContactStatus = contact.Status,
+                AssociatedOrganizationId = contact.AssociatedOrganizations.FirstOrDefault(),
+                BirthDate = contact.BirthDate,
+                TimeZone = contact.TimeZone,
+                Phones = string.Join(",", contact.Phones),
+                UserGroups = string.Join(", ", contact.Groups),
+                AddressType = address?.AddressType.ToString(),
+                AddressFirstName = address?.FirstName,
+                AddressLastName = address?.LastName,
+                AddressCountry = address?.RegionName,
+                AddressCity = address?.City,
+                AddressAddressLine1 = address?.Line1,
+                AddressAddressLine2 = address?.Line2,
+                AddressZipCode = address?.Zip,
+                AddressEmail = address?.Email,
+                AddressPhone = address?.Phone,
 
-            result.DynamicProperties =
-                contact.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty).ToArray();
+                DynamicProperties = contact.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
+                    .ToArray()
+            };
+
 
             return result;
         }

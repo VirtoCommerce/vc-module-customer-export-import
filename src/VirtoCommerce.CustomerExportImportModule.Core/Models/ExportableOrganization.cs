@@ -57,13 +57,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         public ExportableOrganization FromModel(Organization organization)
         {
-            var result = new ExportableOrganization();
-
-            result.Id = organization.Id;
-            result.OrganizationName = organization.Name;
-
-            result.DynamicProperties =
-                organization.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty).ToArray();
+            var result = new ExportableOrganization
+            {
+                Id = organization.Id,
+                OrganizationName = organization.Name,
+                DynamicProperties = organization.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
+                    .ToArray()
+            };
 
             return result;
         }

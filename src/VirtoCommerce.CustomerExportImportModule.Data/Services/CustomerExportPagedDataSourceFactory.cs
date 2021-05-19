@@ -8,8 +8,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     {
         private readonly IMemberService _memberService;
         private readonly IMemberSearchService _memberSearchService;
-
-
+        
         public CustomerExportPagedDataSourceFactory(IMemberService memberService, IMemberSearchService memberSearchService)
         {
             _memberService = memberService;

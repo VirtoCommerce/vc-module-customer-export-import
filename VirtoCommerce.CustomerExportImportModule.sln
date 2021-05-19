@@ -5,15 +5,27 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4BBAEFA5-6111-4AF0-9569-DF35BA5749AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CustomerExportImportModule.Web", "src\VirtoCommerce.CustomerExportImportModule.Web\VirtoCommerce.CustomerExportImportModule.Web.csproj", "{C5420FA7-C513-4D1E-AF51-7CBE4CB4C171}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CustomerExportImportModule.Web", "src\VirtoCommerce.CustomerExportImportModule.Web\VirtoCommerce.CustomerExportImportModule.Web.csproj", "{C5420FA7-C513-4D1E-AF51-7CBE4CB4C171}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CustomerExportImportModule.Core", "src\VirtoCommerce.CustomerExportImportModule.Core\VirtoCommerce.CustomerExportImportModule.Core.csproj", "{00E3C7C5-4975-488C-B62C-71BA7996E3AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CustomerExportImportModule.Core", "src\VirtoCommerce.CustomerExportImportModule.Core\VirtoCommerce.CustomerExportImportModule.Core.csproj", "{00E3C7C5-4975-488C-B62C-71BA7996E3AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CustomerExportImportModule.Data", "src\VirtoCommerce.CustomerExportImportModule.Data\VirtoCommerce.CustomerExportImportModule.Data.csproj", "{F0872320-F1CA-4E5F-869A-FA89DBA42A7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CustomerExportImportModule.Data", "src\VirtoCommerce.CustomerExportImportModule.Data\VirtoCommerce.CustomerExportImportModule.Data.csproj", "{F0872320-F1CA-4E5F-869A-FA89DBA42A7A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4B75F0EF-D1B9-43C8-896D-EAF67CBDCE58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtoCommerce.CustomerExportImportModule.Tests", "tests\VirtoCommerce.CustomerExportImportModule.Tests\VirtoCommerce.CustomerExportImportModule.Tests.csproj", "{91C4F78F-AE0F-416B-8D27-1CA0C8DAF33B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtoCommerce.CustomerExportImportModule.Tests", "tests\VirtoCommerce.CustomerExportImportModule.Tests\VirtoCommerce.CustomerExportImportModule.Tests.csproj", "{91C4F78F-AE0F-416B-8D27-1CA0C8DAF33B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{03A31590-81B6-4F49-ADFC-7B1C10555358}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		.nuke = .nuke
+		CONTRIBUTING.md = CONTRIBUTING.md
+		Directory.Build.props = Directory.Build.props
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

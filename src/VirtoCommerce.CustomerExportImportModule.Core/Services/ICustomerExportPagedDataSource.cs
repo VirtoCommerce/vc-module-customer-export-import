@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using VirtoCommerce.CustomerModule.Core.Model;
+using VirtoCommerce.CustomerExportImportModule.Core.Models;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Services
 {
@@ -13,6 +13,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Services
 
         Task<bool> FetchAsync();
 
-        Member[] Items { get; }
+        IExportable[] Items { get; }
     }
 }

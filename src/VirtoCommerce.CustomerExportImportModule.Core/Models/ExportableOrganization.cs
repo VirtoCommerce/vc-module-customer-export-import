@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using VirtoCommerce.CustomerModule.Core.Model;
@@ -38,15 +37,35 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Organization Groups")]
         public string OrganizationGroups { get; set; }
 
-        public ExportableOrganization FromModel(Organization organization)
+        public ExportableOrganization FromModel(Organization organization, Organization parentOrganization)
         {
-            var result = new ExportableOrganization();
+            var address = organization.Addresses.FirstOrDefault();
 
-            result.Id = organization.Id;
-            result.OrganizationName = organization.Name;
-
-            result.DynamicProperties =
-                organization.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty).ToArray();
+            var result = new ExportableOrganization
+            {
+                Id = organization.Id,
+                OrganizationName = organization.Name,
+                OrganizationOuterId = organization.OuterId,
+                ParentOrganizationName = parentOrganization.Name,
+                ParentOrganizationId = organization.ParentId,
+                ParentOrganizationOuterId = parentOrganization.OuterId,
+                AddressType = address?.AddressType.ToString(),
+                AddressFirstName = address?.FirstName,
+                AddressLastName = address?.LastName,
+                AddressCountry = address?.RegionName,
+                AddressCity = address?.City,
+                AddressAddressLine1 = address?.Line1,
+                AddressAddressLine2 = address?.Line2,
+                AddressZipCode = address?.Zip,
+                AddressEmail = address?.Email,
+                AddressPhone = address?.Phone,
+                Phones = string.Join(",", organization.Phones),
+                BusinessCategory = organization.BusinessCategory,
+                Description = organization.Description,
+                OrganizationGroups = string.Join(", ", organization.Groups),
+                DynamicProperties = organization.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
+                    .ToArray()
+            };
 
             return result;
         }

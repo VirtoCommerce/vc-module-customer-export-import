@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using CsvHelper.Configuration;
-using VirtoCommerce.CustomerExportImportModule.Core.Models;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 
-namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport.ClassMaps
+namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
 {
-    public sealed class OrganizationClassMap : ClassMap<ExportableOrganization>
+    public sealed class GenericClassMap<T> : ClassMap<T>
     {
-
-        public OrganizationClassMap(string[] dynamicProperties)
+        public GenericClassMap(string[] dynamicProperties = null)
         {
             AutoMap(new Configuration() { Delimiter = ";", CultureInfo = CultureInfo.InvariantCulture });
 
             var exportedType = ClassType;
             var columnIndex = MemberMaps.Count - 1;
 
-            if (dynamicProperties.Any())
+            var typeHasDynamicProperties = exportedType.GetInterfaces().Contains(typeof(IHasDynamicProperties));
+
+            if (!dynamicProperties.IsNullOrEmpty() && typeHasDynamicProperties)
             {
                 var currentClassMap = this;
 
@@ -38,6 +39,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport.ClassMaps
                     {
                         var property = properties.FirstOrDefault(x => x.Name == dynamicProperty && x.Values.Any());
                         var propertyValues = Array.Empty<string>();
+
                         if (property != null)
                         {
                             if (property.IsDictionary)

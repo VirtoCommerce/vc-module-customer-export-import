@@ -4,11 +4,12 @@ using System.IO;
 using CsvHelper;
 using CsvHelper.Configuration;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
-using VirtoCommerce.CustomerExportImportModule.Data.ExportImport.ClassMaps;
+using VirtoCommerce.CustomerExportImportModule.Data.ExportImport;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.StoreModule.Core.Model;
 using Xunit;
+using ExportableOrganization = VirtoCommerce.CustomerExportImportModule.Core.Models.ExportableOrganization;
 
 namespace VirtoCommerce.CustomerExportImportModule.Tests
 {
@@ -64,7 +65,7 @@ id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
             //Act
             var selectedDynamicProperties = new[] { "Sex" };
-            csvWriter.Configuration.RegisterClassMap(new ContactClassMap(selectedDynamicProperties));
+            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<ExportableContact>(selectedDynamicProperties));
             csvWriter.WriteRecords(new[] { exportableContact });
 
             sw.Dispose();
@@ -121,7 +122,7 @@ org_id1;OuterId1;Boroda ltd;;;;;;;;;;;;;;;;;;;;Huge
 
             //Act
             var selectedDynamicProperties = new[] { "Size" };
-            csvWriter.Configuration.RegisterClassMap(new OrganizationClassMap(selectedDynamicProperties));
+            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<ExportableOrganization>(selectedDynamicProperties));
 
             csvWriter.WriteRecords(new[] { exportableOrganization });
 

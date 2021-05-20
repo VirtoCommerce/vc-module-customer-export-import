@@ -63,8 +63,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Contact Status")]
         public string ContactStatus { get; set; }
 
-        [Name("Associated Organization Id")]
-        public string AssociatedOrganizationId { get; set; }
+        [Name("Associated Organization Ids")]
+        public string AssociatedOrganizationIds { get; set; }
 
         [Name("Birthday")]
         public DateTime? BirthDate { get; set; }

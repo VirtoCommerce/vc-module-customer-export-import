@@ -1,6 +1,35 @@
 {
-  "virtoCommerce.customerExportImport": {
+  "customerExportImport": {
     "blades": {
+      "file-upload": {
+        "title-root": "Import into root",
+        "title-member": "Import into {{member}}",
+        "subtitle": "Upload CSV",
+        "labels": {
+          "progress": "Progress"
+        },
+        "drag-and-drop": {
+          "placeholder": "Drag and drop images here",
+          "or": "or ",
+          "link": "browse your files"
+        },
+        "upload-result": {
+          "failed": "Upload failed",
+          "success": "Uploaded",
+          "max-size-error": "The file size is too large. Try to upload another one.",
+          "file-type-error": "CSV format is required. The suggested file is in different format."
+        },
+        "actions": {
+          "preview": "Preview",
+          "delete": "Delete"
+        }
+      }
+    },
+    "dialogs": {
+      "csv-file-delete": {
+        "title": "Delete CSV",
+        "subtitle": "Are you sure you want to delete this csv file?"
+      }
     }
   },
   "permissions": {

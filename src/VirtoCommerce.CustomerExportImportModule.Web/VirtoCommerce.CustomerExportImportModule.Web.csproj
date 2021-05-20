@@ -21,6 +21,7 @@
     <ItemGroup>
       <Folder Include="Content\css\" />
       <Folder Include="Controllers\Api\" />
+      <Folder Include="Properties\" />
       <Folder Include="Scripts\blades\" />
       <Folder Include="Scripts\resources\" />
     </ItemGroup>

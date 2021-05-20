@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Webpack output
 dist/
+
+launchSettings.json

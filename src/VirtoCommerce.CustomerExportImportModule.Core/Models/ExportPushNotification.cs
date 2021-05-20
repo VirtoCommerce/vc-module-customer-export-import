@@ -1,0 +1,23 @@
+using System;
+using VirtoCommerce.Platform.Core.PushNotifications;
+
+namespace VirtoCommerce.CustomerExportImportModule.Core.Models
+{
+    public sealed class ExportPushNotification : PushNotification
+    {
+        public ExportPushNotification(string creator)
+            : base(creator)
+        {
+        }
+
+        public string JobId { get; set; }
+
+        public int ProcessedCount { get; set; }
+
+        public int TotalCount { get; set; }
+
+        public DateTime Finished { get; set; }
+
+        public string[] FileUrls { get; set; }
+    }
+}

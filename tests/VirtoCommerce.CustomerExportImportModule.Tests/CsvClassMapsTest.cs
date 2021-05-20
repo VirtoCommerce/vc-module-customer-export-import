@@ -62,7 +62,6 @@ id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;
             var sw = new StreamWriter(stream, leaveOpen: true);
             var csvWriter = new CsvWriter(sw, new Configuration() { Delimiter = ";" });
 
-
             //Act
             var selectedDynamicProperties = new[] { "Sex" };
             csvWriter.Configuration.RegisterClassMap(new ContactClassMap(selectedDynamicProperties));
@@ -82,7 +81,6 @@ id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;
             var csv = sr.ReadToEnd();
 
             Assert.Equal(expected, csv);
-
         }
 
         [Fact]
@@ -124,7 +122,6 @@ org_id1;OuterId1;Boroda ltd;;;;;;;;;;;;;;;;;;;;Huge
             var sw = new StreamWriter(stream, leaveOpen: true);
             var csvWriter = new CsvWriter(sw, new Configuration() { Delimiter = ";" });
 
-
             //Act
             var selectedDynamicProperties = new[] { "Size" };
             csvWriter.Configuration.RegisterClassMap(new OrganizationClassMap(selectedDynamicProperties));
@@ -144,7 +141,6 @@ org_id1;OuterId1;Boroda ltd;;;;;;;;;;;;;;;;;;;;Huge
             var csv = sr.ReadToEnd();
 
             Assert.Equal(expected, csv);
-
         }
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using CsvHelper.Configuration;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.Platform.Core.DynamicProperties;
@@ -28,7 +27,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport.ClassMaps
                 {
                     // create CsvPropertyMap manually, because this.Map(x =>...) does not allow
                     // to export multiple entries for the same property
-
                     var propertyValuesInfo = exportedType.GetProperty(nameof(IHasDynamicProperties.DynamicProperties));
                     var csvPropertyMap = MemberMap.CreateGeneric(exportedType, propertyValuesInfo);
                     csvPropertyMap.Name(dynamicProperty);
@@ -65,23 +63,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport.ClassMaps
                     currentClassMap.MemberMaps.Add(csvPropertyMap);
                 }
             }
-        }
-
-        private static MemberMap CreateMemberMap(Type currentType, PropertyInfo propertyInfo, string columnName, ref int columnIndex)
-        {
-            var memberMap = MemberMap.CreateGeneric(currentType, propertyInfo);
-
-
-
-            memberMap.Data.TypeConverterOptions.CultureInfo = CultureInfo.InvariantCulture;
-            memberMap.Data.TypeConverterOptions.NumberStyle = NumberStyles.Any;
-            memberMap.Data.TypeConverterOptions.BooleanTrueValues.AddRange(new List<string>() { "yes", "true" });
-            memberMap.Data.TypeConverterOptions.BooleanFalseValues.AddRange(new List<string>() { "false", "no" });
-            memberMap.Data.Names.Add(columnName);
-            memberMap.Data.NameIndex = memberMap.Data.Names.Count - 1;
-            memberMap.Data.Index = ++columnIndex;
-
-            return memberMap;
         }
     }
 }

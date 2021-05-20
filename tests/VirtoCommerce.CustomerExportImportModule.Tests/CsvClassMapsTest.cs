@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using CsvHelper;
@@ -58,7 +59,11 @@ id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;
             exportableContact.FromModel(contact, organization, store);
 
             var stream = new MemoryStream();
-            var sw = new StreamWriter(stream, leaveOpen: true);
+            var sw = new StreamWriter(stream, leaveOpen: true)
+            {
+                NewLine = Environment.NewLine
+            };
+
             var csvWriter = new CsvWriter(sw, new Configuration() { Delimiter = ";" });
 
             //Act
@@ -116,8 +121,12 @@ org_id1;OuterId1;Boroda ltd;;;;;;;;;;;;;;;;;;;;Huge
             exportableOrganization.FromModel(organization, null);
 
             var stream = new MemoryStream();
-            var sw = new StreamWriter(stream, leaveOpen: true);
-            var csvWriter = new CsvWriter(sw, new Configuration() { Delimiter = ";" });
+            var sw = new StreamWriter(stream, leaveOpen: true)
+            {
+                NewLine = Environment.NewLine
+            };
+
+            var csvWriter = new CsvWriter(sw, new Configuration() { Delimiter = ";", });
 
             //Act
             var selectedDynamicProperties = new[] { "Size" };

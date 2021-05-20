@@ -19,10 +19,10 @@
         <Folder Include="Handlers\" />
         <Folder Include="Models\" />
         <Folder Include="Repositories\" />
-        <Folder Include="Services\" />
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="CsvHelper" Version="12.2.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

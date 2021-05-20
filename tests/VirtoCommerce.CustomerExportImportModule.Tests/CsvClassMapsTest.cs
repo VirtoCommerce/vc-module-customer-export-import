@@ -22,7 +22,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             //Arrange
             var expected = @"Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Associated Organization Ids;Birthday;TimeZone;Phones;User groups;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Address Line1;Address Address Line2;Address Zip Code;Address Email;Address Phone;ObjectType;Sex
 id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;Male
-";
+".Replace(Environment.NewLine, "\r\n");
 
             var dynamicProperties = new List<DynamicObjectProperty>
             {
@@ -59,17 +59,12 @@ id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;
             exportableContact.FromModel(contact, organization, store);
 
             var stream = new MemoryStream();
-            var sw = new StreamWriter(stream, leaveOpen: true)
-            {
-                NewLine = Environment.NewLine
-            };
-
+            var sw = new StreamWriter(stream, leaveOpen: true);
             var csvWriter = new CsvWriter(sw, new Configuration() { Delimiter = ";" });
 
             //Act
             var selectedDynamicProperties = new[] { "Sex" };
             csvWriter.Configuration.RegisterClassMap(new ContactClassMap(selectedDynamicProperties));
-
             csvWriter.WriteRecords(new[] { exportableContact });
 
             sw.Dispose();
@@ -91,7 +86,7 @@ id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;
             //Arrange
             var expected = @"Organization Id;Organization Outer Id;Organization Name;Parent Organization Name;Parent Organization Id;Parent Organization Outer Id;Phones;Business category;Description;Organization Groups;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Address Line1;Address Address Line2;Address Zip Code;Address Email;Address Phone;ObjectType;Size
 org_id1;OuterId1;Boroda ltd;;;;;;;;;;;;;;;;;;;;Huge
-";
+".Replace(Environment.NewLine, "\r\n");
 
             var dynamicProperties = new List<DynamicObjectProperty>
             {
@@ -121,11 +116,7 @@ org_id1;OuterId1;Boroda ltd;;;;;;;;;;;;;;;;;;;;Huge
             exportableOrganization.FromModel(organization, null);
 
             var stream = new MemoryStream();
-            var sw = new StreamWriter(stream, leaveOpen: true)
-            {
-                NewLine = Environment.NewLine
-            };
-
+            var sw = new StreamWriter(stream, leaveOpen: true);
             var csvWriter = new CsvWriter(sw, new Configuration() { Delimiter = ";", });
 
             //Act

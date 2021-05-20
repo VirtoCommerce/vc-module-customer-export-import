@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Webpack output
 dist/
+
+# prettier config file
+.prettierrc
+
+src/VirtoCommerce.CustomerExportImportModule.Web/Properties/launchSettings.json

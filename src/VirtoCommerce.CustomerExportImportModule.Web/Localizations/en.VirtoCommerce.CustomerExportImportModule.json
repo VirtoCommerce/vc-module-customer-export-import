@@ -1,6 +1,5 @@
 {
   "customerExportImport": {
-    "blades": 123123,
     "dialogs": {
       "customer-export": {
         "title": "Contacts export",

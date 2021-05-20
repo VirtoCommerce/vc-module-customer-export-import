@@ -3,8 +3,8 @@
 </div>
 <div class="modal-body">
     <p ng-if="!exportIsEmpty">
-        <b ng-if="exportAll">{{ 'customerExportImport.dialogs.customer-export.subtitle-all' | translate: {contactsCounter: selectedContactsCounter, organizationsCounter: selectedOrganizationsCounter} }}</b>
-        <b ng-if="!exportAll">{{ 'customerExportImport.dialogs.customer-export.subtitle-not-all' | translate: {contactsCounter: selectedContactsCounter, organizationsCounter: selectedOrganizationsCounter} }}</b>
+        <b ng-if="exportAll">{{ 'customerExportImport.dialogs.customer-export.subtitle-all' | translate: {contactsCounter: contactsQty, organizationsCounter: organizationsQty} }}</b>
+        <b ng-if="!exportAll">{{ 'customerExportImport.dialogs.customer-export.subtitle-not-all' | translate: {contactsCounter: contactsQty, organizationsCounter: organizationsQty} }}</b>
     </p>
     <p ng-if="exportIsEmpty">
         <b>{{ 'customerExportImport.dialogs.customer-export.subtitle-empty-export' | translate }}</b>

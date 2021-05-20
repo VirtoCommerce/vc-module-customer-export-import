@@ -6,6 +6,7 @@
     <platformVersion>3.53.0</platformVersion>
     <dependencies>
         <dependency id="VirtoCommerce.Customer" version="3.28.0" />
+        <dependency id="VirtoCommerce.Store" version="3.17.0" />
         <dependency id="VirtoCommerce.FeatureManagement" version="3.0.0" />
     </dependencies>
 

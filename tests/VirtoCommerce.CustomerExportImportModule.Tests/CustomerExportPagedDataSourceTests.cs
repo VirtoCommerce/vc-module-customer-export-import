@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -8,6 +10,7 @@ using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Model.Search;
 using VirtoCommerce.CustomerModule.Core.Services;
+using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 using Xunit;
@@ -32,13 +35,124 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             Assert.Equal(2, totalCount);
         }
 
-        [Fact]
-        public async Task FetchAsync_LoadContactParentOrganization_WillUseExisting()
+        [MemberData(nameof(ContactParentOrganizationsTestData))]
+        [Theory]
+        public async Task FetchAsync_ExportContact_WillUseOrLoadParentOrganization(Member[] members, Member[] organizations)
         {
             // Arrange
-            var contact = new Contact { Id = "Contact1", Organizations = new[] { "Organization1" } };
-            var organization = new Organization { Id = "Organization1", Name = "Organization 1 Name" };
-            var members = new Member[] { contact, organization };
+            var customerExportPagedDataSource = GetCustomerExportPagedDataSource(members, organizations, 10);
+
+            // Act
+            await customerExportPagedDataSource.FetchAsync();
+            var exportedContact = (ExportableContact)customerExportPagedDataSource.Items.First();
+
+            // Assert
+            Assert.Equal("Organization1", exportedContact.OrganizationId);
+            Assert.Equal("Organization 1 Name", exportedContact.OrganizationName);
+        }
+
+        public static IEnumerable<object[]> ContactParentOrganizationsTestData => new List<object[]>
+        {
+            new object[]
+            {
+                new Member[]
+                {
+                    new Contact
+                    {
+                        Id = "Contact1",
+                        Organizations = new[] { "Organization1" }
+                    },
+                    new Organization
+                    {
+                        Id = "Organization1",
+                        Name = "Organization 1 Name"
+                    }
+                },
+                null
+            },
+            new object[]
+            {
+                new Member[]
+                {
+                    new Contact
+                    {
+                        Id = "Contact1",
+                        Organizations = new[] { "Organization1" }
+                    }
+                },
+                new Member[]
+                {
+                    new Organization
+                    {
+                        Id = "Organization1",
+                        Name = "Organization 1 Name"
+                    }
+                }
+            }
+        };
+        
+        [MemberData(nameof(OrganizationParentOrganizationsTestData))]
+        [Theory]
+        public async Task FetchAsync_ExportOrganization_WillUseOrLoadParentOrganization(Member[] members, Member[] organizations)
+        {
+            // Arrange
+            var customerExportPagedDataSource = GetCustomerExportPagedDataSource(members, organizations, 10);
+
+            // Act
+            await customerExportPagedDataSource.FetchAsync();
+            var exportedOrganization = (ExportableOrganization)customerExportPagedDataSource.Items.First();
+
+            // Assert
+            Assert.Equal("Organization2", exportedOrganization.ParentOrganizationId);
+            Assert.Equal("Organization 2 Name", exportedOrganization.ParentOrganizationName);
+        }
+
+        public static IEnumerable<object[]> OrganizationParentOrganizationsTestData => new List<object[]>
+        {
+            new object[]
+            {
+                new Member[]
+                {
+                    new Organization
+                    {
+                        Id = "Organization1",
+                        ParentId = "Organization2"
+                    },
+                    new Organization
+                    {
+                        Id = "Organization2",
+                        Name = "Organization 2 Name"
+                    }
+                },
+                null
+            },
+            new object[]
+            {
+                new Member[]
+                {
+                    new Organization
+                    {
+                        Id = "Organization1",
+                        ParentId = "Organization2"
+                    }
+                },
+                new Member[]
+                {
+                    new Organization
+                    {
+                        Id = "Organization2",
+                        Name = "Organization 2 Name"
+                    }
+                }
+            }
+        };
+        
+        [Fact]
+        public async Task FetchAsync_ExportContact_WillLoadStore()
+        {
+            // Arrange
+            var contact = new Contact { Id = "Contact1", SecurityAccounts = new[] { new ApplicationUser { StoreId = "Store" } } };
+            var members = new Member[] { contact };
             var customerExportPagedDataSource = GetCustomerExportPagedDataSource(members, pageSize: 10);
 
             // Act
@@ -46,8 +160,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var exportedContact = (ExportableContact)customerExportPagedDataSource.Items.First();
 
             // Assert
-            Assert.Equal(organization.Id, exportedContact.OrganizationId);
-            Assert.Equal(organization.Name, exportedContact.OrganizationName);
+            Assert.Equal("Store", exportedContact.StoreId);
+            Assert.Equal("Store Name", exportedContact.StoreName);
         }
 
         [Fact]
@@ -143,7 +257,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             storeServiceMock.Setup(service => service.GetByIdsAsync(It.IsAny<string[]>(), It.IsAny<string>()))
                 .Returns(() => Task.FromResult(new[]
                 {
-                    new Store { Id = "Store", Name = "Store" }
+                    new Store { Id = "Store", Name = "Store Name" }
                 }));
             return storeServiceMock.Object;
         }

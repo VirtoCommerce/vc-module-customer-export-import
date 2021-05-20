@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using CsvHelper;
@@ -19,6 +20,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         public void Map_ContactWithDynamicProperty_Success()
         {
             //Arrange
+            var expected = @"Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Associated Organization Ids;Birthday;TimeZone;Phones;User groups;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Address Line1;Address Address Line2;Address Zip Code;Address Email;Address Phone;ObjectType;Sex
+id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;Male
+".Replace("\r\n", Environment.NewLine);
+
             var dynamicProperties = new List<DynamicObjectProperty>
             {
                 new DynamicObjectProperty()
@@ -50,13 +55,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             };
 
             var store = new Store() { Id = "b2b-store", Name = "b2b-store" };
-
             var exportableContact = new ExportableContact();
-
             exportableContact.FromModel(contact, organization, store);
 
             var stream = new MemoryStream();
-
             var sw = new StreamWriter(stream, leaveOpen: true);
             var csvWriter = new CsvWriter(sw, new Configuration() { Delimiter = ";" });
 
@@ -77,12 +79,69 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             //Assert
             var sr = new StreamReader(stream);
-
             var csv = sr.ReadToEnd();
 
-            var expected = @"Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Associated Organization Ids;Birthday;TimeZone;Phones;User groups;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Address Line1;Address Address Line2;Address Zip Code;Address Email;Address Phone;ObjectType;Sex
-id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;Male
-";
+            Assert.Equal(expected, csv);
+
+        }
+
+        [Fact]
+        public void Map_OrganizationWithDynamicProperty_Success()
+        {
+            //Arrange
+            var expected = @"Organization Id;Organization Outer Id;Organization Name;Parent Organization Name;Parent Organization Id;Parent Organization Outer Id;Phones;Business category;Description;Organization Groups;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Address Line1;Address Address Line2;Address Zip Code;Address Email;Address Phone;ObjectType;Size
+org_id1;OuterId1;Boroda ltd;;;;;;;;;;;;;;;;;;;;Huge
+".Replace("\r\n", Environment.NewLine);
+
+            var dynamicProperties = new List<DynamicObjectProperty>
+            {
+                new DynamicObjectProperty()
+                {
+                    Name = "Size",
+                    ValueType = DynamicPropertyValueType.ShortText,
+                    Values = new[] {
+                    new DynamicPropertyObjectValue
+                    {
+                        Value = "Huge",
+                        ValueType = DynamicPropertyValueType.ShortText
+                    }}
+                }
+            };
+
+            var organization = new Organization()
+            {
+                Id = "org_id1",
+                Name = "Boroda ltd",
+                OuterId = "OuterId1",
+
+                DynamicProperties = dynamicProperties
+            };
+
+            var exportableOrganization = new ExportableOrganization();
+            exportableOrganization.FromModel(organization, null);
+
+            var stream = new MemoryStream();
+            var sw = new StreamWriter(stream, leaveOpen: true);
+            var csvWriter = new CsvWriter(sw, new Configuration() { Delimiter = ";" });
+
+
+            //Act
+            var selectedDynamicProperties = new[] { "Size" };
+            csvWriter.Configuration.RegisterClassMap(new OrganizationClassMap(selectedDynamicProperties));
+
+            csvWriter.WriteRecords(new[] { exportableOrganization });
+
+            sw.Flush();
+            sw.Close();
+
+            csvWriter.Dispose();
+            sw.Dispose();
+
+            stream.Seek(0, SeekOrigin.Begin);
+
+            //Assert
+            var sr = new StreamReader(stream);
+            var csv = sr.ReadToEnd();
 
             Assert.Equal(expected, csv);
 

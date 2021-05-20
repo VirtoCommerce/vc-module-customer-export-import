@@ -9,10 +9,10 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport.ClassMaps
 {
-    public sealed class ContactClassMap : ClassMap<ExportableContact>
+    public sealed class OrganizationClassMap : ClassMap<ExportableOrganization>
     {
 
-        public ContactClassMap(string[] dynamicProperties)
+        public OrganizationClassMap(string[] dynamicProperties)
         {
             AutoMap(new Configuration() { Delimiter = ";", CultureInfo = CultureInfo.InvariantCulture });
 

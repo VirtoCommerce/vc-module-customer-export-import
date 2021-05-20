@@ -68,11 +68,9 @@ id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
             csvWriter.WriteRecords(new[] { exportableContact });
 
-            sw.Flush();
-            sw.Close();
-
-            csvWriter.Dispose();
             sw.Dispose();
+            csvWriter.Dispose();
+
 
             stream.Seek(0, SeekOrigin.Begin);
 
@@ -128,11 +126,8 @@ org_id1;OuterId1;Boroda ltd;;;;;;;;;;;;;;;;;;;;Huge
 
             csvWriter.WriteRecords(new[] { exportableOrganization });
 
-            sw.Flush();
-            sw.Close();
-
-            csvWriter.Dispose();
             sw.Dispose();
+            csvWriter.Dispose();
 
             stream.Seek(0, SeekOrigin.Begin);
 

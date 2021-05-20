@@ -56,6 +56,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string AccountStatus { get; set; }
 
         [Name("Email Verified")]
+        [BooleanTrueValues(new[] { "yes", "true" })]
+        [BooleanFalseValues(new[] { "no", "false" })]
         public bool? EmailVerified { get; set; }
 
         [Name("Contact Status")]

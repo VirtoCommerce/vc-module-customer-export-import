@@ -89,8 +89,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         public ExportableContact FromModel(Contact contact, Organization organization, Store store)
         {
-            var account = contact.SecurityAccounts.FirstOrDefault();
-            var address = contact.Addresses.FirstOrDefault();
+            var account = contact.SecurityAccounts?.FirstOrDefault();
+            var address = contact.Addresses?.FirstOrDefault();
 
             var result = new ExportableContact
             {
@@ -99,23 +99,23 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 LastName = contact.LastName,
                 FullName = contact.FullName,
                 ContactOuterId = contact.OuterId,
-                OrganizationId = organization.Id,
-                OrganizationOuterId = organization.OuterId,
-                OrganizationName = organization.Name,
+                OrganizationId = organization?.Id,
+                OrganizationOuterId = organization?.OuterId,
+                OrganizationName = organization?.Name,
                 AccountId = account?.Id,
                 StoreId = account?.StoreId,
-                StoreName = store.Name,
+                StoreName = store?.Name,
                 AccountLogin = account?.UserName,
                 AccountEmail = account?.StoreId,
                 AccountType = account?.UserType,
                 AccountStatus = account?.Status,
                 EmailVerified = account?.EmailConfirmed,
                 ContactStatus = contact.Status,
-                AssociatedOrganizationId = contact.AssociatedOrganizations.FirstOrDefault(),
+                AssociatedOrganizationId = contact.AssociatedOrganizations?.FirstOrDefault(),
                 BirthDate = contact.BirthDate,
                 TimeZone = contact.TimeZone,
-                Phones = string.Join(",", contact.Phones),
-                UserGroups = string.Join(", ", contact.Groups),
+                Phones = contact.Phones != null ? string.Join(",", contact.Phones) : null,
+                UserGroups = contact.Groups != null ? string.Join(", ", contact.Groups) : null,
                 AddressType = address?.AddressType.ToString(),
                 AddressFirstName = address?.FirstName,
                 AddressLastName = address?.LastName,
@@ -126,8 +126,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 AddressZipCode = address?.Zip,
                 AddressEmail = address?.Email,
                 AddressPhone = address?.Phone,
-                DynamicProperties = contact.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
-                    .ToArray()
+                DynamicProperties = contact.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty).ToArray()
             };
 
             return result;

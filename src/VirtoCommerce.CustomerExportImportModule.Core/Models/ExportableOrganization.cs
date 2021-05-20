@@ -39,16 +39,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         public ExportableOrganization FromModel(Organization organization, Organization parentOrganization)
         {
-            var address = organization.Addresses.FirstOrDefault();
+            var address = organization.Addresses?.FirstOrDefault();
 
             var result = new ExportableOrganization
             {
                 Id = organization.Id,
                 OrganizationName = organization.Name,
                 OrganizationOuterId = organization.OuterId,
-                ParentOrganizationName = parentOrganization.Name,
+                ParentOrganizationName = parentOrganization?.Name,
                 ParentOrganizationId = organization.ParentId,
-                ParentOrganizationOuterId = parentOrganization.OuterId,
+                ParentOrganizationOuterId = parentOrganization?.OuterId,
                 AddressType = address?.AddressType.ToString(),
                 AddressFirstName = address?.FirstName,
                 AddressLastName = address?.LastName,
@@ -59,10 +59,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 AddressZipCode = address?.Zip,
                 AddressEmail = address?.Email,
                 AddressPhone = address?.Phone,
-                Phones = string.Join(",", organization.Phones),
+                Phones = organization.Phones != null ? string.Join(",", organization.Phones) : null,
                 BusinessCategory = organization.BusinessCategory,
                 Description = organization.Description,
-                OrganizationGroups = string.Join(", ", organization.Groups),
+                OrganizationGroups = organization.Groups != null ? string.Join(", ", organization.Groups) : null,
                 DynamicProperties = organization.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
                     .ToArray()
             };

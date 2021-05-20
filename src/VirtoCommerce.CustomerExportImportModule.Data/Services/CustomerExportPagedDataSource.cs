@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
-using VirtoCommerce.CustomerModule.Core.Model.Search;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
@@ -53,20 +52,21 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             // Build search criteria
             var searchCriteria = _request.ToSearchCriteria();
-            searchCriteria.Skip = (CurrentPageNumber - 1) * PageSize;
+            searchCriteria.Skip = CurrentPageNumber * PageSize;
             searchCriteria.Take = PageSize;
             searchCriteria.ResponseGroup = (MemberResponseGroup.Default | MemberResponseGroup.WithAddresses | MemberResponseGroup.WithDynamicProperties |
-                                            MemberResponseGroup.WithEmails | MemberResponseGroup.WithPhones | MemberResponseGroup.WithSecurityAccounts).ToString();
+                                            MemberResponseGroup.WithEmails | MemberResponseGroup.WithPhones | MemberResponseGroup.WithSecurityAccounts |
+                                            MemberResponseGroup.WithGroups).ToString();
 
             // Get all exporting members from current chunk
             var searchResult = await _memberSearchService.SearchMembersAsync(searchCriteria);
 
             // Split members into contacts and organizations
-            var contacts = searchResult.Results.Where(member => member.MemberType == nameof(Contact)).Cast<Contact>().ToArray();
-            var organizations = searchResult.Results.Where(member => member.MemberType == nameof(Organization)).Cast<Organization>().ToArray();
+            var contacts = searchResult.Results.OfType<Contact>().ToArray();
+            var organizations = searchResult.Results.OfType<Organization>().ToArray();
 
             // Get IDs of contact & organization parent organization
-            var contactOrganizationIds = contacts.Select(contact => contact.Organizations.OrderBy(organizationId => organizationId).FirstOrDefault()).Distinct().ToArray();
+            var contactOrganizationIds = contacts.Select(contact => contact.Organizations?.OrderBy(organizationId => organizationId).FirstOrDefault()).Distinct().ToArray();
             var parentOrganizationIds = organizations.Select(organization => organization.ParentId).Distinct().ToArray();
 
             // Get already loaded organizations and their IDs
@@ -94,8 +94,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 {
                     case nameof(Contact):
                         var contact = (Contact) member;
-                        var contactOrganizationId = contact.Organizations.OrderBy(organizationId => organizationId).FirstOrDefault();
-                        var account = contact.SecurityAccounts.OrderBy(account => account.Id).FirstOrDefault();
+                        var contactOrganizationId = contact.Organizations?.OrderBy(organizationId => organizationId).FirstOrDefault();
+                        var account = contact.SecurityAccounts.OrderBy(securityAccount => securityAccount.Id).FirstOrDefault();
                         var accountStoreId = account?.StoreId;
                         return new ExportableContact().FromModel(contact, contactOrganizationId != null ? allOrganizations[contactOrganizationId] : null, accountStoreId != null ? stores[accountStoreId] : null);
                     case nameof(Organization):

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using VirtoCommerce.CustomerModule.Core.Model;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.StoreModule.Core.Model;
 
@@ -92,44 +93,43 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             var account = contact.SecurityAccounts?.FirstOrDefault();
             var address = contact.Addresses?.FirstOrDefault();
 
-            var result = new ExportableContact
-            {
-                Id = contact.Id,
-                FirstName = contact.FirstName,
-                LastName = contact.LastName,
-                FullName = contact.FullName,
-                ContactOuterId = contact.OuterId,
-                OrganizationId = organization?.Id,
-                OrganizationOuterId = organization?.OuterId,
-                OrganizationName = organization?.Name,
-                AccountId = account?.Id,
-                StoreId = account?.StoreId,
-                StoreName = store?.Name,
-                AccountLogin = account?.UserName,
-                AccountEmail = account?.StoreId,
-                AccountType = account?.UserType,
-                AccountStatus = account?.Status,
-                EmailVerified = account?.EmailConfirmed,
-                ContactStatus = contact.Status,
-                AssociatedOrganizationId = contact.AssociatedOrganizations?.FirstOrDefault(),
-                BirthDate = contact.BirthDate,
-                TimeZone = contact.TimeZone,
-                Phones = contact.Phones != null ? string.Join(",", contact.Phones) : null,
-                UserGroups = contact.Groups != null ? string.Join(", ", contact.Groups) : null,
-                AddressType = address?.AddressType.ToString(),
-                AddressFirstName = address?.FirstName,
-                AddressLastName = address?.LastName,
-                AddressCountry = address?.RegionName,
-                AddressCity = address?.City,
-                AddressAddressLine1 = address?.Line1,
-                AddressAddressLine2 = address?.Line2,
-                AddressZipCode = address?.Zip,
-                AddressEmail = address?.Email,
-                AddressPhone = address?.Phone,
-                DynamicProperties = contact.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty).ToArray()
-            };
+            Id = contact.Id;
+            FirstName = contact.FirstName;
+            LastName = contact.LastName;
+            FullName = contact.FullName;
+            ContactOuterId = contact.OuterId;
+            OrganizationId = organization?.Id;
+            OrganizationOuterId = organization?.OuterId;
+            OrganizationName = organization?.Name;
+            AccountId = account?.Id;
+            StoreId = account?.StoreId;
+            StoreName = store?.Name;
+            AccountLogin = account?.UserName;
+            AccountEmail = account?.StoreId;
+            AccountType = account?.UserType;
+            AccountStatus = account?.Status;
+            EmailVerified = account?.EmailConfirmed;
+            ContactStatus = contact.Status;
+            AssociatedOrganizationIds = contact.AssociatedOrganizations.IsNullOrEmpty() ? null : string.Join(", ", contact.AssociatedOrganizations);
+            BirthDate = contact.BirthDate;
+            TimeZone = contact.TimeZone;
+            Phones = contact.Phones.IsNullOrEmpty() ? null : string.Join(", ", contact.Phones);
+            UserGroups = contact.Groups.IsNullOrEmpty() ? null : string.Join(", ", contact.Groups);
+            AddressType = address?.AddressType.ToString();
+            AddressFirstName = address?.FirstName;
+            AddressLastName = address?.LastName;
+            AddressCountry = address?.RegionName;
+            AddressCity = address?.City;
+            AddressAddressLine1 = address?.Line1;
+            AddressAddressLine2 = address?.Line2;
+            AddressZipCode = address?.Zip;
+            AddressEmail = address?.Email;
+            AddressPhone = address?.Phone;
 
-            return result;
+            DynamicProperties = contact.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
+                 .ToArray();
+
+            return this;
         }
     }
 }

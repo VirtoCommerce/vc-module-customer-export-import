@@ -14,8 +14,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport.ClassMaps
 
         public ContactClassMap(string[] dynamicProperties)
         {
+            AutoMap(new Configuration() { Delimiter = ";", CultureInfo = CultureInfo.InvariantCulture });
+
             var exportedType = typeof(ExportableContact);
-            var columnIndex = MemberMaps.Count;
+            var columnIndex = MemberMaps.Count - 1;
 
             if (dynamicProperties.Any())
             {

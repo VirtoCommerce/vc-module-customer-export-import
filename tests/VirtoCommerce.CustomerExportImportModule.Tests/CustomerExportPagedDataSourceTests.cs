@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -234,6 +235,26 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             Assert.Empty(customerExportPagedDataSource.Items);
         }
 
+        [Fact]
+        public async Task FetchAsync_WillThrow_IfSourceReturnsNotRequestedContactOrOrganization()
+        {
+            // Arrange
+            var membersSearchServiceMock = new Mock<IMemberSearchService>();
+            membersSearchServiceMock.Setup(service => service.SearchMembersAsync(It.IsAny<MembersSearchCriteria>()))
+                .Returns<MembersSearchCriteria>(memberSearchCriteria =>
+                    Task.FromResult(new MemberSearchResult { Results = new Member[] { new Vendor() }, TotalCount = 1 }));
+            var membersSearchService = membersSearchServiceMock.Object;
+            var memberService = GetMemberService(Array.Empty<Member>());
+            var customerExportPagedDataSourceFactory = new CustomerExportPagedDataSourceFactory(memberService, membersSearchService, GetStoreService());
+            var customerExportPagedDataSource = customerExportPagedDataSourceFactory.Create(10, new ExportDataRequest());
+
+            // Act
+            async Task<bool> FetchAsync() => await customerExportPagedDataSource.FetchAsync();
+
+            // Assert
+            await Assert.ThrowsAsync<InvalidDataException>(FetchAsync);
+        }
+
         private static IMemberService GetMemberService(Member[] members)
         {
             var memberServiceMock = new Mock<IMemberService>();
@@ -242,13 +263,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             return memberServiceMock.Object;
         }
 
-        private static IMemberSearchService GetMemberSearchService(Member[] members)
+        private static IMemberSearchService GetMembersSearchService(Member[] members)
         {
-            var memberSearchServiceMock = new Mock<IMemberSearchService>();
-            memberSearchServiceMock.Setup(service => service.SearchMembersAsync(It.IsAny<MembersSearchCriteria>()))
+            var membersSearchServiceMock = new Mock<IMemberSearchService>();
+            membersSearchServiceMock.Setup(service => service.SearchMembersAsync(It.IsAny<MembersSearchCriteria>()))
                 .Returns<MembersSearchCriteria>(memberSearchCriteria =>
                     Task.FromResult(new MemberSearchResult { Results = members.Skip(memberSearchCriteria.Skip).Take(memberSearchCriteria.Take).ToArray(), TotalCount = members.Length }));
-            return memberSearchServiceMock.Object;
+            return membersSearchServiceMock.Object;
         }
 
         private static IStoreService GetStoreService()
@@ -265,7 +286,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         private static ICustomerExportPagedDataSourceFactory GetCustomerExportPagedDataSourceFactory(Member[] members, Member[] additionalOrganizations)
         {
             var memberService = GetMemberService(additionalOrganizations);
-            var membersSearchService = GetMemberSearchService(members);
+            var membersSearchService = GetMembersSearchService(members);
             return new CustomerExportPagedDataSourceFactory(memberService, membersSearchService, GetStoreService());
         }
 

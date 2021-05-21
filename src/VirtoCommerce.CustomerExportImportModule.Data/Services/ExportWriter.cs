@@ -10,18 +10,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     public sealed class ExportWriter<T> : IExportWriter<T>
     {
 
-        private readonly IBlobStorageProvider _blobStorageProvider;
         private readonly StreamWriter _streamWriter;
         private readonly CsvWriter _csvWriter;
 
         public ExportWriter(string filePath, IBlobStorageProvider blobStorageProvider, Configuration csvConfiguration)
         {
-            _blobStorageProvider = blobStorageProvider;
-            var stream = _blobStorageProvider.OpenWrite(filePath);
+            var stream = blobStorageProvider.OpenWrite(filePath);
             _streamWriter = new StreamWriter(stream);
             _csvWriter = new CsvWriter(_streamWriter, csvConfiguration);
             _csvWriter.Configuration.RegisterClassMap(new GenericClassMap<T>());
-
         }
 
         public void WriteRecords(T[] records)

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
@@ -12,11 +13,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     {
         private readonly ICustomerExportPagedDataSourceFactory _customerExportPagedDataSourceFactory;
         private readonly IBlobStorageProvider _blobStorageProvider;
+        private readonly IExportWriterFactory _exportWriterFactory;
 
-        public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IBlobStorageProvider blobStorageProvider)
+        public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IBlobStorageProvider blobStorageProvider, IExportWriterFactory exportWriterFactory)
         {
             _customerExportPagedDataSourceFactory = customerExportPagedDataSourceFactory;
             _blobStorageProvider = blobStorageProvider;
+            _exportWriterFactory = exportWriterFactory;
         }
 
         public async Task ExportAsync(ExportDataRequest request, Action<ExportProgressInfo> progressCallback, ICancellationToken cancellationToken)
@@ -35,18 +38,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             exportProgress.Description = "Fetching...";
             progressCallback(exportProgress);
 
+            var contactExportWriter = _exportWriterFactory.Create<ExportableContact>("contacts.csv", new ExportConfiguration());
 
+            var organizationExportWriter = _exportWriterFactory.Create<ExportableOrganization>("organization.csv", new ExportConfiguration());
 
             while (await dataSource.FetchAsync())
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var exportingMembers = dataSource.Items;
+                var contacts = dataSource.Items.Select(x => x as ExportableContact).Where(x => x != null).ToArray();
 
+                contactExportWriter.WriteRecords(contacts);
 
+                var organizations = dataSource.Items.Select(x => x as ExportableOrganization).Where(x => x != null).ToArray();
 
-
+                organizationExportWriter.WriteRecords(organizations);
             }
+
+            contactExportWriter.Dispose();
+            organizationExportWriter.Dispose();
 
         }
     }

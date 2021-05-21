@@ -9,6 +9,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Helpers
             target.Description = source.Description;
             target.ProcessedCount = source.ProcessedCount;
             target.TotalCount = source.TotalCount;
+            target.FileUrls = source.FileUrls;
         }
     }
 }

@@ -47,29 +47,35 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             var organizationFilePath = GetExportFilePath("Organizations");
             var organizationExportWriter = _exportWriterFactory.Create<ExportableOrganization>(organizationFilePath, new ExportConfiguration());
 
-            while (await dataSource.FetchAsync())
+            try
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                while (await dataSource.FetchAsync())
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                var contacts = dataSource.Items.Select(x => x as ExportableContact).Where(x => x != null).ToArray();
+                    var contacts = dataSource.Items.Select(x => x as ExportableContact).Where(x => x != null).ToArray();
 
-                contactExportWriter.WriteRecords(contacts);
+                    contactExportWriter.WriteRecords(contacts);
 
-                var organizations = dataSource.Items.Select(x => x as ExportableOrganization).Where(x => x != null).ToArray();
+                    var organizations = dataSource.Items.Select(x => x as ExportableOrganization).Where(x => x != null)
+                        .ToArray();
 
-                organizationExportWriter.WriteRecords(organizations);
+                    organizationExportWriter.WriteRecords(organizations);
 
-                exportProgress.ProcessedCount += dataSource.Items.Length;
-                exportProgress.Description = string.Format(exportDescription, exportProgress.ProcessedCount,
-                    exportProgress.TotalCount);
-                progressCallback(exportProgress);
+                    exportProgress.ProcessedCount += dataSource.Items.Length;
+                    exportProgress.Description = string.Format(exportDescription, exportProgress.ProcessedCount,
+                        exportProgress.TotalCount);
+                    progressCallback(exportProgress);
+                }
+
+                exportProgress.Description = "Export completed";
+                exportProgress.FileUrls = new[] { contactsFilePath, organizationFilePath };
             }
-
-            exportProgress.Description = "Export completed";
-
-            contactExportWriter.Dispose();
-            organizationExportWriter.Dispose();
-
+            finally
+            {
+                contactExportWriter.Dispose();
+                organizationExportWriter.Dispose();
+            }
         }
 
         private string GetExportFilePath(string entityName)

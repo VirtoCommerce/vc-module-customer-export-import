@@ -7,5 +7,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public int TotalCount { get; set; }
 
         public string Description { get; set; }
+
+        public string[] FileUrls { get; set; }
     }
 }

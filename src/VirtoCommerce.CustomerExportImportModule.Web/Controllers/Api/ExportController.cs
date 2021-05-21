@@ -32,6 +32,7 @@ namespace VirtoCommerce.CustomerExportExportModule.Web.Controllers.Api
                 Title = "Customers export",
                 Description = "Starting export task..."
             };
+
             await _pushNotificationManager.SendAsync(notification);
 
             notification.JobId = BackgroundJob.Enqueue<ExportJob>(importJob => importJob.ExportBackgroundAsync(request, notification, JobCancellationToken.Null, null));

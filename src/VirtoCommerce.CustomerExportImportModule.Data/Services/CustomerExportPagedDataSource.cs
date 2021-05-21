@@ -66,8 +66,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             var organizations = searchResult.Results.OfType<Organization>().ToArray();
 
             // Get IDs of contact & organization parent organization
-            var contactOrganizationIds = contacts.Select(contact => contact.Organizations?.OrderBy(organizationId => organizationId).FirstOrDefault()).Distinct().ToArray();
-            var parentOrganizationIds = organizations.Select(organization => organization.ParentId).Distinct().ToArray();
+            var contactOrganizationIds = contacts.Select(contact => contact.Organizations?.OrderBy(organizationId => organizationId).FirstOrDefault()).Where(x => x != null).Distinct().ToArray();
+            var parentOrganizationIds = organizations.Select(organization => organization.ParentId).Where(x => x != null).Distinct().ToArray();
 
             // Get already loaded organizations and their IDs
             var loadedOrganizations = organizations.Where(organization => contactOrganizationIds.Contains(organization.Id) || parentOrganizationIds.Contains(organization.Id)).ToArray();
@@ -75,9 +75,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             // Get not loaded organizations and their IDs
             var notLoadedOrganizationIds = contactOrganizationIds
-                .Where(contactOrganizationId => loadedOrganizationIds.Contains(contactOrganizationId))
-                .Concat(parentOrganizationIds.Where(parentOrganizationId => loadedOrganizationIds.Contains(parentOrganizationId)))
+                .Where(contactOrganizationId => !loadedOrganizationIds.Contains(contactOrganizationId))
+                .Concat(parentOrganizationIds.Where(parentOrganizationId => !loadedOrganizationIds.Contains(parentOrganizationId)))
                 .ToArray();
+
             var additionalOrganizations = (await _memberService.GetByIdsAsync(notLoadedOrganizationIds, MemberResponseGroup.Default.ToString())).Cast<Organization>();
 
             // Get all required organizations
@@ -93,13 +94,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 switch (member.MemberType)
                 {
                     case nameof(Contact):
-                        var contact = (Contact) member;
+                        var contact = (Contact)member;
                         var contactOrganizationId = contact.Organizations?.OrderBy(organizationId => organizationId).FirstOrDefault();
                         var account = contact.SecurityAccounts.OrderBy(securityAccount => securityAccount.Id).FirstOrDefault();
                         var accountStoreId = account?.StoreId;
                         return new ExportableContact().FromModel(contact, contactOrganizationId != null ? allOrganizations[contactOrganizationId] : null, accountStoreId != null ? stores[accountStoreId] : null);
                     case nameof(Organization):
-                        var organization = (Organization) member;
+                        var organization = (Organization)member;
                         var parentOrganizationId = organization.ParentId;
                         return new ExportableOrganization().FromModel(organization, parentOrganizationId != null ? allOrganizations[parentOrganizationId] : null);
                     default:

@@ -1,25 +1,28 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
-using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Exceptions;
+using VirtoCommerce.Platform.Core.Extensions;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
     public sealed class CustomerDataExporter : ICustomerDataExporter
     {
         private readonly ICustomerExportPagedDataSourceFactory _customerExportPagedDataSourceFactory;
-        private readonly IBlobStorageProvider _blobStorageProvider;
         private readonly IExportWriterFactory _exportWriterFactory;
+        private readonly PlatformOptions _platformOptions;
 
-        public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IBlobStorageProvider blobStorageProvider, IExportWriterFactory exportWriterFactory)
+        public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IExportWriterFactory exportWriterFactory, IOptions<PlatformOptions> platformOptions)
         {
             _customerExportPagedDataSourceFactory = customerExportPagedDataSourceFactory;
-            _blobStorageProvider = blobStorageProvider;
             _exportWriterFactory = exportWriterFactory;
+            _platformOptions = platformOptions.Value;
         }
 
         public async Task ExportAsync(ExportDataRequest request, Action<ExportProgressInfo> progressCallback, ICancellationToken cancellationToken)
@@ -38,9 +41,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             exportProgress.Description = "Fetching...";
             progressCallback(exportProgress);
 
-            var contactExportWriter = _exportWriterFactory.Create<ExportableContact>("contacts.csv", new ExportConfiguration());
+            var contactsFilePath = GetExportFilePath("Contacts");
+            var contactExportWriter = _exportWriterFactory.Create<ExportableContact>(contactsFilePath, new ExportConfiguration());
 
-            var organizationExportWriter = _exportWriterFactory.Create<ExportableOrganization>("organization.csv", new ExportConfiguration());
+            var organizationFilePath = GetExportFilePath("Organizations");
+            var organizationExportWriter = _exportWriterFactory.Create<ExportableOrganization>(organizationFilePath, new ExportConfiguration());
 
             while (await dataSource.FetchAsync())
             {
@@ -65,6 +70,20 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             contactExportWriter.Dispose();
             organizationExportWriter.Dispose();
 
+        }
+
+        private string GetExportFilePath(string entityName)
+        {
+            if (string.IsNullOrEmpty(_platformOptions.DefaultExportFolder))
+            {
+                throw new PlatformException($"{nameof(_platformOptions.DefaultExportFolder)} must be set.");
+            }
+
+            const string template = "{0}_{1:yyyyMMddHHmmss}.csv";
+
+            var result = string.Format(template, entityName, DateTime.UtcNow);
+
+            return UrlHelperExtensions.Combine(_platformOptions.DefaultExportFolder, result);
         }
     }
 }

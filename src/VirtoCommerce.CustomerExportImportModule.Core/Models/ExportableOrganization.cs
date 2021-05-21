@@ -1,6 +1,7 @@
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using VirtoCommerce.CustomerModule.Core.Model;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
@@ -41,33 +42,32 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         {
             var address = organization.Addresses?.FirstOrDefault();
 
-            var result = new ExportableOrganization
-            {
-                Id = organization.Id,
-                OrganizationName = organization.Name,
-                OrganizationOuterId = organization.OuterId,
-                ParentOrganizationName = parentOrganization?.Name,
-                ParentOrganizationId = organization.ParentId,
-                ParentOrganizationOuterId = parentOrganization?.OuterId,
-                AddressType = address?.AddressType.ToString(),
-                AddressFirstName = address?.FirstName,
-                AddressLastName = address?.LastName,
-                AddressCountry = address?.RegionName,
-                AddressCity = address?.City,
-                AddressAddressLine1 = address?.Line1,
-                AddressAddressLine2 = address?.Line2,
-                AddressZipCode = address?.Zip,
-                AddressEmail = address?.Email,
-                AddressPhone = address?.Phone,
-                Phones = organization.Phones != null ? string.Join(",", organization.Phones) : null,
-                BusinessCategory = organization.BusinessCategory,
-                Description = organization.Description,
-                OrganizationGroups = organization.Groups != null ? string.Join(", ", organization.Groups) : null,
-                DynamicProperties = organization.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
-                    .ToArray()
-            };
+            Id = organization.Id;
+            OrganizationName = organization.Name;
+            OrganizationOuterId = organization.OuterId;
+            ParentOrganizationName = parentOrganization?.Name;
+            ParentOrganizationId = organization.ParentId;
+            ParentOrganizationOuterId = parentOrganization?.OuterId;
+            AddressType = address?.AddressType.ToString();
+            AddressFirstName = address?.FirstName;
+            AddressLastName = address?.LastName;
+            AddressCountry = address?.CountryName;
+            AddressRegion = address?.RegionName;
+            AddressCity = address?.City;
+            AddressAddressLine1 = address?.Line1;
+            AddressAddressLine2 = address?.Line2;
+            AddressZipCode = address?.Zip;
+            AddressEmail = address?.Email;
+            AddressPhone = address?.Phone;
+            Phones = organization.Phones.IsNullOrEmpty() ? null : string.Join(",", organization.Phones);
+            BusinessCategory = organization.BusinessCategory;
+            Description = organization.Description;
+            OrganizationGroups = organization.Groups.IsNullOrEmpty() ? null : string.Join(", ", organization.Groups);
 
-            return result;
+            DynamicProperties = organization.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
+                .ToArray();
+
+            return this;
         }
     }
 }

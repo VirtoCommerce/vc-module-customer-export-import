@@ -1,6 +1,4 @@
-using System;
 using System.Globalization;
-using CsvHelper;
 using CsvHelper.Configuration;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models

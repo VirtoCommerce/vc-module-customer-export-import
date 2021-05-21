@@ -42,6 +42,13 @@
                                         <small ng-if="csvMaxSizeError && !fileTypeError" class="upload-result-message">{{ 'customerExportImport.blades.file-upload.upload-result.max-size-error' | translate }}</small>
                                         <small ng-if="fileTypeError && !csvMaxSizeError" class="upload-result-message">{{ 'customerExportImport.blades.file-upload.upload-result.file-type-error' | translate }}</small>
                                     </div>
+                                    <div ng-if="internalCsvError">
+                                        <ul>
+                                            <li ng-repeat="error in csvValidationErrors" class="upload-result-validation-errors">
+                                                <small class="upload-result-message" ng-bind="translateErrorCode(error)"></small>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                             <div class="d-flex justify-content-end"  ng-if="!(csvMaxSizeError || fileTypeError)">

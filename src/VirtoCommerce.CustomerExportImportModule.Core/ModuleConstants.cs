@@ -5,6 +5,23 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
 {
     public static class ModuleConstants
     {
+        public const int KByte = 1024;
+
+        public const int MByte = 1024 * KByte;
+
+        public static class ValidationErrors
+        {
+            public const string FileNotExisted = "file-not-existed";
+
+            public const string NoData = "no-data";
+
+            public const string ExceedingFileMaxSize = "exceeding-file-max-size";
+
+            public const string WrongDelimiter = "wrong-delimiter";
+
+            public const string ExceedingLineLimits = "exceeding-line-limits";
+        }
+
         public static class Features
         {
             public const string CustomerExportImport = "CustomerExportImport";

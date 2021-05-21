@@ -6,7 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
+using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerExportImportModule.Data.Repositories;
+using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.FeatureManagementModule.Core.Services;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
@@ -26,6 +28,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             // database initialization
             var connectionString = Configuration.GetConnectionString("VirtoCommerce.CustomerExportImport") ?? Configuration.GetConnectionString("VirtoCommerce");
             serviceCollection.AddDbContext<VirtoCommerceCustomerExportImportDbContext>(options => options.UseSqlServer(connectionString));
+
+            serviceCollection.AddTransient<ICsvCustomerDataValidator, CsvCustomerDataValidator>();
 
             serviceCollection.AddOptions<ExportOptions>().Bind(Configuration.GetSection("CustomerExportImport:Export")).ValidateDataAnnotations();
             serviceCollection.AddOptions<ImportOptions>().Bind(Configuration.GetSection("CustomerExportImport:Import")).ValidateDataAnnotations();

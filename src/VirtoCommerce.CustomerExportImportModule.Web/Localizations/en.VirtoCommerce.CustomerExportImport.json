@@ -30,6 +30,12 @@
         "title": "Delete CSV",
         "subtitle": "Are you sure you want to delete this csv file?"
       }
+    },
+    "validation-errors": {
+      "file-not-existed": "The file does not exist.",
+      "exceeding-file-max-size": "The file size is too large. Try to upload another one.",
+      "exceeding-line-limits": "The import limit is {{ importLimitOfLines }} lines but your file contains {{ linesCount }} lines. The file can not be imported.",
+      "no-data": "File has no data."
     }
   },
   "permissions": {

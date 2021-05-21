@@ -1,7 +1,7 @@
 angular.module('virtoCommerce.customerExportImportModule')
 .controller('virtoCommerce.customerExportImportModule.fileUploadController',
-    ['FileUploader', '$document', '$scope', '$timeout', 'platformWebApp.bladeNavigationService', 'platformWebApp.assets.api',
-        function (FileUploader, $document, $scope, $timeout, bladeNavigationService, assetsApi) {
+    ['FileUploader', '$document', '$scope', '$timeout', 'platformWebApp.bladeNavigationService', 'platformWebApp.assets.api', 'virtoCommerce.customerExportImportModule.import', '$translate', 'platformWebApp.settings',
+        function (FileUploader, $document, $scope, $timeout, bladeNavigationService, assetsApi, importResources, $translate, settings) {
         const blade = $scope.blade;
         const oneKb = 1024;
         const oneMb = 1024 * oneKb;
@@ -21,6 +21,12 @@ angular.module('virtoCommerce.customerExportImportModule')
 
         function initialize () {
             resetState();
+
+            settings.getValues({ id: 'CustomerExportImport.Import.FileMaxSize' }, (value) => {
+                if (!!value) {
+                    $scope.maxCsvSize = value[0] * oneMb;
+                }
+            });
 
             let uploader = $scope.uploader = new FileUploader({
                 scope: $scope,
@@ -86,7 +92,12 @@ angular.module('virtoCommerce.customerExportImportModule')
                     $scope.tmpCsvInfo = {};
                 }
 
-                $scope.showUploadResult = true;
+                importResources.validate({ filePath: blade.csvFilePath }, (data) => {
+                    $scope.csvValidationErrors = data.errors;
+                    $scope.internalCsvError = !!$scope.csvValidationErrors.length;
+                    $scope.showUploadResult = true;
+                }, (error) => { bladeNavigationService.setError('Error ' + error.status, blade); });
+
             };
 
             uploader.onErrorItem = (element, response, status) => {
@@ -123,6 +134,12 @@ angular.module('virtoCommerce.customerExportImportModule')
             };
 
             bladeNavigationService.showBlade(newBlade, blade);
+        }
+
+        $scope.translateErrorCode = (error) => {
+            var translateKey = 'customerExportImport.validation-errors.' + error.errorCode;
+            var result = $translate.instant(translateKey, error.properties);
+            return result === translateKey ? errorCode : result;
         }
 
         function removeCsv() {

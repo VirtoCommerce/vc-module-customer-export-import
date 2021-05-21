@@ -23,6 +23,7 @@ namespace VirtoCommerce.CustomerExportExportModule.Web.Controllers.Api
             _userNameResolver = userNameResolver;
             _pushNotificationManager = pushNotificationManager;
         }
+
         [HttpPost]
         [Route("run")]
         public async Task<ActionResult<ExportPushNotification>> RunExport([FromBody] ExportDataRequest request)

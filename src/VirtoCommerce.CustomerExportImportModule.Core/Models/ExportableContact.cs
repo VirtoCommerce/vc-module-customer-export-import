@@ -107,7 +107,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             StoreId = account?.StoreId;
             StoreName = store?.Name;
             AccountLogin = account?.UserName;
-            AccountEmail = account?.StoreId;
+            AccountEmail = account?.Email;
             AccountType = account?.UserType;
             AccountStatus = account?.Status;
             EmailVerified = account?.EmailConfirmed;
@@ -120,7 +120,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressType = address?.AddressType.ToString();
             AddressFirstName = address?.FirstName;
             AddressLastName = address?.LastName;
-            AddressCountry = address?.RegionName;
+            AddressCountry = address?.CountryName;
+            AddressRegion = address?.RegionName;
             AddressCity = address?.City;
             AddressAddressLine1 = address?.Line1;
             AddressAddressLine2 = address?.Line2;

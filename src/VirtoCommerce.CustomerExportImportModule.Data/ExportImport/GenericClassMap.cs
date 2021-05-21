@@ -15,7 +15,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
             AutoMap(new Configuration() { Delimiter = ";", CultureInfo = CultureInfo.InvariantCulture });
 
             var exportedType = ClassType;
-            var columnIndex = MemberMaps.Count - 1;
+            var columnIndex = MemberMaps.Count;
 
             var typeHasDynamicProperties = exportedType.GetInterfaces().Contains(typeof(IHasDynamicProperties));
 
@@ -32,7 +32,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                     var csvPropertyMap = MemberMap.CreateGeneric(exportedType, propertyValuesInfo);
                     csvPropertyMap.Name(dynamicProperty);
 
-                    csvPropertyMap.Data.Index = ++columnIndex;
+                    csvPropertyMap.Data.Index = columnIndex++;
 
                     // create custom converter instance which will get the required record from the collection
                     csvPropertyMap.UsingExpression<ICollection<DynamicObjectProperty>>(null, properties =>

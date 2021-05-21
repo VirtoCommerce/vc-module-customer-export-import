@@ -20,9 +20,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         public void Map_ContactWithDynamicProperty_Success()
         {
             //Arrange
-            var expected = "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Associated Organization Ids;Birthday;TimeZone;Phones;User groups;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Address Line1;Address Address Line2;Address Zip Code;Address Email;Address Phone;ObjectType;Sex\r\n"
-                           + "id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;Male\r\n";
-
             var dynamicProperties = new List<DynamicObjectProperty>
             {
                 new DynamicObjectProperty()
@@ -73,6 +70,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             stream.Seek(0, SeekOrigin.Begin);
 
             //Assert
+            var expected = "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Associated Organization Ids;Birthday;TimeZone;Phones;User groups;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Address Line1;Address Address Line2;Address Zip Code;Address Email;Address Phone;ObjectType;Sex\r\n"
+                           + "id_c1;Anton;Boroda;;;id_org1;;Boroda ltd;;;;b2b-store;;;;;;;;;;;;;;;;;;;;;;;;;;;Male\r\n";
+
             var sr = new StreamReader(stream);
             var csv = sr.ReadToEnd();
 
@@ -83,9 +83,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         public void Map_OrganizationWithDynamicProperty_Success()
         {
             //Arrange
-            var expected = "Organization Id;Organization Outer Id;Organization Name;Parent Organization Name;Parent Organization Id;Parent Organization Outer Id;Phones;Business category;Description;Organization Groups;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Address Line1;Address Address Line2;Address Zip Code;Address Email;Address Phone;ObjectType;Size\r\n"
-                           + "org_id1;OuterId1;Boroda ltd;;;;;;;;;;;;;;;;;;;;Huge\r\n";
-
             var dynamicProperties = new List<DynamicObjectProperty>
             {
                 new DynamicObjectProperty()
@@ -129,6 +126,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             stream.Seek(0, SeekOrigin.Begin);
 
             //Assert
+            var expected = "Organization Id;Organization Outer Id;Organization Name;Parent Organization Name;Parent Organization Id;Parent Organization Outer Id;Phones;Business category;Description;Organization Groups;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Address Line1;Address Address Line2;Address Zip Code;Address Email;Address Phone;ObjectType;Size\r\n"
+                           + "org_id1;OuterId1;Boroda ltd;;;;;;;;;;;;;;;;;;;;Huge\r\n";
+
             var sr = new StreamReader(stream);
             var csv = sr.ReadToEnd();
 

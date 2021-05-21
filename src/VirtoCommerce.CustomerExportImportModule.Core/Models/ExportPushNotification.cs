@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using VirtoCommerce.Platform.Core.PushNotifications;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
@@ -15,6 +16,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public int ProcessedCount { get; set; }
 
         public int TotalCount { get; set; }
+
+        public ICollection<string> Errors { get; set; }
 
         public DateTime Finished { get; set; }
 

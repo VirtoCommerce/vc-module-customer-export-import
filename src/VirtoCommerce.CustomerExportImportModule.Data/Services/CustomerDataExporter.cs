@@ -53,7 +53,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 var organizations = dataSource.Items.Select(x => x as ExportableOrganization).Where(x => x != null).ToArray();
 
                 organizationExportWriter.WriteRecords(organizations);
+
+                exportProgress.ProcessedCount += dataSource.Items.Length;
+                exportProgress.Description = string.Format(exportDescription, exportProgress.ProcessedCount,
+                    exportProgress.TotalCount);
+                progressCallback(exportProgress);
             }
+
+            exportProgress.Description = "Export completed";
 
             contactExportWriter.Dispose();
             organizationExportWriter.Dispose();

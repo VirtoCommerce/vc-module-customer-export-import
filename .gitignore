@@ -365,4 +365,4 @@ dist/
 # prettier config file
 .prettierrc
 
-src/VirtoCommerce.CustomerExportImportModule.Web/Properties/launchSettings.json
+launchSettings.json

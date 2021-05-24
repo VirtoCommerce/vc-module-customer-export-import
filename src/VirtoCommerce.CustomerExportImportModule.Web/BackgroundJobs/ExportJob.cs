@@ -36,7 +36,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
             {
                 // job is aborted, do nothing
             }
-
             catch (Exception ex)
             {
                 pushNotification.Errors.Add(ex.ExpandExceptionMessage());

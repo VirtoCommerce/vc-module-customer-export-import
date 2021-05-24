@@ -9,7 +9,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
     public sealed class ExportWriter<T> : IExportWriter<T>
     {
-
         private readonly StreamWriter _streamWriter;
         private readonly CsvWriter _csvWriter;
 

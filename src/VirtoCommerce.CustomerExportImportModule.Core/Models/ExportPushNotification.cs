@@ -9,6 +9,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public ExportPushNotification(string creator)
             : base(creator)
         {
+            Errors = new List<string>();
         }
 
         public string JobId { get; set; }

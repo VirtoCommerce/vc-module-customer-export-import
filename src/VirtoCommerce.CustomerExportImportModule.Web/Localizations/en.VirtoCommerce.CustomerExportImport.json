@@ -16,7 +16,7 @@
         "upload-result": {
           "failed": "Upload failed",
           "success": "Uploaded",
-          "max-size-error": "The file size is too large. Try to upload another one.",
+          "max-size-error": "The file size limit is {{ fileMaxSize }}. The file size is too large. Try to upload another one.",
           "file-type-error": "CSV format is required. The suggested file is in different format."
         },
         "actions": {
@@ -33,7 +33,7 @@
     },
     "validation-errors": {
       "file-not-existed": "The file does not exist.",
-      "exceeding-file-max-size": "The file size is too large. Try to upload another one.",
+      "exceeding-file-max-size": "The file size limit is {{ fileMaxSize }}. The file size is too large. Try to upload another one.",
       "wrong-delimiter": "The wrong delimiter. Should be used ';'.",
       "exceeding-line-limits": "The import limit is {{ importLimitOfLines }} lines but your file contains {{ linesCount }} lines. The file can not be imported.",
       "missing-required-columns": "The required columns: \"{{ missedColumns }}\" are not in the file. The file can not be imported.",

@@ -26,6 +26,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                 if (!!value) {
                     $scope.maxCsvSize = value[0] * oneMb;
                 }
+                $scope.formattedSizeLimit = formatFileSize($scope.maxCsvSize);
             });
 
             let uploader = $scope.uploader = new FileUploader({

@@ -7,7 +7,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
     public static class CsvCustomerImportHelper
     {
-        public static string[] GetImportPriceRequiredColumns()
+        public static string[] GetImportCustomerRequiredColumns()
         {
             var requiredColumns = typeof(CsvCustomer).GetProperties()
                 .Select(p =>

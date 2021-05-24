@@ -129,7 +129,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var existedColumns = csvReader.Context.HeaderRecord;
 
-            var requiredColumns = CsvCustomerImportHelper.GetImportPriceRequiredColumns();
+            var requiredColumns = CsvCustomerImportHelper.GetImportCustomerRequiredColumns();
 
             var missedColumns = requiredColumns.Except(existedColumns).ToArray();
 

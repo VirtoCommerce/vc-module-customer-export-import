@@ -48,6 +48,5 @@ namespace VirtoCommerce.CustomerExportExportModule.Web.Controllers.Api
             BackgroundJob.Delete(cancellationRequest.JobId);
             return Ok();
         }
-
     }
 }

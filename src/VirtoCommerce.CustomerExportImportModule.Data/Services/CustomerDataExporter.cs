@@ -53,12 +53,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    var contacts = dataSource.Items.Select(x => x as ExportableContact).Where(x => x != null).ToArray();
+                    var contacts = dataSource.Items.OfType<ExportableContact>().ToArray();
 
                     contactExportWriter.WriteRecords(contacts);
 
-                    var organizations = dataSource.Items.Select(x => x as ExportableOrganization).Where(x => x != null)
-                        .ToArray();
+                    var organizations = dataSource.Items.OfType<ExportableOrganization>().ToArray();
 
                     organizationExportWriter.WriteRecords(organizations);
 

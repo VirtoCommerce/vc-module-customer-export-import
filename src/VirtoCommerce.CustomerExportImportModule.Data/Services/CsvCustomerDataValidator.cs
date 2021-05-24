@@ -50,6 +50,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 var stream = _blobStorageProvider.OpenRead(filePath);
                 var csvConfiguration = new ImportConfiguration();
 
+                await ValidateDelimiterAndDataExists(stream, csvConfiguration, errorsList);
+
+                ValidateRequiredColumns(stream, csvConfiguration, errorsList);
+
                 ValidateLineLimit(stream, csvConfiguration, errorsList);
 
                 await stream.DisposeAsync();
@@ -98,6 +102,81 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 error.Properties.Add(nameof(importLimitOfLines), importLimitOfLines.ToString());
                 error.Properties.Add("LinesCount", totalCount.ToString());
                 errorsList.Add(error);
+            }
+        }
+
+        private static void ValidateRequiredColumns(Stream stream, Configuration csvConfiguration, List<ImportDataValidationError> errorsList)
+        {
+            var notCompatibleErrors = new[]
+            {
+                ModuleConstants.ValidationErrors.FileNotExisted,
+                ModuleConstants.ValidationErrors.ExceedingFileMaxSize,
+                ModuleConstants.ValidationErrors.WrongDelimiter,
+                ModuleConstants.ValidationErrors.NoData,
+            };
+
+            if (errorsList.Any(x => notCompatibleErrors.Contains(x.ErrorCode)))
+            {
+                return;
+            }
+
+            stream.Seek(0, SeekOrigin.Begin);
+            var streamReader = new StreamReader(stream);
+            var csvReader = new CsvReader(streamReader, csvConfiguration);
+
+            csvReader.Read();
+            csvReader.ReadHeader();
+
+            var existedColumns = csvReader.Context.HeaderRecord;
+
+            var requiredColumns = CsvCustomerImportHelper.GetImportPriceRequiredColumns();
+
+            var missedColumns = requiredColumns.Except(existedColumns).ToArray();
+
+            if (missedColumns.Length > 0)
+            {
+                var error = new ImportDataValidationError() { ErrorCode = ModuleConstants.ValidationErrors.MissingRequiredColumns };
+                error.Properties.Add(nameof(missedColumns), string.Join(", ", missedColumns));
+                errorsList.Add(error);
+            }
+        }
+
+        private static async Task ValidateDelimiterAndDataExists(Stream stream, Configuration csvConfiguration, List<ImportDataValidationError> errorsList)
+        {
+
+            var notCompatibleErrors = new[]
+            {
+                ModuleConstants.ValidationErrors.FileNotExisted,
+                ModuleConstants.ValidationErrors.ExceedingFileMaxSize,
+            };
+
+            if (errorsList.Any(x => notCompatibleErrors.Contains(x.ErrorCode)))
+            {
+                return;
+            }
+
+            stream.Seek(0, SeekOrigin.Begin);
+            var streamReader = new StreamReader(stream);
+
+            var headerLine = await streamReader.ReadLineAsync();
+
+            if (string.IsNullOrWhiteSpace(headerLine))
+            {
+                errorsList.Add(new ImportDataValidationError { ErrorCode = ModuleConstants.ValidationErrors.NoData });
+            }
+            else
+            {
+                if (!headerLine.Contains(csvConfiguration.Delimiter))
+                {
+                    errorsList.Add(new ImportDataValidationError { ErrorCode = ModuleConstants.ValidationErrors.WrongDelimiter });
+                }
+
+                var fistDataLine = await streamReader.ReadLineAsync();
+
+                if (string.IsNullOrWhiteSpace(fistDataLine))
+                {
+                    errorsList.Add(new ImportDataValidationError { ErrorCode = ModuleConstants.ValidationErrors.NoData });
+                }
             }
         }
     }

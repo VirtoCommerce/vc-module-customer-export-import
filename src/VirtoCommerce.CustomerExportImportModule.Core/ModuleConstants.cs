@@ -20,6 +20,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
             public const string WrongDelimiter = "wrong-delimiter";
 
             public const string ExceedingLineLimits = "exceeding-line-limits";
+
+            public const string MissingRequiredColumns = "missing-required-columns";
         }
 
         public static class Features

@@ -58,11 +58,11 @@ angular.module(moduleName, []).run([
                                 exportDataRequest.memberIds = _.pluck(selectedMembersList, 'id');
 
                                 const organizationsSearchRequests = selectedOrganizationsList.map((item) => members.search(getSearchCriteria('Organization', item.id, keyword)).$promise);
-                                const r1 = $q.all(organizationsSearchRequests);
+                                const organizationsRequests = $q.all(organizationsSearchRequests);
                                 const contactsSearchRequests = selectedOrganizationsList.map((item) => members.search(getSearchCriteria('Contact', item.id, keyword)).$promise);
-                                const r2 = $q.all(contactsSearchRequests);
+                                const contactsRequests = $q.all(contactsSearchRequests);
 
-                                $q.all([r1, r2]).then((data) => {
+                                $q.all([organizationsRequests, contactsRequests]).then((data) => {
                                     for (let i = 0; i < data[0].length; i++) {
                                         organizationsCount += data[0][i].totalCount;
                                     }

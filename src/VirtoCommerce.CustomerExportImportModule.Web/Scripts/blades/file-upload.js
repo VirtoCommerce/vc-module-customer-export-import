@@ -68,6 +68,18 @@ angular.module('virtoCommerce.customerExportImportModule')
             });
 
             uploader.onWhenAddingFileFailed = () => {
+                if ($scope.internalCsvError) {
+                    $scope.internalCsvError = false;
+                }
+
+                if (blade.csvFilePath) {
+                    assetsApi.remove({urls: [blade.csvFilePath]},
+                        () => { },
+                        (error) => bladeNavigationService.setError('Error ' + error.status, blade)
+                    );
+                    blade.csvFilePath = null;
+                }
+
                 $scope.showUploadResult = true;
             };
 

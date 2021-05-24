@@ -81,11 +81,11 @@ angular.module(moduleName, []).run([
                             }
                         });
 
-                        function getSearchCriteria(memberType, memberId, keyword) {
+                        function getSearchCriteria(memberType, memberId, searchKey) {
                             return {
                                 memberType,
                                 memberId,
-                                keyword,
+                                keyword: searchKey,
                                 deepSearch: true,
                                 objectType: 'Member',
                                 take: 0

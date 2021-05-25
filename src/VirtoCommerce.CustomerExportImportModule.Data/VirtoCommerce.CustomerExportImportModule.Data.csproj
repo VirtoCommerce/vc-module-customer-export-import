@@ -15,7 +15,6 @@
 
     <ItemGroup>
         <Folder Include="Caching\" />
-        <Folder Include="ExportImport\" />
         <Folder Include="Handlers\" />
         <Folder Include="Models\" />
         <Folder Include="Repositories\" />
@@ -28,6 +27,7 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-        <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.23.0" />
+        <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.53.0" />
+        <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.53.0" />
     </ItemGroup>
 </Project>

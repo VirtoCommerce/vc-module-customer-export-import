@@ -1,14 +1,32 @@
 // Call this to register your module to main application
-var moduleName = 'virtoCommerce.customerExportImportModule';
+var moduleName = "virtoCommerce.customerExportImportModule";
 
 if (AppDependencies !== undefined) {
     AppDependencies.push(moduleName);
 }
 
 angular.module(moduleName, []).run([
-    'virtoCommerce.featureManagerSubscriber', 'platformWebApp.dialogService', 'platformWebApp.toolbarService', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerExportImportModule.export', 'platformWebApp.settings', '$q',
-    function (featureManagerSubscriber, dialogService, toolbarService, members, exportResources, settings, $q) {
+    'virtoCommerce.featureManagerSubscriber', 'platformWebApp.dialogService', "platformWebApp.bladeNavigationService", 'platformWebApp.toolbarService', 'virtoCommerce.customerModule.members', 'platformWebApp.settings', '$q',
+    function (featureManagerSubscriber, dialogService, bladeNavigationService, toolbarService, members, settings, $q) {
         featureManagerSubscriber.onLoginStatusChanged('CustomerExportImport', () => {
+            toolbarService.register(
+                {
+                    name: "platform.commands.import",
+                    icon: "fa fa-download",
+                    executeMethod: function (blade) {
+                        const newBlade = {
+                            id: 'customerImportFileUpload',
+                            title: (blade.currentEntity && blade.currentEntity.name) ? 'customerExportImport.blades.file-upload.title-member' : 'customerExportImport.blades.file-upload.title-root',
+                            titleValues: (blade.currentEntity && blade.currentEntity.name) && { member: blade.currentEntity.name },
+                            subtitle: 'customerExportImport.blades.file-upload.subtitle',
+                            controller: 'virtoCommerce.customerExportImportModule.fileUploadController',
+                            template: 'Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/blades/file-upload.tpl.html'
+                        };
+                        bladeNavigationService.showBlade(newBlade, blade);
+                    },
+                    canExecuteMethod: function () { return true; },
+                    index: 4,
+                }, "virtoCommerce.customerModule.memberListController");
             toolbarService.register(
                 {
                     name: 'platform.commands.export',
@@ -120,7 +138,7 @@ angular.module(moduleName, []).run([
                     canExecuteMethod: function () {
                         return true;
                     },
-                    index: 4
+                    index: 5
                 },
                 'virtoCommerce.customerModule.memberListController'
             );

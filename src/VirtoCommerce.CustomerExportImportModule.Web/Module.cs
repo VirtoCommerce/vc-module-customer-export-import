@@ -29,6 +29,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             var connectionString = Configuration.GetConnectionString("VirtoCommerce.CustomerExportImport") ?? Configuration.GetConnectionString("VirtoCommerce");
             serviceCollection.AddDbContext<VirtoCommerceCustomerExportImportDbContext>(options => options.UseSqlServer(connectionString));
 
+            serviceCollection.AddTransient<ICsvCustomerDataValidator, CsvCustomerDataValidator>();
             serviceCollection.AddTransient<ICustomerExportPagedDataSourceFactory, CustomerExportPagedDataSourceFactory>();
             serviceCollection.AddTransient<IExportWriterFactory, ExportWriterFactory>();
             serviceCollection.AddTransient<ICustomerDataExporter, CustomerDataExporter>();

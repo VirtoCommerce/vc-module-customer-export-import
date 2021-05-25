@@ -1,0 +1,122 @@
+.customer-export-import .d-flex {
+    display: flex;
+}
+
+.customer-export-import .flex-column {
+    flex-direction: column;
+}
+
+.customer-export-import .justify-content-end {
+    justify-content: flex-end;
+}
+
+.customer-export-import .align-items-center {
+    align-items: center;
+}
+
+.customer-export-import .word-break-all {
+    word-break: break-all;
+}
+
+.customer-export-import .mr-10 {
+    margin-right: 10px;
+}
+
+.customer-export-import .mr-20 {
+    margin-right: 20px;
+}
+
+.customer-export-import .ml-10 {
+    margin-left: 10px;
+}
+
+.customer-export-import .mt-10 {
+    margin-top: 10px;
+}
+
+.customer-export-import .mt-15 {
+    margin-top: 15px;
+}
+
+.customer-export-import .p-10 {
+    padding: 10px;
+}
+
+.customer-export-import .pl-7 {
+    padding-left: 7px;
+}
+
+.customer-export-import .font-weight-500 {
+    font-weight: 500;
+}
+
+.customer-export-import .upload-result-border {
+    border: 1px solid #eaedf3;
+}
+
+.customer-export-import .upload-result-title {
+    color: #6d889b;
+}
+
+.customer-export-import .upload-result-message {
+    color: #999999;
+}
+
+.customer-export-import .upload-result-validation-errors {
+    list-style: inside;
+    color: #fcb040;
+}
+
+.customer-export-import .upload-result-validation-errors::before {
+    content: none;
+}
+
+.customer-export-import .upload-result-validation-errors .upload-result-message {
+    position: relative;
+    left: -0.5em;
+}
+
+.customer-export-import .icon-danger {
+    color: #f34747;
+}
+
+.customer-export-import .icon-warning {
+    color: #fcb040;
+}
+
+.customer-export-import .icon-success {
+    color: #87b563;
+}
+
+.customer-export-import .icon-cloud {
+    color: #c8dbea;
+}
+
+.customer-export-import .text-white {
+    color: #fff;
+}
+
+.customer-export-import .drag-area {
+    padding: 20px;
+    background: #f2f8fd;
+    border-color: #c8dbea;
+}
+
+.customer-export-import .drag-content {
+    color: #9db0be;
+}
+
+.customer-export-import .border-primary {
+    border: 1px solid #43b0e6;
+}
+
+.customer-export-import .btn-danger-outline {
+    background: transparent;
+    color: #ff4a4a;
+    border: 1px solid #ff4a4a;
+    text-shadow: none;
+}
+
+.customer-export-import .btn-small {
+    height: 22px;
+}

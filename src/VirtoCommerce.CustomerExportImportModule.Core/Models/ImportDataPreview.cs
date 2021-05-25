@@ -2,7 +2,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ImportDataPreview : GenericSearchResult<ImportableContact>
+    public sealed class ImportDataPreview : GenericSearchResult<CsvContact>
     {
     }
 }

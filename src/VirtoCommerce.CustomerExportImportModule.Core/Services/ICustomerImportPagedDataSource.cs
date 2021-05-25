@@ -16,6 +16,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Services
 
         Task<bool> FetchAsync();
 
-        ImportableContact[] Contacts { get; }
+        CsvContact[] Contacts { get; }
     }
 }

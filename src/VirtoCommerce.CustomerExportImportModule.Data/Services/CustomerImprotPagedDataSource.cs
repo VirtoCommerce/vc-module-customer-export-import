@@ -55,7 +55,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             {
                 csvReader.Read();
                 csvReader.ReadHeader();
-                csvReader.ValidateHeader<ImportableContact>();
+                csvReader.ValidateHeader<CsvContact>();
 
                 result = string.Join(csvReader.Configuration.Delimiter, csvReader.Context.HeaderRecord);
 
@@ -86,7 +86,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             {
                 csvReader.Read();
                 csvReader.ReadHeader();
-                csvReader.ValidateHeader<ImportableContact>();
+                csvReader.ValidateHeader<CsvContact>();
             }
             catch (ValidationException)
             {
@@ -107,15 +107,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             if (CurrentPageNumber * PageSize >= GetTotalCount())
             {
-                Contacts = Array.Empty<ImportableContact>();
+                Contacts = Array.Empty<CsvContact>();
                 return false;
             }
 
-            var recordTuples = new List<(ImportableContact, string, int)>();
+            var recordTuples = new List<(CsvContact, string, int)>();
 
             for (var i = 0; i < PageSize && await _csvReader.ReadAsync(); i++)
             {
-                var csvRecord = _csvReader.GetRecord<ImportableContact>();
+                var csvRecord = _csvReader.GetRecord<CsvContact>();
 
                 var rawRecord = _csvReader.Context.RawRecord;
                 var row = _csvReader.Context.Row;
@@ -137,7 +137,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             return true;
         }
 
-        public ImportableContact[] Contacts { get; private set; }
+        public CsvContact[] Contacts { get; private set; }
 
         public void Dispose()
         {

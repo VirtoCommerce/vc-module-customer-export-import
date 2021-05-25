@@ -42,7 +42,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             progressCallback(exportProgress);
 
             var contactsFilePath = GetExportFilePath("Contacts");
-            var contactExportWriter = _exportWriterFactory.Create<ExportableContact>(contactsFilePath, new ExportConfiguration());
+            var contactExportWriter = _exportWriterFactory.Create<CsvContact>(contactsFilePath, new ExportConfiguration());
 
             var organizationFilePath = GetExportFilePath("Organizations");
             var organizationExportWriter = _exportWriterFactory.Create<ExportableOrganization>(organizationFilePath, new ExportConfiguration());
@@ -53,7 +53,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    var contacts = dataSource.Items.OfType<ExportableContact>().ToArray();
+                    var contacts = dataSource.Items.OfType<CsvContact>().ToArray();
 
                     contactExportWriter.WriteRecords(contacts);
 

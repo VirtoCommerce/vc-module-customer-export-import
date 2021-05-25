@@ -6,7 +6,7 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ExportableOrganization : ExportableMember
+    public sealed class ExportableOrganization : CsvMember
     {
         [Name("Organization Id")]
         public override string Id { get; set; }

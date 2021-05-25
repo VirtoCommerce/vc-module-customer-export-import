@@ -18,10 +18,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers
         private readonly ICustomerImportPagedDataSourceFactory _csvPagedPriceDataSourceFactory;
 
         public ImportController(IBlobStorageProvider blobStorageProvider,
-            ICustomerImportPagedDataSourceFactory csvPagedPriceDataSourceFactory)
+            ICustomerImportPagedDataSourceFactory customerImportPagedDataSourceFactory)
         {
             _blobStorageProvider = blobStorageProvider;
-            _csvPagedPriceDataSourceFactory = csvPagedPriceDataSourceFactory;
+            _csvPagedPriceDataSourceFactory = customerImportPagedDataSourceFactory;
         }
 
         [HttpPost]

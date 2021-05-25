@@ -1,14 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
+using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.StoreModule.Core.Model;
+using Address = VirtoCommerce.CustomerModule.Core.Model.Address;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ExportableContact : ExportableMember
+    public sealed class CsvContact : CsvMember
     {
         [Name("Contact Id")]
         public override string Id { get; set; }
@@ -56,8 +60,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string AccountStatus { get; set; }
 
         [Name("Email Verified")]
-        [BooleanTrueValues(new[] { "yes", "true" })]
-        [BooleanFalseValues(new[] { "no", "false" })]
+        [BooleanTrueValues("yes", "true")]
+        [BooleanFalseValues("no", "false")]
         public bool? EmailVerified { get; set; }
 
         [Name("Contact Status")]
@@ -90,7 +94,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Preferred delivery")]
         public string PreferredDelivery { get; set; }
 
-        public ExportableContact FromModel(Contact contact, Organization organization, Store store)
+        public CsvContact ToExportableImportableContact(Contact contact, Organization organization, Store store)
         {
             var account = contact.SecurityAccounts?.FirstOrDefault();
             var address = contact.Addresses?.FirstOrDefault();
@@ -130,9 +134,66 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressPhone = address?.Phone;
 
             DynamicProperties = contact.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
-                 .ToArray();
+                .ToArray();
 
             return this;
+        }
+        
+        public Contact ToContact()
+        {
+            return new Contact
+            {
+                Id = Id,
+                FirstName = FirstName,
+                LastName = LastName,
+                FullName = FullName,
+                OuterId = ContactOuterId,
+                SecurityAccounts = AccountId != null
+                    ? new List<ApplicationUser>
+                    {
+                        new ApplicationUser
+                        {
+                            Id = AccountId,
+                            StoreId = StoreId,
+                            UserName = AccountLogin,
+                            Email = AccountEmail,
+                            UserType = AccountType,
+                            Status = AccountStatus,
+                            EmailConfirmed = EmailVerified ?? false
+                        }
+                    }
+                    : null,
+                Status = ContactStatus,
+                AssociatedOrganizations = AssociatedOrganizationIds?.Split(", ").ToList(),
+                BirthDate = BirthDate,
+                TimeZone = TimeZone,
+                Phones = Phones?.Split(", "),
+                Groups = UserGroups?.Split(", "),
+                Addresses = new List<Address>
+                {
+                    new Address
+                    {
+                        AddressType = Enum.Parse<AddressType>(AddressType),
+                        FirstName = AddressFirstName,
+                        LastName = AddressLastName,
+                        RegionName = AddressCountry,
+                        City = AddressCity,
+                        Line1 = AddressAddressLine1,
+                        Line2 = AddressAddressLine2,
+                        Zip = AddressZipCode,
+                        Email = AddressEmail,
+                        Phone = AddressPhone,
+                    }
+                },
+                DynamicProperties = DynamicProperties
+            };
+        }
+
+        public Organization ToOrganization()
+        {
+            var result = new Organization { Id = OrganizationId, OuterId = OrganizationOuterId, Name = OrganizationName, };
+
+            return result;
         }
     }
 }

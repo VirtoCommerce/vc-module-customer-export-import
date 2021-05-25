@@ -4,7 +4,7 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public abstract class ExportableMember: IExportable, IHasDynamicProperties
+    public abstract class CsvMember: IExportable, IHasDynamicProperties
     {
         public abstract string Id { get; set; }
 

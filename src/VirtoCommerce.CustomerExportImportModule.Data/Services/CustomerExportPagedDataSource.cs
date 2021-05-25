@@ -98,7 +98,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                         var contactOrganizationId = contact.Organizations?.OrderBy(organizationId => organizationId).FirstOrDefault();
                         var account = contact.SecurityAccounts.OrderBy(securityAccount => securityAccount.Id).FirstOrDefault();
                         var accountStoreId = account?.StoreId;
-                        return new ExportableContact().FromModel(contact, contactOrganizationId != null ? allOrganizations[contactOrganizationId] : null, accountStoreId != null ? stores[accountStoreId] : null);
+                        return new CsvContact().ToExportableImportableContact(contact, contactOrganizationId != null ? allOrganizations[contactOrganizationId] : null, accountStoreId != null ? stores[accountStoreId] : null);
                     case nameof(Organization):
                         var organization = (Organization)member;
                         var parentOrganizationId = organization.ParentId;

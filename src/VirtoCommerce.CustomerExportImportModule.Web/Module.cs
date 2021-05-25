@@ -13,6 +13,7 @@ using VirtoCommerce.FeatureManagementModule.Core.Services;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.PriceExportImportModule.Data.Services;
 using featureManagementCore = VirtoCommerce.FeatureManagementModule.Core;
 
 namespace VirtoCommerce.CustomerExportImportModule.Web
@@ -31,6 +32,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
 
             serviceCollection.AddTransient<ICsvCustomerDataValidator, CsvCustomerDataValidator>();
             serviceCollection.AddTransient<ICustomerExportPagedDataSourceFactory, CustomerExportPagedDataSourceFactory>();
+            serviceCollection.AddTransient<ICustomerImportPagedDataSourceFactory, CustomerImportPagedDataSourceFactory>();
             serviceCollection.AddTransient<IExportWriterFactory, ExportWriterFactory>();
             serviceCollection.AddTransient<ICustomerDataExporter, CustomerDataExporter>();
 

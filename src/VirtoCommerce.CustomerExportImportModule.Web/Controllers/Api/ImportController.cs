@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
+using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
@@ -14,10 +15,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
     public class ImportController : ControllerBase
     {
         private readonly ICsvCustomerDataValidator _csvCustomerDataValidator;
+        private readonly IBlobStorageProvider _blobStorageProvider;
+        private readonly ICustomerImportPagedDataSourceFactory _csvPagedPriceDataSourceFactory;
 
-        public ImportController(ICsvCustomerDataValidator csvCustomerDataValidator)
+        public ImportController(IBlobStorageProvider blobStorageProvider,
+            ICustomerImportPagedDataSourceFactory customerImportPagedDataSourceFactory, ICsvCustomerDataValidator csvCustomerDataValidator)
         {
             _csvCustomerDataValidator = csvCustomerDataValidator;
+            _blobStorageProvider = blobStorageProvider;
+            _csvPagedPriceDataSourceFactory = customerImportPagedDataSourceFactory;
         }
 
         [HttpPost]
@@ -30,6 +36,36 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
             }
 
             var result = await _csvCustomerDataValidator.ValidateAsync(request.FilePath);
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("preview")]
+        public async Task<ActionResult<ImportDataPreview>> GetImportPreview([FromBody] ImportDataPreviewRequest request)
+        {
+            if (request.FilePath.IsNullOrEmpty())
+            {
+                return BadRequest($"{nameof(request.FilePath)} can not be null");
+            }
+
+            var blobInfo = await _blobStorageProvider.GetBlobInfoAsync(request.FilePath);
+
+            if (blobInfo == null)
+            {
+                return BadRequest("Blob with the such url does not exist.");
+            }
+
+            using var csvDataSource = _csvPagedPriceDataSourceFactory.Create(request.FilePath, 10);
+
+            var result = new ImportDataPreview
+            {
+                TotalCount = csvDataSource.GetTotalCount()
+            };
+
+            await csvDataSource.FetchAsync();
+
+            result.Results = csvDataSource.Contacts;
 
             return Ok(result);
         }

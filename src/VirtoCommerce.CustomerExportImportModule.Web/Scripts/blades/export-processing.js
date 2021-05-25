@@ -25,4 +25,8 @@ angular.module('virtoCommerce.customerExportImportModule')
             bladeNavigationService.closeBlade(blade);
         }
 
+        $scope.extractFileName = (fileUrl) => {
+            return fileUrl.split(/[\\\/]/).pop();
+        }
+
     }]);

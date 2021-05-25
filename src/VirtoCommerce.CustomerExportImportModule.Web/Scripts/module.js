@@ -137,7 +137,6 @@ angular.module(moduleName, []).run([
                                 flattenMembersQty,
                                 callback: (success) => {
                                     if (success) {
-
                                         const request = getExportRequest();
 
                                         exportResources.run(request, (data) => {
@@ -173,7 +172,6 @@ angular.module(moduleName, []).run([
                                 organizationId: blade.currentEntity.id
                             };
                         }
-
                     },
                     canExecuteMethod: function () {
                         return true;

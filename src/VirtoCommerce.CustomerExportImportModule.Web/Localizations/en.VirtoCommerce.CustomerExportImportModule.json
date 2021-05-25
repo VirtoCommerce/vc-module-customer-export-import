@@ -1,0 +1,44 @@
+{
+  "customerExportImport": {
+    "blades": {
+      "export-processing": {
+        "title": "Export progress",
+        "labels": {
+          "start": "Start",
+          "end": "End",
+          "errors": "Error count",
+          "total": "Total count",
+          "processed": "Processed count",
+          "contacts-url": "Download Contacts:",
+          "organizations-url": "Download Organizations:",
+          "error-log": "Errors"
+        }
+      }
+    },
+    "dialogs": {
+      "customer-export": {
+        "title": "Contacts export",
+        "all": "All",
+        "from": "from",
+        "organization": "organization",
+        "main-text-end": " will be exported to csv file.",
+        "subtitle-empty-export": "No contacts or organizations are selected.",
+        "contacts": "contacts",
+        "organizations": "organizations",
+        "export": "Export"
+      },
+      "customer-warning": {
+        "title": "Contacts & Organizations export",
+        "main-text-beginning": "You have selected",
+        "items": "items",
+        "main-text-middle": "(including nested) but export is limited with",
+        "main-text-end": ", you retrive to export more"
+      }
+    }
+  },
+  "permissions": {
+    "customer:export": "Export customers data",
+    "customer:import": "Import customers data"
+  },
+  "settings": {}
+}

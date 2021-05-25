@@ -6,8 +6,8 @@ if (AppDependencies !== undefined) {
 }
 
 angular.module(moduleName, []).run([
-    'virtoCommerce.featureManagerSubscriber', 'platformWebApp.dialogService', "platformWebApp.bladeNavigationService", 'platformWebApp.toolbarService', 'virtoCommerce.customerModule.members', 'platformWebApp.settings', '$q',
-    function (featureManagerSubscriber, dialogService, bladeNavigationService, toolbarService, members, settings, $q) {
+    'virtoCommerce.featureManagerSubscriber', 'platformWebApp.dialogService', 'platformWebApp.toolbarService', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerExportImportModule.export', 'platformWebApp.settings', '$q', 'platformWebApp.bladeNavigationService',
+    function (featureManagerSubscriber, dialogService, toolbarService, members, exportResources, settings, $q, bladeNavigationService) {
         featureManagerSubscriber.onLoginStatusChanged('CustomerExportImport', () => {
             toolbarService.register(
                 {
@@ -138,10 +138,20 @@ angular.module(moduleName, []).run([
                                 callback: (success) => {
                                     if (success) {
 
-                                        const request = getExportRequest;
+                                        const request = getExportRequest();
 
-                                        exportResources.run(request, () => {
-                                            //todo: show progress blade
+                                        exportResources.run(request, (data) => {
+                                            const newBlade = {
+                                                id: 'customerExportProcessing',
+                                                notification: data,
+                                                headIcon: "fa fa-download",
+                                                title: 'customerExportExport.blades.export-processing.title',
+                                                controller: 'virtoCommerce.customerExportImportModule.exportProcessingController',
+                                                template:
+                                                    'Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/blades/export-processing.tpl.html'
+                                            };
+
+                                            bladeNavigationService.showBlade(newBlade, blade);
                                         });
                                     }
                                 }

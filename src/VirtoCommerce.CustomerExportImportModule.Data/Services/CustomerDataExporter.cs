@@ -6,6 +6,7 @@ using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.Platform.Core;
+using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Exceptions;
 using VirtoCommerce.Platform.Core.Extensions;
@@ -17,12 +18,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly ICustomerExportPagedDataSourceFactory _customerExportPagedDataSourceFactory;
         private readonly IExportWriterFactory _exportWriterFactory;
         private readonly PlatformOptions _platformOptions;
+        private readonly IBlobUrlResolver _blobUrlResolver;
 
-        public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IExportWriterFactory exportWriterFactory, IOptions<PlatformOptions> platformOptions)
+        public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IExportWriterFactory exportWriterFactory, IOptions<PlatformOptions> platformOptions, IBlobUrlResolver blobUrlResolver)
         {
             _customerExportPagedDataSourceFactory = customerExportPagedDataSourceFactory;
             _exportWriterFactory = exportWriterFactory;
             _platformOptions = platformOptions.Value;
+            _blobUrlResolver = blobUrlResolver;
         }
 
         public async Task ExportAsync(ExportDataRequest request, Action<ExportProgressInfo> progressCallback, ICancellationToken cancellationToken)
@@ -68,7 +71,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 }
 
                 exportProgress.Description = "Export completed";
-                exportProgress.FileUrls = new[] { contactsFilePath, organizationFilePath };
+                exportProgress.FileUrls = new[]
+                {
+                    _blobUrlResolver.GetAbsoluteUrl(contactsFilePath),
+                    _blobUrlResolver.GetAbsoluteUrl(organizationFilePath)
+                };
+                progressCallback(exportProgress);
             }
             finally
             {

@@ -127,8 +127,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             Contacts = recordTuples.Where(x => x.Item1 != null).Select(record =>
               {
-                  var importableContact = record.Item1;
-                  
+                  var (importableContact, _, _) = record;
                   return importableContact;
               }).ToArray();
 

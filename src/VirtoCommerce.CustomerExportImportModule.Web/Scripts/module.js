@@ -144,7 +144,7 @@ angular.module(moduleName, []).run([
                                                 id: 'customerExportProcessing',
                                                 notification: data,
                                                 headIcon: "fa fa-download",
-                                                title: 'customerExportExport.blades.export-processing.title',
+                                                title: 'customerExportImport.blades.export-processing.title',
                                                 controller: 'virtoCommerce.customerExportImportModule.exportProcessingController',
                                                 template:
                                                     'Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/blades/export-processing.tpl.html'

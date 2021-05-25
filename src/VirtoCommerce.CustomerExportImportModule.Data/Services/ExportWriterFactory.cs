@@ -12,9 +12,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             _blobStorageProvider = blobStorageProvider;
         }
-        public IExportWriter<T> Create<T>(string filePath, Configuration csvConfiguration)
+        public IExportWriter<T> Create<T>(string filePath, Configuration csvConfiguration, string[] dynamicProperties = null)
         {
-            return new ExportWriter<T>(filePath, _blobStorageProvider, csvConfiguration);
+            return new ExportWriter<T>(filePath, _blobStorageProvider, csvConfiguration, dynamicProperties);
         }
     }
 }

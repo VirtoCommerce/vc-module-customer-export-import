@@ -134,12 +134,9 @@ angular.module(moduleName, []).run([
                                 organizationName,
                                 exportAll: isAllSelected,
                                 exportIsEmpty,
-                                flattenMembersQty,
                                 callback: (success) => {
                                     if (success) {
-                                        const request = getExportRequest();
-
-                                        exportResources.run(request, (data) => {
+                                        exportResources.run(exportDataRequest, (data) => {
                                             const newBlade = {
                                                 id: 'customerExportProcessing',
                                                 notification: data,
@@ -158,19 +155,6 @@ angular.module(moduleName, []).run([
                             dialogService.showDialog(dialog,
                                 'Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/dialogs/customerExport-dialog.tpl.html',
                                 'platformWebApp.confirmDialogController');
-                        }
-
-                        function getExportRequest() {
-                            const selectedRows = selection.getSelectedRows();
-                            const selectedContactsAndOrganizationsIds = _.filter(selectedRows,
-                                x => x.memberType === contactMemberTypeName ||
-                                x.memberType === organizationMemberTypeName);
-
-                            return {
-                                keyword: keyword,
-                                memberIds: selectedContactsAndOrganizationsIds,
-                                organizationId: blade.currentEntity.id
-                            };
                         }
                     },
                     canExecuteMethod: function () {

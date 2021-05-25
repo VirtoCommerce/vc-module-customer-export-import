@@ -10,7 +10,7 @@
                     </p>
                     <p ng-if="blade.notification.finished" ng-class="{'no-data': blade.notification.finished}" class="text">{{ 'customerExportImport.blades.export-processing.labels.end' | translate }} — <i class="fa fa-clock-o"></i>&nbsp;{{ blade.notification.finished | amParse | date:'mediumTime' }}</p>
                 </div>
-                <div class="block" ng-if="blade.notification.totalCount || blade.notification.processedCount">
+                <div class="block" ng-if="blade.notification.finished">
                     <ul class="list __info">
                         <li class="list-item">
                             <div class="list-t">{{ 'customerExportImport.blades.export-processing.labels.total' | translate }}</div>

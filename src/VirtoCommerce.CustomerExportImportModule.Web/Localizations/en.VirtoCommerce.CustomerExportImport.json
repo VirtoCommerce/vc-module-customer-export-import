@@ -29,6 +29,24 @@
       "csv-file-delete": {
         "title": "Delete CSV",
         "subtitle": "Are you sure you want to delete this csv file?"
+      },
+      "customer-export": {
+        "title": "Contacts export",
+        "all": "All",
+        "from": "from",
+        "organization": "organization",
+        "main-text-end": " will be exported to csv file.",
+        "subtitle-empty-export": "No contacts or organizations are selected.",
+        "contacts": "contacts",
+        "organizations": "organizations",
+        "export": "Export"
+      },
+      "customer-warning": {
+        "title": "Contacts & Organizations export",
+        "main-text-beginning": "You have selected",
+        "items": "items",
+        "main-text-middle": "(including nested) but export is limited with",
+        "main-text-end": ", you retrive to export more"
       }
     },
     "validation-errors": {

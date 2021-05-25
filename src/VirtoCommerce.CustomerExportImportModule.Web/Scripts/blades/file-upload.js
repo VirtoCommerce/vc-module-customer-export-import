@@ -39,7 +39,11 @@ angular.module('virtoCommerce.customerExportImportModule')
                 filters: [
                     {
                         name: 'sameFile',
-                        fn: (item) => $scope.uploadedFile.name !== item.name
+                        fn: (item) => {
+                            let result = $scope.uploadedFile.name !== item.name;
+                            $scope.sameFileUpload = !result;
+                            return result;
+                        }
                     },
                     {
                         name: 'onlyCsv',
@@ -68,6 +72,18 @@ angular.module('virtoCommerce.customerExportImportModule')
             });
 
             uploader.onWhenAddingFileFailed = () => {
+                if ($scope.internalCsvError && !$scope.sameFileUpload) {
+                    $scope.internalCsvError = false;
+                }
+
+                if (blade.csvFilePath && !$scope.sameFileUpload) {
+                    assetsApi.remove({urls: [blade.csvFilePath]},
+                        () => { },
+                        (error) => bladeNavigationService.setError('Error ' + error.status, blade)
+                    );
+                    blade.csvFilePath = null;
+                }
+
                 $scope.showUploadResult = true;
             };
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using VirtoCommerce.CoreModule.Core.Common;
@@ -18,12 +19,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public override string Id { get; set; }
 
         [Name("Contact First Name")]
+        [Required]
         public string FirstName { get; set; }
 
         [Name("Contact Last Name")]
+        [Required]
         public string LastName { get; set; }
 
         [Name("Contact Full Name")]
+        [Required]
         public string FullName { get; set; }
 
         [Name("Contact Outer Id")]

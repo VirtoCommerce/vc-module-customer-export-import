@@ -101,7 +101,7 @@ angular.module(moduleName, []).run([
                             dialogService.showDialog(dialog, 'Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/dialogs/customerWarning-dialog.tpl.html', 'platformWebApp.confirmDialogController');
                         }
 
-                        function showExportDialog(contactsQty, organizationsQty, flattenMembersQty) {
+                        function showExportDialog(contactsQty, organizationsQty) {
                             const totalQty = contactsQty + organizationsQty;
                             const exportIsEmpty = !totalQty;
 
@@ -109,11 +109,9 @@ angular.module(moduleName, []).run([
                                 id: 'customerExportDialog',
                                 contactsQty,
                                 organizationsQty,
-                                totalQty,
                                 organizationName,
                                 exportAll: isAllSelected,
                                 exportIsEmpty,
-                                flattenMembersQty,
                                 callback: () => {}
                             };
                             dialogService.showDialog(dialog, 'Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/dialogs/customerExport-dialog.tpl.html', 'platformWebApp.confirmDialogController');

@@ -34,6 +34,9 @@ angular.module(moduleName, []).run([
                     executeMethod: async function (blade) {
                         const scope = blade.$scope;
 
+                        const contactMemberTypeName = 'Contact';
+                        const organizationMemberTypeName = 'Organization';
+
                         const selection = scope.gridApi.selection;
                         const organizationId = blade.currentEntity.id;
                         const organizationName = blade.currentEntity.name;
@@ -51,8 +54,8 @@ angular.module(moduleName, []).run([
                             const maxMembersPerFile = value[0];
 
                             if (isAllSelected) {
-                                const contactsSearchRequest = members.search(getSearchCriteria('Contact', organizationId, keyword)).$promise;
-                                const organizationsSearchRequest = members.search(getSearchCriteria('Organization', organizationId, keyword)).$promise;
+                                const contactsSearchRequest = members.search(getSearchCriteria(contactMemberTypeName, organizationId, keyword)).$promise;
+                                const organizationsSearchRequest = members.search(getSearchCriteria(organizationMemberTypeName, organizationId, keyword)).$promise;
 
                                 $q.all([contactsSearchRequest, organizationsSearchRequest]).then(([contactsSearchResponse, organizationsSearchResponse]) => {
                                     const contactsNumber = contactsSearchResponse.totalCount;
@@ -66,8 +69,8 @@ angular.module(moduleName, []).run([
                                 });
                             } else {
                                 const selectedRows = selection.getSelectedRows();
-                                const selectedContactsList = _.filter(selectedRows, { memberType: 'Contact' });
-                                const selectedOrganizationsList = _.filter(selectedRows, { memberType: 'Organization' });
+                                const selectedContactsList = _.filter(selectedRows, { memberType: contactMemberTypeName });
+                                const selectedOrganizationsList = _.filter(selectedRows, { memberType: organizationMemberTypeName });
 
                                 let contactsCount = selectedContactsList.length;
                                 let organizationsCount = selectedOrganizationsList.length;
@@ -75,17 +78,18 @@ angular.module(moduleName, []).run([
                                 const selectedMembersList = selectedContactsList.concat(selectedOrganizationsList);
                                 exportDataRequest.memberIds = _.pluck(selectedMembersList, 'id');
 
-                                const organizationsSearchRequests = selectedOrganizationsList.map((item) => members.search(getSearchCriteria('Organization', item.id, keyword)).$promise);
+                                const organizationsSearchRequests = selectedOrganizationsList.map((item) => members.search(getSearchCriteria(organizationMemberTypeName, item.id, keyword)).$promise);
                                 const organizationsRequests = $q.all(organizationsSearchRequests);
-                                const contactsSearchRequests = selectedOrganizationsList.map((item) => members.search(getSearchCriteria('Contact', item.id, keyword)).$promise);
+                                const contactsSearchRequests = selectedOrganizationsList.map((item) => members.search(getSearchCriteria(contactMemberTypeName, item.id, keyword)).$promise);
                                 const contactsRequests = $q.all(contactsSearchRequests);
 
                                 $q.all([organizationsRequests, contactsRequests]).then((data) => {
-                                    for (let i = 0; i < data[0].length; i++) {
-                                        organizationsCount += data[0][i].totalCount;
+                                    for (let requestResult of data[0]) {
+                                        organizationsCount += requestResult.totalCount;
                                     }
-                                    for (let i = 0; i < data[1].length; i++) {
-                                        contactsCount += data[1][i].totalCount;
+
+                                    for (let requestResult of data[1]) {
+                                        contactsCount += requestResult.totalCount;
                                     }
 
                                     const membersTotalNumber = contactsCount + organizationsCount;
@@ -130,10 +134,36 @@ angular.module(moduleName, []).run([
                                 organizationName,
                                 exportAll: isAllSelected,
                                 exportIsEmpty,
-                                callback: () => {}
+                                flattenMembersQty,
+                                callback: (success) => {
+                                    if (success) {
+
+                                        const request = getExportRequest;
+
+                                        exportResources.run(request, () => {
+                                            //todo: show progress blade
+                                        });
+                                    }
+                                }
                             };
-                            dialogService.showDialog(dialog, 'Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/dialogs/customerExport-dialog.tpl.html', 'platformWebApp.confirmDialogController');
+                            dialogService.showDialog(dialog,
+                                'Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/dialogs/customerExport-dialog.tpl.html',
+                                'platformWebApp.confirmDialogController');
                         }
+
+                        function getExportRequest() {
+                            const selectedRows = selection.getSelectedRows();
+                            const selectedContactsAndOrganizationsIds = _.filter(selectedRows,
+                                x => x.memberType === contactMemberTypeName ||
+                                x.memberType === organizationMemberTypeName);
+
+                            return {
+                                keyword: keyword,
+                                memberIds: selectedContactsAndOrganizationsIds,
+                                organizationId: blade.currentEntity.id
+                            };
+                        }
+
                     },
                     canExecuteMethod: function () {
                         return true;

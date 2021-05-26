@@ -57,7 +57,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     Take = int.MaxValue,
                     Sort = criteria.Sort,
                     MemberTypes = criteria.MemberTypes,
-                    MemberType = criteria.MemberType
+                    MemberType = criteria.MemberType,
+                    ResponseGroup = criteria.ResponseGroup
                 };
 
                 var searchChildrenResult = await RegularSearchMembersAsync(searchChildrenCriteria);

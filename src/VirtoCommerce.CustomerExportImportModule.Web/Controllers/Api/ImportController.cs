@@ -16,14 +16,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
     {
         private readonly ICsvCustomerDataValidator _csvCustomerDataValidator;
         private readonly IBlobStorageProvider _blobStorageProvider;
-        private readonly ICustomerImportPagedDataSourceFactory _csvPagedPriceDataSourceFactory;
+        private readonly ICustomerImportPagedDataSourceFactory _customerImportPagedDataSourceFactory;
 
         public ImportController(IBlobStorageProvider blobStorageProvider,
             ICustomerImportPagedDataSourceFactory customerImportPagedDataSourceFactory, ICsvCustomerDataValidator csvCustomerDataValidator)
         {
             _csvCustomerDataValidator = csvCustomerDataValidator;
             _blobStorageProvider = blobStorageProvider;
-            _csvPagedPriceDataSourceFactory = customerImportPagedDataSourceFactory;
+            _customerImportPagedDataSourceFactory = customerImportPagedDataSourceFactory;
         }
 
         [HttpPost]
@@ -56,7 +56,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
                 return BadRequest("Blob with the such url does not exist.");
             }
 
-            using var csvDataSource = _csvPagedPriceDataSourceFactory.Create(request.FilePath, 10);
+            using var csvDataSource = _customerImportPagedDataSourceFactory.Create(request.FilePath, 10);
 
             var result = new ImportDataPreview
             {

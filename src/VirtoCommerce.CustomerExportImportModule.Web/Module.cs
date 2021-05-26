@@ -13,7 +13,6 @@ using VirtoCommerce.FeatureManagementModule.Core.Services;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.PriceExportImportModule.Data.Services;
 using featureManagementCore = VirtoCommerce.FeatureManagementModule.Core;
 
 namespace VirtoCommerce.CustomerExportImportModule.Web

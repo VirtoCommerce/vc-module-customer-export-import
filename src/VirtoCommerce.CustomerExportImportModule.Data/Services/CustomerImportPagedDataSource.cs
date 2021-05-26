@@ -7,7 +7,6 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
-using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.Platform.Core.Assets;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
@@ -15,22 +14,18 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     public sealed class CustomerImportPagedDataSource : ICustomerImportPagedDataSource
     {
         private readonly Stream _stream;
-        private readonly IMemberService _memberService;
         private readonly Configuration _configuration;
         private readonly StreamReader _streamReader;
         private readonly CsvReader _csvReader;
         private int? _totalCount;
 
-        public CustomerImportPagedDataSource(string filePath, IBlobStorageProvider blobStorageProvider, IMemberService memberService, int pageSize, Configuration configuration)
+        public CustomerImportPagedDataSource(string filePath, IBlobStorageProvider blobStorageProvider, int pageSize, Configuration configuration)
         {
-            _memberService = memberService;
-
             var stream = blobStorageProvider.OpenRead(filePath);
 
             _stream = stream;
             _streamReader = new StreamReader(stream);
-
-            _memberService = memberService;
+            
             _configuration = configuration;
             _csvReader = new CsvReader(_streamReader, configuration);
 

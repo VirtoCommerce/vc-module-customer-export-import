@@ -56,7 +56,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressCity = address?.City;
             AddressAddressLine1 = address?.Line1;
             AddressAddressLine2 = address?.Line2;
-            AddressZipCode = address?.Zip;
+            AddressZipCode = address?.PostalCode;
             AddressEmail = address?.Email;
             AddressPhone = address?.Phone;
             Phones = organization.Phones.IsNullOrEmpty() ? null : string.Join(",", organization.Phones);

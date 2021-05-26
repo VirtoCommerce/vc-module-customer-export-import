@@ -121,6 +121,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             Phones = contact.Phones.IsNullOrEmpty() ? null : string.Join(", ", contact.Phones);
             UserGroups = contact.Groups.IsNullOrEmpty() ? null : string.Join(", ", contact.Groups);
             Salutation = contact.Salutation;
+            DefaultLanguage = contact.DefaultLanguage;
+            TaxPayerId = contact.TaxPayerId;
+            PreferredCommunication = contact.PreferredCommunication;
+            PreferredDelivery = contact.PreferredDelivery;
             AddressType = address?.AddressType.ToString();
             AddressFirstName = address?.FirstName;
             AddressLastName = address?.LastName;
@@ -129,7 +133,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressCity = address?.City;
             AddressAddressLine1 = address?.Line1;
             AddressAddressLine2 = address?.Line2;
-            AddressZipCode = address?.Zip;
+            AddressZipCode = address?.PostalCode;
             AddressEmail = address?.Email;
             AddressPhone = address?.Phone;
 

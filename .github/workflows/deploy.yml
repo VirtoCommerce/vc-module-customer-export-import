@@ -15,7 +15,7 @@ on:
       appDescriptionRepo:
         description: 'ArgoCd repository'
         required: true
-        default: 'VirtoCommerce/vc-webstore-deploy'
+        default: 'vc-webstore-deploy'
       appDescriptionBranch:
         description: 'ArgoCd branch'
         required: true

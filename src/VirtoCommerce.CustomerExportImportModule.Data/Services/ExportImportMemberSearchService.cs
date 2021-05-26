@@ -22,30 +22,57 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public override async Task<MemberSearchResult> SearchMembersAsync(MembersSearchCriteria criteria)
         {
-            var orgSkip = criteria.Skip;
-            var orgTake = criteria.Take;
-
-            criteria.Skip = 0;
-            criteria.Take = int.MaxValue;
-
-            var result = await base.SearchMembersAsync(criteria);
+            MemberSearchResult result = null;
 
             if (criteria.DeepSearch && (criteria.MemberId != null || !criteria.ObjectIds.IsNullOrEmpty() || criteria.Keyword != null))
             {
+                var orgSkip = criteria.Skip;
+                var orgTake = criteria.Take;
+                var orgMemberTypes = criteria.MemberTypes.Select(x => x).ToArray();
+
+                const string organizationMemberType = nameof(Organization);
+                var withoutOrganizations = !criteria.MemberTypes.Contains(organizationMemberType);
+
+                criteria.Skip = 0;
+                criteria.Take = int.MaxValue;
+
+                if (withoutOrganizations)
+                {
+                    criteria.MemberTypes = criteria.MemberTypes.Union(new[]{
+                        organizationMemberType
+                    }).ToArray();
+                }
+
+
+                result = await base.RegularSearchMembersAsync(criteria);
+
                 var organizations = result.Results.OfType<Organization>().ToArray();
+
+                if (withoutOrganizations)
+                {
+                    result.Results = result.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList();
+                    result.TotalCount = result.Results.Count;
+                }
+
                 if (!organizations.IsNullOrEmpty())
                 {
-                    await LoadChildren(criteria, organizations, result);
+                    await LoadChildren(criteria, organizations, withoutOrganizations, orgMemberTypes, result);
                 }
+
+                //skip take as firstly
+                result.Results = result.Results.Skip(orgSkip).Take(orgTake).ToList();
+            }
+            else
+            {
+                result = await base.SearchMembersAsync(criteria);
             }
 
-            //skip take as firstly
-            result.Results = result.Results.Skip(orgSkip).Take(orgTake).ToArray();
+
 
             return result;
         }
 
-        private async Task LoadChildren(MembersSearchCriteria criteria, IEnumerable<Organization> organizations, MemberSearchResult result)
+        private async Task LoadChildren(MembersSearchCriteria criteria, IEnumerable<Organization> organizations, bool withoutOrganizations, string[] orgMemberTypes, MemberSearchResult result)
         {
             foreach (var organization in organizations)
             {
@@ -63,14 +90,21 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 var searchChildrenResult = await RegularSearchMembersAsync(searchChildrenCriteria);
 
+                var childOrganizations = searchChildrenResult.Results.OfType<Organization>().ToArray();
+
+
+                if (withoutOrganizations)
+                {
+                    searchChildrenResult.Results = result.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList();
+                    searchChildrenResult.TotalCount = result.Results.Count;
+                }
+
                 result.Results.AddRange(searchChildrenResult.Results);
                 result.TotalCount += searchChildrenResult.TotalCount;
 
-                var childOrganizations = searchChildrenResult.Results.OfType<Organization>().ToArray();
-
                 if (!childOrganizations.IsNullOrEmpty())
                 {
-                    await LoadChildren(criteria, childOrganizations, result);
+                    await LoadChildren(criteria, childOrganizations, withoutOrganizations, orgMemberTypes, result);
                 }
             }
         }

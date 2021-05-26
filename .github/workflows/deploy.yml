@@ -50,7 +50,7 @@ jobs:
         deployBranch: "dev"
         artifactKey: ${{ github.event.inputs.moduleId }}
         artifactUrl: ${{ github.event.inputs.blobUrl }}
-        taskNumber: ""
+        taskNumber: "undefined"
         forceCommit: "true"
 
     - name: Wait for environment is up

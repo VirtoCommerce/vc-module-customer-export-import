@@ -4,7 +4,7 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public abstract class ExportableMember: IExportable, IHasDynamicProperties
+    public abstract class ExportableMember : IExportable, IHasDynamicProperties
     {
         public abstract string Id { get; set; }
 
@@ -26,10 +26,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Address City")]
         public string AddressCity { get; set; }
 
-        [Name("Address Address Line1")]
+        [Name("Address Line1")]
         public string AddressAddressLine1 { get; set; }
 
-        [Name("Address Address Line2")]
+        [Name("Address Line2")]
         public string AddressAddressLine2 { get; set; }
 
         [Name("Address Zip Code")]
@@ -41,6 +41,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Address Phone")]
         public string AddressPhone { get; set; }
 
+        [Ignore]
         public string ObjectType { get; set; }
 
         public ICollection<DynamicObjectProperty> DynamicProperties { get; set; }

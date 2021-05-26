@@ -20,7 +20,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         public ICollection<string> Errors { get; set; }
 
-        public DateTime Finished { get; set; }
+        public DateTime? Finished { get; set; }
 
         public string[] FileUrls { get; set; }
     }

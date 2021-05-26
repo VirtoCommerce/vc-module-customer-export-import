@@ -1,6 +1,19 @@
 {
   "customerExportImport": {
     "blades": {
+      "export-processing": {
+        "title": "Export progress",
+        "labels": {
+          "start": "Start",
+          "end": "End",
+          "errors": "Error count",
+          "total": "Total count",
+          "processed": "Processed count",
+          "contacts-url": "Download Contacts:",
+          "organizations-url": "Download Organizations:",
+          "error-log": "Errors"
+        }
+      },
       "file-upload": {
         "title-root": "Import into root",
         "title-member": "Import into {{member}}",

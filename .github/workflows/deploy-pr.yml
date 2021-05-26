@@ -30,7 +30,7 @@ jobs:
       with:
         deployRepo: "vc-webstore-deploy"
         deployBranch: "qa"
-        artifactKey: ${{ env.ARTIFACT_KEY}}
+        artifactKey: ${{ env.ARTIFACT_KEY }}
         artifactUrl: "${{ steps.artifactLink.outputs.artifactUrl }}"
         taskNumber: "${{ steps.artifactLink.outputs.qaTaskNumber }}"
 

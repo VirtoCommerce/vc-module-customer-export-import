@@ -78,6 +78,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("User groups")]
         public string UserGroups { get; set; }
 
+        [Name("Salutation")]
+        public string Salutation { get; set; }
+
         [Name("Default language")]
         public string DefaultLanguage { get; set; }
 
@@ -117,6 +120,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             TimeZone = contact.TimeZone;
             Phones = contact.Phones.IsNullOrEmpty() ? null : string.Join(", ", contact.Phones);
             UserGroups = contact.Groups.IsNullOrEmpty() ? null : string.Join(", ", contact.Groups);
+            Salutation = contact.Salutation;
             AddressType = address?.AddressType.ToString();
             AddressFirstName = address?.FirstName;
             AddressLastName = address?.LastName;

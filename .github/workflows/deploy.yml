@@ -38,18 +38,11 @@ jobs:
         env: Development
         no_override: false
 
-    - name: Checkout ArgoCD repository 
-      uses: actions/checkout@v2
-      with:
-        token: ${{ secrets.REPO_TOKEN }}
-        repository: "${{ github.event.inputs.appDescriptionRepo }}"
-        ref: "${{ github.event.inputs.appDescriptionBranch }}"
-
     - name: Update deployment-cm
       uses: VirtoCommerce/vc-github-actions/create-deploy-pr@VDS-1269
       with:
-        deployRepo: "vc-webstore-deploy"
-        deployBranch: "dev"
+        deployRepo: ${{ github.event.inputs.appDescriptionRepo }}
+        deployBranch: ${{ github.event.inputs.appDescriptionBranch }}
         artifactKey: ${{ github.event.inputs.moduleId }}
         artifactUrl: ${{ github.event.inputs.blobUrl }}
         taskNumber: "undefined"

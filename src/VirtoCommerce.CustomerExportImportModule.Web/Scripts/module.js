@@ -156,20 +156,6 @@ angular.module(moduleName, []).run([
                                 'Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/dialogs/customerExport-dialog.tpl.html',
                                 'platformWebApp.confirmDialogController');
                         }
-
-                        function getExportRequest() {
-                            const selectedRows = selection.getSelectedRows();
-                            const selectedContactsAndOrganizationsIds = _.filter(selectedRows,
-                                x => x.memberType === contactMemberTypeName ||
-                                x.memberType === organizationMemberTypeName);
-
-                            return {
-                                keyword: keyword,
-                                memberIds: selectedContactsAndOrganizationsIds,
-                                organizationId: blade.currentEntity.id
-                            };
-                        }
-
                     },
                     canExecuteMethod: function () {
                         return true;

@@ -15,6 +15,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
     public sealed class ExportImportMemberSearchService : MemberSearchService
     {
+        private const int ElasticMaxTake = 10000;
+        const string OrganizationMemberType = nameof(Organization);
+
         public ExportImportMemberSearchService(Func<IMemberRepository> repositoryFactory, IMemberService memberService, IIndexedMemberSearchService indexedSearchService, IPlatformMemoryCache platformMemoryCache)
             : base(repositoryFactory, memberService, indexedSearchService, platformMemoryCache)
         {
@@ -24,22 +27,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             var result = new MemberSearchResult();
 
-            if (criteria.DeepSearch && (criteria.MemberId != null || !criteria.ObjectIds.IsNullOrEmpty() || criteria.Keyword != null))
+            if (criteria == null || (!criteria.DeepSearch || (criteria.MemberId == null && criteria.ObjectIds.IsNullOrEmpty() && criteria.Keyword.IsNullOrEmpty())))
+            {
+                result = await base.SearchMembersAsync(criteria);
+            }
+            else
             {
                 var orgSkip = criteria.Skip;
                 var orgTake = criteria.Take;
                 var orgMemberTypes = criteria.MemberTypes?.Select(x => x).ToArray();
 
-                const string organizationMemberType = nameof(Organization);
-                var withoutOrganizations = criteria.MemberTypes != null && !criteria.MemberTypes.Contains(organizationMemberType);
+                var withoutOrganizations = criteria.MemberTypes != null && !criteria.MemberTypes.Contains(OrganizationMemberType);
 
                 criteria.Skip = 0;
-                criteria.Take = int.MaxValue;
+                criteria.Take = criteria.Keyword.IsNullOrEmpty() ? int.MaxValue : ElasticMaxTake;
 
                 if (withoutOrganizations)
                 {
                     criteria.MemberTypes = criteria.MemberTypes.Union(new[]{
-                        organizationMemberType
+                        OrganizationMemberType
                     }).ToArray();
                 }
 
@@ -57,10 +63,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 //skip take as firstly
                 result.Results = result.Results.Skip(orgSkip).Take(orgTake).ToList();
-            }
-            else
-            {
-                result = await base.SearchMembersAsync(criteria);
             }
 
             return result;

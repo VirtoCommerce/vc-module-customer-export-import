@@ -23,7 +23,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                 getInvalidRowsCount();
                 blade.isLoading = false;
             }, (error) => { bladeNavigationService.setError('Error ' + error.status, blade); });
-        };
+        }
 
         blade.toolbarCommands = [
             {

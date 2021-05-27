@@ -196,6 +196,7 @@
     padding: 10px 15px;
     display: flex;
     align-items: center;
+    height: 20px;
 }
 
 .customer-export-import .triangle-warning-icon {
@@ -211,3 +212,13 @@
 .customer-export-import .ui-grid-row {
     width: auto !important;
 }
+
+.customer-export-import.preview-header + .blade-content {
+    height: calc(100% - 44px);
+}
+
+.customer-export-import.preview-warning-block + .blade-content {
+    height: calc(100% - 84px);
+}
+
+

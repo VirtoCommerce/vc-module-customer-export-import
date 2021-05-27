@@ -28,10 +28,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             {
                 var orgSkip = criteria.Skip;
                 var orgTake = criteria.Take;
-                var orgMemberTypes = criteria.MemberTypes.Select(x => x).ToArray();
+                var orgMemberTypes = criteria.MemberTypes?.Select(x => x).ToArray();
 
                 const string organizationMemberType = nameof(Organization);
-                var withoutOrganizations = !criteria.MemberTypes.Contains(organizationMemberType);
+                var withoutOrganizations = criteria.MemberTypes != null && !criteria.MemberTypes.Contains(organizationMemberType);
 
                 criteria.Skip = 0;
                 criteria.Take = int.MaxValue;

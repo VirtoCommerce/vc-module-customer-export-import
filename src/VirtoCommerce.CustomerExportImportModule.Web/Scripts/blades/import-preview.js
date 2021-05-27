@@ -54,7 +54,6 @@ angular.module('virtoCommerce.customerExportImportModule')
                     _.each(gridApi.grid.options.columnDefs, column => {
                         column.cellTooltip = true;
                         column.headerCellClass = 'br-0 font-weight-500 fs-13';
-                        column.cellTemplate = 'member.cell.html'
                     });
                     const fullNameColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'fullName'});
                     const idColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'id'});

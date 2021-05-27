@@ -43,8 +43,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     }).ToArray();
                 }
 
-
-                result = await base.RegularSearchMembersAsync(criteria);
+                result = await base.SearchMembersAsync(criteria);
 
                 var organizations = result.Results.OfType<Organization>().ToArray();
 
@@ -67,8 +66,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 result = await base.SearchMembersAsync(criteria);
             }
 
-
-
             return result;
         }
 
@@ -84,7 +81,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     Take = int.MaxValue,
                     Sort = criteria.Sort,
                     MemberTypes = criteria.MemberTypes,
-                    MemberType = criteria.MemberType,
                     ResponseGroup = criteria.ResponseGroup
                 };
 
@@ -92,11 +88,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 var childOrganizations = searchChildrenResult.Results.OfType<Organization>().ToArray();
 
-
                 if (withoutOrganizations)
                 {
-                    searchChildrenResult.Results = result.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList();
-                    searchChildrenResult.TotalCount = result.Results.Count;
+                    searchChildrenResult.Results = searchChildrenResult.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList();
+                    searchChildrenResult.TotalCount = searchChildrenResult.Results.Count;
                 }
 
                 result.Results.AddRange(searchChildrenResult.Results);

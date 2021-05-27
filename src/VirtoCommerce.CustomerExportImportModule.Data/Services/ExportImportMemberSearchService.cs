@@ -22,7 +22,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public override async Task<MemberSearchResult> SearchMembersAsync(MembersSearchCriteria criteria)
         {
-            MemberSearchResult result = null;
+            var result = new MemberSearchResult();
 
             if (criteria.DeepSearch && (criteria.MemberId != null || !criteria.ObjectIds.IsNullOrEmpty() || criteria.Keyword != null))
             {
@@ -43,15 +43,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     }).ToArray();
                 }
 
-                result = await base.SearchMembersAsync(criteria);
+                var firstResult = await base.SearchMembersAsync(criteria);
 
                 var organizations = result.Results.OfType<Organization>().ToArray();
 
-                if (withoutOrganizations)
-                {
-                    result.Results = result.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList();
-                    result.TotalCount = result.Results.Count;
-                }
+                result.Results = withoutOrganizations ? firstResult.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList() : firstResult.Results.ToList();
+                result.TotalCount = firstResult.Results.Count;
 
                 if (!organizations.IsNullOrEmpty())
                 {
@@ -88,14 +85,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 var childOrganizations = searchChildrenResult.Results.OfType<Organization>().ToArray();
 
-                if (withoutOrganizations)
-                {
-                    searchChildrenResult.Results = searchChildrenResult.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList();
-                    searchChildrenResult.TotalCount = searchChildrenResult.Results.Count;
-                }
+                var childResults = withoutOrganizations ? searchChildrenResult.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList() : searchChildrenResult.Results.ToList();
 
-                result.Results.AddRange(searchChildrenResult.Results);
-                result.TotalCount += searchChildrenResult.TotalCount;
+                result.Results.AddRange(childResults);
+                result.TotalCount += childResults.Count;
 
                 if (!childOrganizations.IsNullOrEmpty())
                 {

@@ -10,15 +10,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
     public class CustomerImportPagedDataSourceTests
     {
         private const string CsvFileName = "file.csv";
-        private const string CsvHeader = "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Associated Organization Ids;Birthday;TimeZone;Phones;User groups;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Address Line1;Address Address Line2;Address Zip Code;Address Email;Address Phone;DynamicProperty1;DynamicProperty2";
+        private const string CsvHeader = "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Associated Organization Ids;Birthday;TimeZone;Phones;User groups;Salutation;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Default shipping address;language test property;Married;occupation;Sex;Test Property";
         private static readonly string[] CsvRecords =
         {
-            "550f91d0-99d3-4371-9fc2-edc1633f32fc;Testb2b;b2b;Testb2b b2b;;d690f3df-8782-4dcc-99be-a1f644220e50;;b2b test organization;;;;;;;;;Approved;;;;;tag1, tag2, tag3, Wholesaler;;;;;;;;;;;;;;;;",
-            "ebbd6275-53fb-407a-83cb-4f3024d963b9;True;Boroda;True Boroda;;4e8db000-fb75-4250-8118-b00a0ccf5115;;true.boroda;4771b4e2-d8fe-40a4-9498-a55760acafb7;true.boroda;B2B-store;B2B-store;true.boroda@yandex.ru;Customer;;False;New;;;;;tag1, tag2;;;;;BillingAndShipping;True;Boroda;Russia;Kirov Oblast;Kirov;Moscow st 110 b/1;169;;true.boroda@yandex.ru;89229252501;",
-            "5f807280-bb1a-42b2-9a96-ed107269ea06;;;Sam Green;;;;;5f807280-bb1a-42b2-9a96-ed107269ea06;goal44@example.com;Electronics;Electronics;goal44@example.com;Customer;;False;;;;;;;;;;;;;;;;;;;;;;"
+            "47dadad1-8f87-4624-829f-ef45265ea81c;Test user;user;Test user user;;324c9a1a-b501-42de-a89a-e4a42265d12f;;My Test Organization;aec295f5-131a-4671-958f-a300f95f911f;b2b-user-2;B2B-store;B2B-store;qa@mail1.com;Customer;;False;;;;;;;;;;;;;;;;;;;;;;;;;;;;",
+            "4c8a0c28-6aa4-4f1c-8e81-4df5f34b2065;Test user;user;Test user user;;d690f3df-8782-4dcc-99be-a1f644220e50;;b2b test organization;73e95cde-5fd1-4747-9ac6-82cc958d13d5;b2b-user-1;B2B-store;B2B-store;test@meem1234eme.test;Customer;;False;;;;;;TEST_GROUP;;;;;;BillingAndShipping;asdfasd;fadsf;United States;California;asgfq;7630 Bridge;1;90019;adafafafsd@avvava;1145145154;test;;True;Boat Builder;Female;test1",
+            "82c3c68f-9e85-4a01-b6fa-8e9d8e6f5737;Test user;user;Test user user;;12cc7a94-5f8b-4b9e-ba0c-aff59916743d;;Business Test Organization;5e43c02e-3bba-4baf-b229-c8201a2a9975;b2b-user-test;B2B-store;B2B-store;test@meememe.test;Customer;;False;;;;;;;;;;;;BillingAndShipping;Test user;user;United States;Alabama;City 17;Street Address 5781;51;5814858;test@meememe.test;157471745;;Salut,Hallo,Hello;;;;"
         };
 
-        private static readonly string[] DynamicPropertyNames = { "DynamicProperty1", "DynamicProperty2" };
+        private static readonly string[] DynamicPropertyNames = { "Default shipping address", "language test property", "Married", "occupation", "Sex", "Test Property" };
 
         [Theory]
         [MemberData(nameof(GetCsvWithAndWithoutHeader))]
@@ -97,7 +97,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             await customerImportPagedDataSource.FetchAsync();
 
             // Assert
-            Assert.Equal("ebbd6275-53fb-407a-83cb-4f3024d963b9", customerImportPagedDataSource.Items.Single().Record.Id);
+            Assert.Equal("4c8a0c28-6aa4-4f1c-8e81-4df5f34b2065", customerImportPagedDataSource.Items.Single().Record.Id);
         }
 
         [Fact]
@@ -116,7 +116,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             await customerImportPagedDataSource.FetchAsync();
 
             // Assert
-            Assert.Equal("ebbd6275-53fb-407a-83cb-4f3024d963b9", customerImportPagedDataSource.Items.Single().Record.Id);
+            Assert.Equal("4c8a0c28-6aa4-4f1c-8e81-4df5f34b2065", customerImportPagedDataSource.Items.Single().Record.Id);
         }
 
         [Fact]

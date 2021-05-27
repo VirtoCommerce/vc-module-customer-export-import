@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
@@ -7,6 +8,7 @@ using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.CustomerExportImportModule.Tests
@@ -25,9 +27,22 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             return blobStorageProviderMock.Object;
         }
 
-        public static CustomerImportPagedDataSourceFactory GetCustomerImportPagedDataSourceFactory(IBlobStorageProvider blobStorageProvider)
+        public static IDynamicPropertySearchService GetDynamicPropertySearchService(string[] dynamicPropertyNames)
         {
-            return new CustomerImportPagedDataSourceFactory(blobStorageProvider);
+            var dynamicPropertySearchServiceMock = new Mock<IDynamicPropertySearchService>();
+            dynamicPropertySearchServiceMock.Setup(x => x.SearchDynamicPropertiesAsync(It.IsAny<DynamicPropertySearchCriteria>()))
+                .Returns(() => Task.FromResult(new DynamicPropertySearchResult()
+                {
+                    Results = dynamicPropertyNames.Select(dynamicPropertyName => new DynamicProperty { Name = dynamicPropertyName }).ToList(),
+                    TotalCount = dynamicPropertyNames.Length
+                }));
+            return dynamicPropertySearchServiceMock.Object;
+        }
+
+
+        public static CustomerImportPagedDataSourceFactory GetCustomerImportPagedDataSourceFactory(IBlobStorageProvider blobStorageProvider, IDynamicPropertySearchService dynamicPropertySearchService)
+        {
+            return new CustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService);
         }
 
         public static Stream GetStream(string csv)

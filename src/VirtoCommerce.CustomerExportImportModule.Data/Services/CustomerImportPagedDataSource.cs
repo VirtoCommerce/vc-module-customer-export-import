@@ -7,6 +7,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
+using VirtoCommerce.CustomerExportImportModule.Data.ExportImport;
 using VirtoCommerce.Platform.Core.Assets;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
@@ -35,33 +36,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         public int CurrentPageNumber { get; private set; }
 
         public int PageSize { get; }
-
-        public string GetHeaderRaw()
-        {
-            var result = string.Empty;
-
-            var streamPosition = _stream.Position;
-            _stream.Seek(0, SeekOrigin.Begin);
-
-            using var streamReader = new StreamReader(_stream, leaveOpen: true);
-            using var csvReader = new CsvReader(streamReader, _configuration, true);
-
-            try
-            {
-                csvReader.Read();
-                csvReader.ReadHeader();
-                csvReader.ValidateHeader<CsvContact>();
-
-                result = string.Join(csvReader.Configuration.Delimiter, csvReader.Context.HeaderRecord);
-
-            }
-            finally
-            {
-                _stream.Seek(streamPosition, SeekOrigin.Begin);
-            }
-
-            return result;
-        }
 
         public int GetTotalCount()
         {
@@ -102,36 +76,33 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             if (CurrentPageNumber * PageSize >= GetTotalCount())
             {
-                Contacts = Array.Empty<CsvContact>();
+                Items = Array.Empty<ImportRecord<CsvContact>>();
                 return false;
             }
 
-            var recordTuples = new List<(CsvContact, string, int)>();
+            var items = new List<ImportRecord<CsvContact>>();
 
             for (var i = 0; i < PageSize && await _csvReader.ReadAsync(); i++)
             {
-                var csvRecord = _csvReader.GetRecord<CsvContact>();
+                var record = _csvReader.GetRecord<CsvContact>();
 
-                var rawRecord = _csvReader.Context.RawRecord;
-                var row = _csvReader.Context.Row;
+                if (record != null)
+                {
+                    var rawRecord = _csvReader.Context.RawRecord;
+                    var row = _csvReader.Context.Row;
 
-                var recordTuple = (csvRecord, rawRecord, row);
-                recordTuples.Add(recordTuple);
-
+                    items.Add(new ImportRecord<CsvContact> { Row = row, RawRecord = rawRecord, Record = record });
+                }
             }
 
-            Contacts = recordTuples.Where(x => x.Item1 != null).Select(record =>
-              {
-                  var (importableContact, _, _) = record;
-                  return importableContact;
-              }).ToArray();
+            Items = items.ToArray();
 
             CurrentPageNumber++;
 
             return true;
         }
 
-        public CsvContact[] Contacts { get; private set; }
+        public ImportRecord<CsvContact>[] Items { get; private set; }
 
         public void Dispose()
         {

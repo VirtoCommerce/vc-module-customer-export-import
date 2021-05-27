@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,7 +57,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
                 return BadRequest("Blob with the such url does not exist.");
             }
 
-            using var csvDataSource = _customerImportPagedDataSourceFactory.Create(request.FilePath, 10);
+            using var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync(request.FilePath, 10);
 
             var result = new ImportDataPreview
             {
@@ -65,7 +66,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
 
             await csvDataSource.FetchAsync();
 
-            result.Results = csvDataSource.Contacts;
+            result.Results = csvDataSource.Items.Select(item => item.Record).ToArray();
 
             return Ok(result);
         }

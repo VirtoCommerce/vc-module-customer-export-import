@@ -44,7 +44,7 @@ angular.module(moduleName, []).run([
                         const isAllSelected = !selection.getSelectedRows().length;
                         const exportDataRequest = {
                             keyword,
-                            memberIds: [],
+                            objectIds: [],
                             organizationId
                         };
 
@@ -76,7 +76,7 @@ angular.module(moduleName, []).run([
                                 let organizationsCount = selectedOrganizationsList.length;
 
                                 const selectedMembersList = selectedContactsList.concat(selectedOrganizationsList);
-                                exportDataRequest.memberIds = _.pluck(selectedMembersList, 'id');
+                                exportDataRequest.objectIds = _.pluck(selectedMembersList, 'id');
 
                                 const organizationsSearchRequests = selectedOrganizationsList.map((item) => members.search(getSearchCriteria(organizationMemberTypeName, item.id, keyword)).$promise);
                                 const organizationsRequests = $q.all(organizationsSearchRequests);

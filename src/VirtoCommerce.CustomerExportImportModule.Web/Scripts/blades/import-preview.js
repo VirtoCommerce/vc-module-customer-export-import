@@ -13,7 +13,7 @@ angular.module('virtoCommerce.customerExportImportModule')
             importResources.preview({ filePath: blade.csvFilePath }, (data) => {
                 _.each(data.results, record => {
                     _.each(record.dynamicProperties, prop => {
-                        _.extend(record, prop);
+                        _.extend(record, { [prop.name]: prop.values.map(value => value.value).join(', ') });
                     });
                     _.omit(record, 'dynamicProperties');
                 });

@@ -12,7 +12,7 @@
         </div>
 </div>
 <div class="customer-export-import preview-warning-block" ng-if="showUnparsedRowsWarning">
-    <i class="fas fa-exclamation-triangle triangle-warning-icon mr-10"></i> <span class="preview-warning-text">{{unparsedRowsCount | number:0}} lines from {{previewCount | number:0}} have not been parsed for preview. Check final report after customers import.</span>
+    <i class="fas fa-exclamation-triangle triangle-warning-icon mr-10"></i> <span class="preview-warning-text">{{unparsedRowsCount | number:0}} lines from {{previewCount | number:0}} have not been parsed for preview. Check final report after import.</span>
 </div>
 <div class="blade-content __xlarge-wide customer-export-import">
     <div class="blade-inner">
@@ -42,11 +42,5 @@
     ng-class="{'ui-grid-row-header-cell': col.isRowHeader}"
     role="{{col.isRowHeader ? 'rowheader' : 'gridcell' }}"
     ui-grid-cell></div>
-</script>
-
-<script type="text/ng-template" id="member.cell.html">
-    <div class="ui-grid-cell-contents grid-tooltip">{{ COL_FIELD }}
-        <span class="tooltip-text">{{ COL_FIELD }}</span>
-    </div>
 </script>
 

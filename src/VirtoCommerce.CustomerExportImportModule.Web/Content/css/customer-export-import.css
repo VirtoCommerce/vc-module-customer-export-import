@@ -36,10 +36,6 @@
     color: #465769;
 }
 
-.customer-export-import .ui-grid-menu-button {
-    display: none;
-}
-
 .customer-export-import .ui-grid-icon-blank {
     display: none;
 }
@@ -126,32 +122,6 @@
     left: -0.5em;
 }
 
-.customer-export-import .grid-tooltip {
-    position: relative;
-    display: inline !important;
-}
-
-.customer-export-import .grid-tooltip .tooltip-text {
-    visibility: hidden;
-    overflow: visible;
-    padding: 8px 11px;
-    border: 1px solid #eaedf3;
-    background: #ffffff;
-    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.15);
-    text-align: center;
-    z-index: 999999;
-    position: absolute;
-    left: 105%;
-    top: -5px;
-    color: #838d9a;
-    font-size: 11px;
-    font-weight: 400 !important;
-}
-
-.customer-export-import .grid-tooltip:hover .tooltip-text {
-    visibility: visible;
-}
-
 .customer-export-import .icon-danger {
     color: #f34747;
 }
@@ -236,4 +206,8 @@
 .customer-export-import .preview-warning-text {
     font-size: 13px;
     color: #9c825b;
+}
+
+.customer-export-import .ui-grid-row {
+    width: auto !important;
 }

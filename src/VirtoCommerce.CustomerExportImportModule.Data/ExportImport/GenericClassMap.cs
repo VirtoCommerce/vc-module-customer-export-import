@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using CsvHelper;
 using CsvHelper.Configuration;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 
@@ -86,8 +85,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                 dynamicPropertyReadingMap.Ignore(true);
 
                 dynamicPropertyReadingMap.Data.Index = columnIndex + 1;
-
-                MemberMaps.Add(dynamicPropertyReadingMap);
 
                 MemberMaps.Add(dynamicPropertyReadingMap);
                 dynamicPropertyReadingMap.Ignore(true);

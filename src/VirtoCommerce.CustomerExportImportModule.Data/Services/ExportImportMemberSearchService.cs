@@ -51,10 +51,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 var firstResult = await base.SearchMembersAsync(criteria);
 
-                var organizations = result.Results.OfType<Organization>().ToArray();
+                var organizations = firstResult.Results.OfType<Organization>().ToArray();
 
                 result.Results = withoutOrganizations ? firstResult.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList() : firstResult.Results.ToList();
-                result.TotalCount = firstResult.Results.Count;
+                result.TotalCount = result.Results.Count;
 
                 if (!organizations.IsNullOrEmpty())
                 {

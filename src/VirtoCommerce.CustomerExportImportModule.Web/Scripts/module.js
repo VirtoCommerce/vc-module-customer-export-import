@@ -57,10 +57,6 @@ angular.module(moduleName, []).run([
                                 const selectedRows = selection.getSelectedRows();
                                 const selectedContactsList = _.filter(selectedRows, { memberType: contactMemberTypeName });
                                 const selectedOrganizationsList = _.filter(selectedRows, { memberType: organizationMemberTypeName });
-
-                                let contactsCount = selectedContactsList.length;
-                                let organizationsCount = selectedOrganizationsList.length;
-
                                 const selectedMembersList = selectedContactsList.concat(selectedOrganizationsList);
                                 exportDataRequest.objectIds = _.pluck(selectedMembersList, 'id');
                             }

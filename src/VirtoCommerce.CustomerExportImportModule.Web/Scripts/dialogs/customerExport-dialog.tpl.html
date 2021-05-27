@@ -1,0 +1,35 @@
+<div class="modal-header customer-export-import">
+    <h3 class="modal-title">{{ 'customerExportImport.dialogs.customer-export.title' | translate }}</h3>
+</div>
+<div class="modal-body">
+
+    <div ng-if="!exportIsEmpty">
+
+        <div ng-if="!organizationName">
+            <p ng-if="exportAll">
+                <b>{{ 'customerExportImport.dialogs.customer-export.all' | translate }} {{ contactsQty }} {{ 'customerExportImport.dialogs.customer-export.contacts' | translate }}</b> & <b>{{ organizationsQty }} {{ 'customerExportImport.dialogs.customer-export.organizations' | translate }}</b>{{ 'customerExportImport.dialogs.customer-export.main-text-end' | translate }}
+            </p>
+            <p ng-if="!exportAll">
+                <b>{{ contactsQty }} {{ 'customerExportImport.dialogs.customer-export.contacts' | translate }}</b> & <b>{{ organizationsQty }} {{ 'customerExportImport.dialogs.customer-export.organizations' | translate }}</b>{{ 'customerExportImport.dialogs.customer-export.main-text-end' | translate }}</p>
+        </div>
+
+        <div ng-if="organizationName">
+            <b>{{ contactsQty }} {{ 'customerExportImport.dialogs.customer-export.contacts' | translate }}</b> & <b>{{ organizationsQty }} {{ 'customerExportImport.dialogs.customer-export.organizations' | translate }}</b> {{ 'customerExportImport.dialogs.customer-export.from' | translate }} <b>'{{ organizationName }}'</b> {{ 'customerExportImport.dialogs.customer-export.organization' | translate }} {{
+            'customerExportImport.dialogs.customer-export.main-text-end' | translate }}
+        </div>
+    </div>
+
+    <div ng-if="exportIsEmpty">
+        <b>{{ 'customerExportImport.dialogs.customer-export.subtitle-empty-export' | translate }}</b>
+    </div>
+
+</div>
+
+<div class="modal-footer customer-export-import" ng-if="!exportIsEmpty">
+    <button class="btn cancel-btn" ng-click="cancel()">{{ 'platform.commands.cancel' | translate }}</button>
+    <button class="btn" ng-click="yes()">{{ 'customerExportImport.dialogs.customer-export.export' | translate }}</button>
+</div>
+
+<div class="modal-footer" ng-if="exportIsEmpty">
+    <button class="btn" ng-click="cancel()">{{ 'platform.commands.ok' | translate }}</button>
+</div>

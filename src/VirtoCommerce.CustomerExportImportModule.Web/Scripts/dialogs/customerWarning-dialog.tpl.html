@@ -1,0 +1,12 @@
+<div class="modal-header customer-export-import modal-warning">
+    <h3 class="modal-title">{{ 'customerExportImport.dialogs.customer-warning.title' | translate }}</h3>
+</div>
+<div class="modal-body">
+    <div>
+        <p>{{ 'customerExportImport.dialogs.customer-warning.main-text-beginning' | translate }} <b>{{ flattenMembersQty }} {{ 'customerExportImport.dialogs.customer-warning.items' | translate }}</b> {{ 'customerExportImport.dialogs.customer-warning.main-text-middle' | translate }} <b>{{ limitQty }} {{ 'customerExportImport.dialogs.customer-warning.items' | translate }}</b>{{ 'customerExportImport.dialogs.customer-warning.main-text-end' | translate }}</p>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn" ng-click="cancel()">{{ 'platform.commands.ok' | translate }}</button>
+</div>

@@ -1,3 +1,8 @@
+.customer-export-import.modal-warning {
+    background: #fcb040 !important;
+    color: #fff !important;
+}
+
 .customer-export-import .d-flex {
     display: flex;
 }

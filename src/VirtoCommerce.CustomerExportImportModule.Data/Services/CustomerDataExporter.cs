@@ -1,12 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
+using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core;
+using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Exceptions;
 using VirtoCommerce.Platform.Core.Extensions;
 
@@ -17,12 +21,20 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly ICustomerExportPagedDataSourceFactory _customerExportPagedDataSourceFactory;
         private readonly IExportWriterFactory _exportWriterFactory;
         private readonly PlatformOptions _platformOptions;
+        private readonly IBlobUrlResolver _blobUrlResolver;
+        private readonly IDynamicPropertySearchService _dynamicPropertySearchService;
 
-        public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IExportWriterFactory exportWriterFactory, IOptions<PlatformOptions> platformOptions)
+
+
+
+        public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IExportWriterFactory exportWriterFactory, IOptions<PlatformOptions> platformOptions, IBlobUrlResolver blobUrlResolver
+            , IDynamicPropertySearchService dynamicPropertySearchService)
         {
             _customerExportPagedDataSourceFactory = customerExportPagedDataSourceFactory;
             _exportWriterFactory = exportWriterFactory;
             _platformOptions = platformOptions.Value;
+            _blobUrlResolver = blobUrlResolver;
+            _dynamicPropertySearchService = dynamicPropertySearchService;
         }
 
         public async Task ExportAsync(ExportDataRequest request, Action<ExportProgressInfo> progressCallback, ICancellationToken cancellationToken)
@@ -41,11 +53,24 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             exportProgress.Description = "Fetching...";
             progressCallback(exportProgress);
 
+            var dynamicProperties = await _dynamicPropertySearchService.SearchDynamicPropertiesAsync(new DynamicPropertySearchCriteria()
+            {
+                ObjectTypes = new List<string>() { typeof(Contact).FullName, typeof(Organization).FullName },
+                Skip = 0,
+                Take = int.MaxValue
+            });
+
+            var contactsDynamicPropertiesNames =
+                dynamicProperties.Results.Where(x => x.ObjectType == typeof(Contact).FullName).Select(x => x.Name).ToArray();
+
+            var organizationsDynamicPropertiesNames =
+                dynamicProperties.Results.Where(x => x.ObjectType == typeof(Organization).FullName).Select(x => x.Name).ToArray();
+
             var contactsFilePath = GetExportFilePath("Contacts");
-            var contactExportWriter = _exportWriterFactory.Create<CsvContact>(contactsFilePath, new ExportConfiguration());
+            var contactExportWriter = _exportWriterFactory.Create<CsvContact>(contactsFilePath, new ExportConfiguration(), contactsDynamicPropertiesNames);
 
             var organizationFilePath = GetExportFilePath("Organizations");
-            var organizationExportWriter = _exportWriterFactory.Create<ExportableOrganization>(organizationFilePath, new ExportConfiguration());
+            var organizationExportWriter = _exportWriterFactory.Create<ExportableOrganization>(organizationFilePath, new ExportConfiguration(), organizationsDynamicPropertiesNames);
 
             try
             {
@@ -68,7 +93,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 }
 
                 exportProgress.Description = "Export completed";
-                exportProgress.FileUrls = new[] { contactsFilePath, organizationFilePath };
+                exportProgress.FileUrls = new[]
+                {
+                    _blobUrlResolver.GetAbsoluteUrl(contactsFilePath),
+                    _blobUrlResolver.GetAbsoluteUrl(organizationFilePath)
+                };
+                progressCallback(exportProgress);
             }
             finally
             {

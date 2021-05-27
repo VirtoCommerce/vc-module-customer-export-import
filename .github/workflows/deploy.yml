@@ -15,7 +15,7 @@ on:
       appDescriptionRepo:
         description: 'ArgoCd repository'
         required: true
-        default: 'VirtoCommerce/vc-webstore-deploy'
+        default: 'vc-webstore-deploy'
       appDescriptionBranch:
         description: 'ArgoCd branch'
         required: true
@@ -25,6 +25,8 @@ on:
 jobs:
   cd:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
     steps: 
     
     - name: Start deployment
@@ -36,43 +38,19 @@ jobs:
         env: Development
         no_override: false
 
-    - name: Checkout ArgoCD repository 
-      uses: actions/checkout@v2
-      with:
-        token: ${{ secrets.REPO_TOKEN }}
-        repository: "${{ github.event.inputs.appDescriptionRepo }}"
-        ref: "${{ github.event.inputs.appDescriptionBranch }}"
-
     - name: Update deployment-cm
-      shell: pwsh
-      run: |
-
-        cd ${{ github.workspace }}
-        cd ./webstore-app/resources
-        $fileName = "./deployment-cm.yaml"
-        $content = Get-Content $fileName
-        $key = "${{ github.event.inputs.moduleId }}"
-        $artifactPath = "`"${{ github.event.inputs.blobUrl }}`""
-        $content -replace "`"PackageUrl`":\s*.*$key.*", "`"PackageUrl`": $artifactPath" | Set-Content -Path $fileName
-
-    - name: Commit deployment-cm change
-      shell: pwsh
-      run: |
-        if(git status --porcelain |Where {$_ -notmatch '^\?\?'}) # uncommitted changes exist
-        {
-          git config --global user.name 'vc-ci'
-          git config user.email --global  'ci@virtocommerce.com'
-          git commit -am 'Automated update ${{ github.repository }} to ${{ github.event.inputs.artifactVersion }}'
-          git push
-        }
-        else 
-        {
-          Write-Output 'Nothing to commit, working tree clean'
-        }
+      uses: VirtoCommerce/vc-github-actions/create-deploy-pr@VDS-1269
+      with:
+        deployRepo: ${{ github.event.inputs.appDescriptionRepo }}
+        deployBranch: ${{ github.event.inputs.appDescriptionBranch }}
+        artifactKey: ${{ github.event.inputs.moduleId }}
+        artifactUrl: ${{ github.event.inputs.blobUrl }}
+        taskNumber: "undefined"
+        forceCommit: "true"
 
     - name: Wait for environment is up
       shell: pwsh
-      timeout-minutes: 5
+      timeout-minutes: 15
       run: | 
         do {
           Start-Sleep -s 15

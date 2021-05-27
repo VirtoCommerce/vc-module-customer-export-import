@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
+using Newtonsoft.Json;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
@@ -15,20 +16,21 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
     public sealed class CsvContact : CsvMember
     {
+        [JsonProperty("contactId")]
         [Name("Contact Id")]
         public override string Id { get; set; }
 
         [Name("Contact First Name")]
         [Required]
-        public string FirstName { get; set; }
+        public string ContactFirstName { get; set; }
 
         [Name("Contact Last Name")]
         [Required]
-        public string LastName { get; set; }
+        public string ContactLastName { get; set; }
 
         [Name("Contact Full Name")]
         [Required]
-        public string FullName { get; set; }
+        public string ContactFullName { get; set; }
 
         [Name("Contact Outer Id")]
         public string ContactOuterId { get; set; }
@@ -75,7 +77,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string AssociatedOrganizationIds { get; set; }
 
         [Name("Birthday")]
-        public DateTime? BirthDate { get; set; }
+        public DateTime? Birthday { get; set; }
 
         [Name("TimeZone")]
         public string TimeZone { get; set; }
@@ -107,9 +109,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             var address = contact.Addresses?.FirstOrDefault();
 
             Id = contact.Id;
-            FirstName = contact.FirstName;
-            LastName = contact.LastName;
-            FullName = contact.FullName;
+            ContactFirstName = contact.FirstName;
+            ContactLastName = contact.LastName;
+            ContactFullName = contact.FullName;
             ContactOuterId = contact.OuterId;
             OrganizationId = organization?.Id;
             OrganizationOuterId = organization?.OuterId;
@@ -124,7 +126,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             EmailVerified = account?.EmailConfirmed;
             ContactStatus = contact.Status;
             AssociatedOrganizationIds = contact.AssociatedOrganizations.IsNullOrEmpty() ? null : string.Join(", ", contact.AssociatedOrganizations);
-            BirthDate = contact.BirthDate;
+            Birthday = contact.BirthDate;
             TimeZone = contact.TimeZone;
             Phones = contact.Phones.IsNullOrEmpty() ? null : string.Join(", ", contact.Phones);
             UserGroups = contact.Groups.IsNullOrEmpty() ? null : string.Join(", ", contact.Groups);
@@ -156,9 +158,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             return new Contact
             {
                 Id = Id,
-                FirstName = FirstName,
-                LastName = LastName,
-                FullName = FullName,
+                FirstName = ContactFirstName,
+                LastName = ContactLastName,
+                FullName = ContactFullName,
                 OuterId = ContactOuterId,
                 SecurityAccounts = AccountId != null
                     ? new List<ApplicationUser>
@@ -177,7 +179,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                     : null,
                 Status = ContactStatus,
                 AssociatedOrganizations = AssociatedOrganizationIds?.Split(", ").ToList(),
-                BirthDate = BirthDate,
+                BirthDate = Birthday,
                 TimeZone = TimeZone,
                 Phones = Phones?.Split(", "),
                 Groups = UserGroups?.Split(", "),

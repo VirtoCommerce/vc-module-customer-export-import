@@ -94,6 +94,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 var childResults = withoutOrganizations ? searchChildrenResult.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList() : searchChildrenResult.Results.ToList();
 
+                var resultIds = result.Results.Select(x => x.Id).ToArray();
+                childResults = childResults.Where(c => !resultIds.Contains(c.Id)).ToList();
                 result.Results.AddRange(childResults);
                 result.TotalCount += childResults.Count;
 

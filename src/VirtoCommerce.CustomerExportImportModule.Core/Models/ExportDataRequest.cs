@@ -1,5 +1,6 @@
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Model.Search;
+using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
@@ -15,10 +16,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         {
             return new MembersSearchCriteria
             {
-                Keyword = Keyword,
+                Keyword = ObjectIds.IsNullOrEmpty() ? Keyword : null,//if concrete members selected there is no index searching
                 ObjectIds = ObjectIds,
                 MemberId = OrganizationId,
-                MemberTypes = new []{ nameof(Contact), nameof(Organization) },
+                MemberTypes = new[] { nameof(Contact), nameof(Organization) },
                 DeepSearch = true
             };
         }

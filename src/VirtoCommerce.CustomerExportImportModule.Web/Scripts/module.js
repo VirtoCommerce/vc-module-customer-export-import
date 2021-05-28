@@ -44,7 +44,7 @@ angular.module(moduleName, []).run([
                         const isAllSelected = !selection.getSelectedRows().length;
                         const exportDataRequest = {
                             keyword,
-                            memberIds: [],
+                            objectIds: [],
                             organizationId
                         };
 
@@ -53,60 +53,34 @@ angular.module(moduleName, []).run([
                         $q.when(getExportLimits()).then((value) => {
                             const maxMembersPerFile = value[0];
 
-                            if (isAllSelected) {
-                                const contactsSearchRequest = members.search(getSearchCriteria(contactMemberTypeName, organizationId, keyword)).$promise;
-                                const organizationsSearchRequest = members.search(getSearchCriteria(organizationMemberTypeName, organizationId, keyword)).$promise;
-
-                                $q.all([contactsSearchRequest, organizationsSearchRequest]).then(([contactsSearchResponse, organizationsSearchResponse]) => {
-                                    const contactsNumber = contactsSearchResponse.totalCount;
-                                    const organizationsNumber = organizationsSearchResponse.totalCount;
-                                    const membersTotalNumber = contactsNumber + organizationsNumber;
-                                    if (membersTotalNumber > maxMembersPerFile) {
-                                        showWarningDialog(membersTotalNumber, maxMembersPerFile);
-                                        return;
-                                    }
-                                    showExportDialog(contactsNumber, organizationsNumber);
-                                });
-                            } else {
+                            if (!isAllSelected) {
                                 const selectedRows = selection.getSelectedRows();
                                 const selectedContactsList = _.filter(selectedRows, { memberType: contactMemberTypeName });
                                 const selectedOrganizationsList = _.filter(selectedRows, { memberType: organizationMemberTypeName });
-
-                                let contactsCount = selectedContactsList.length;
-                                let organizationsCount = selectedOrganizationsList.length;
-
                                 const selectedMembersList = selectedContactsList.concat(selectedOrganizationsList);
-                                exportDataRequest.memberIds = _.pluck(selectedMembersList, 'id');
-
-                                const organizationsSearchRequests = selectedOrganizationsList.map((item) => members.search(getSearchCriteria(organizationMemberTypeName, item.id, keyword)).$promise);
-                                const organizationsRequests = $q.all(organizationsSearchRequests);
-                                const contactsSearchRequests = selectedOrganizationsList.map((item) => members.search(getSearchCriteria(contactMemberTypeName, item.id, keyword)).$promise);
-                                const contactsRequests = $q.all(contactsSearchRequests);
-
-                                $q.all([organizationsRequests, contactsRequests]).then((data) => {
-                                    for (let requestResult of data[0]) {
-                                        organizationsCount += requestResult.totalCount;
-                                    }
-
-                                    for (let requestResult of data[1]) {
-                                        contactsCount += requestResult.totalCount;
-                                    }
-
-                                    const membersTotalNumber = contactsCount + organizationsCount;
-                                    if (membersTotalNumber > maxMembersPerFile) {
-                                        showWarningDialog(membersTotalNumber, maxMembersPerFile);
-                                        return;
-                                    }
-
-                                    showExportDialog(contactsCount, organizationsCount);
-                                });
+                                exportDataRequest.objectIds = _.pluck(selectedMembersList, 'id');
                             }
+
+                            const contactsSearchRequest = members.search(getSearchCriteria(contactMemberTypeName, organizationId, keyword, exportDataRequest.objectIds)).$promise;
+                            const organizationsSearchRequest = members.search(getSearchCriteria(organizationMemberTypeName, organizationId, keyword, exportDataRequest.objectIds)).$promise;
+
+                            $q.all([contactsSearchRequest, organizationsSearchRequest]).then(([contactsSearchResponse, organizationsSearchResponse]) => {
+                                const contactsNumber = contactsSearchResponse.totalCount;
+                                const organizationsNumber = organizationsSearchResponse.totalCount;
+                                const membersTotalNumber = contactsNumber + organizationsNumber;
+                                if (membersTotalNumber > maxMembersPerFile) {
+                                    showWarningDialog(membersTotalNumber, maxMembersPerFile);
+                                    return;
+                                }
+                                showExportDialog(contactsNumber, organizationsNumber);
+                            });
                         });
 
-                        function getSearchCriteria(memberType, memberId, searchKey) {
+                        function getSearchCriteria(memberType, memberId, searchKey, objectIds) {
                             return {
                                 memberType,
                                 memberId,
+                                objectIds: objectIds,
                                 keyword: searchKey,
                                 deepSearch: true,
                                 objectType: 'Member',

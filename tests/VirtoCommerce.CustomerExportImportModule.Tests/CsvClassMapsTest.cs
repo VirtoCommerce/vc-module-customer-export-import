@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using CsvHelper;
-using CsvHelper.Configuration;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.ExportImport;
@@ -103,7 +102,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             var stream = new MemoryStream();
             var sw = new StreamWriter(stream, leaveOpen: true);
-            var csvWriter = new CsvWriter(sw, new Configuration() { Delimiter = ";" });
+            var csvWriter = new CsvWriter(sw, new ExportConfiguration());
 
             //Act
             var selectedDynamicProperties = new[] { "Sex" };
@@ -118,7 +117,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             //Assert
             var expected = "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Associated Organization Ids;Birthday;TimeZone;Phones;User groups;Salutation;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Sex\r\n"
-                           + "contact_id;Anton;Boroda;Anton Boroda;outer_id;org_id;org_outer_id;Boroda ltd;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;new;org_id1, org_id2;4/14/1986 12:00:00 AM;MSK;777, 555;tag1, tag2;mr;en_US;TaxId;email;pickup;BillingAndShipping;Anton;Boroda;Russia;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Male\r\n";
+                           + "contact_id;Anton;Boroda;Anton Boroda;outer_id;org_id;org_outer_id;Boroda ltd;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;new;org_id1, org_id2;04/14/1986 00:00:00;MSK;777, 555;tag1, tag2;mr;en_US;TaxId;email;pickup;BillingAndShipping;Anton;Boroda;Russia;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Male\r\n";
 
             var sr = new StreamReader(stream);
             var csv = sr.ReadToEnd();
@@ -181,7 +180,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             var stream = new MemoryStream();
             var sw = new StreamWriter(stream, leaveOpen: true);
-            var csvWriter = new CsvWriter(sw, new Configuration() { Delimiter = ";", });
+            var csvWriter = new CsvWriter(sw, new ExportConfiguration());
 
             //Act
             var selectedDynamicProperties = new[] { "Size" };

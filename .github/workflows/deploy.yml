@@ -39,7 +39,7 @@ jobs:
         no_override: false
 
     - name: Update deployment-cm
-      uses: VirtoCommerce/vc-github-actions/create-deploy-pr@VDS-1269
+      uses: VirtoCommerce/vc-github-actions/create-deploy-pr@master
       with:
         deployRepo: ${{ github.event.inputs.appDescriptionRepo }}
         deployBranch: ${{ github.event.inputs.appDescriptionBranch }}

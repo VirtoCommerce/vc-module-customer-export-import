@@ -141,8 +141,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressCountry = address?.CountryName;
             AddressRegion = address?.RegionName;
             AddressCity = address?.City;
-            AddressAddressLine1 = address?.Line1;
-            AddressAddressLine2 = address?.Line2;
+            AddressLine1 = address?.Line1;
+            AddressLine2 = address?.Line2;
             AddressZipCode = address?.PostalCode;
             AddressEmail = address?.Email;
             AddressPhone = address?.Phone;
@@ -192,8 +192,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                         LastName = AddressLastName,
                         RegionName = AddressCountry,
                         City = AddressCity,
-                        Line1 = AddressAddressLine1,
-                        Line2 = AddressAddressLine2,
+                        Line1 = AddressLine1,
+                        Line2 = AddressLine2,
                         Zip = AddressZipCode,
                         Email = AddressEmail,
                         Phone = AddressPhone,

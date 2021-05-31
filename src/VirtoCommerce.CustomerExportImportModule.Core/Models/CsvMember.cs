@@ -27,10 +27,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string AddressCity { get; set; }
 
         [Name("Address Line1")]
-        public string AddressAddressLine1 { get; set; }
+        public string AddressLine1 { get; set; }
 
         [Name("Address Line2")]
-        public string AddressAddressLine2 { get; set; }
+        public string AddressLine2 { get; set; }
 
         [Name("Address Zip Code")]
         public string AddressZipCode { get; set; }

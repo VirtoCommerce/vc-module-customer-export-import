@@ -1,7 +1,9 @@
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ImportDataValidationRequest
+    public sealed class ImportDataRequest
     {
+        public string OrganizationId { get; set; }
+
         public string FilePath { get; set; }
     }
 }

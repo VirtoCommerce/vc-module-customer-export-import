@@ -97,8 +97,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             };
 
             var store = new Store() { Id = "b2b-store", Name = "b2b-store" };
-            var exportableContact = new ExportableContact();
-            exportableContact.FromModel(contact, organization, store);
+            var exportableContact = new CsvContact();
+            exportableContact.ToExportableImportableContact(contact, organization, store);
 
             var stream = new MemoryStream();
             var sw = new StreamWriter(stream, leaveOpen: true);
@@ -106,7 +106,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             //Act
             var selectedDynamicProperties = new[] { "Sex" };
-            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<ExportableContact>(selectedDynamicProperties));
+            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<CsvContact>(selectedDynamicProperties));
             csvWriter.WriteRecords(new[] { exportableContact });
 
             sw.Dispose();

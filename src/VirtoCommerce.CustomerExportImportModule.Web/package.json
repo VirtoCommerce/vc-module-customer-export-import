@@ -14,5 +14,8 @@
         "webpack": "4.32.2",
         "webpack-cli": "3.3.2"
     },
-    "dependencies": {}
+    "dependencies": {
+        "angular": "1.4.4",
+        "ui-grid-auto-fit-columns": "^1.2.2"
+    }
 }

@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VirtoCommerce.CustomerExportImportModule.Core;
@@ -10,37 +12,43 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
     [Trait("Category", "CI")]
     public class CsvMemberValidationTests
     {
-        private static readonly ImportRecord<CsvContact>[] Contacts =
+        public static IEnumerable<object[]> Contacts
         {
-            new ImportRecord<CsvContact>
+            get
             {
-                Record = new CsvContact { Id = "TestId1", ContactFullName = "Test1" }
-            },
-            new ImportRecord<CsvContact>
-            {
-                Record = new CsvContact { Id = "TestId1", OuterId = "TestOuterId1", ContactFullName = "Test2" }
-            },
-            new ImportRecord<CsvContact>
-            {
-                Record = new CsvContact { Id = "TestId2", OuterId = "TestOuterId1", ContactFullName = "Test3" }
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<CsvContact> { Record = new CsvContact { Id = "TestId", ContactFullName = "Test1" } },
+                        new ImportRecord<CsvContact> { Record = new CsvContact { Id = "TestId", ContactFullName = "Test2" } }
+                    }
+                };
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<CsvContact> { Record = new CsvContact { OuterId = "TestId", ContactFullName = "Test1" } },
+                        new ImportRecord<CsvContact> { Record = new CsvContact { OuterId = "TestId", ContactFullName = "Test2" } }
+                    }
+                };
             }
-        };
+        }
 
-        [Fact]
-        public async Task ValidateAsync_Duplicates_WillFailAndReportFirst()
+        [Theory]
+        [MemberData(nameof(Contacts))]
+        public async Task ValidateAsync_Duplicates_WillFailAndReportFirst(ImportRecord<CsvContact>[] importRecords)
         {
             // Arrange
             var validator = GetValidator();
 
             // Act
-            var validationResult = await validator.ValidateAsync(Contacts);
+            var validationResult = await validator.ValidateAsync(importRecords);
 
             // Assert
-            var errors = validationResult.Errors.Where(validationError => validationError.ErrorCode == ModuleConstants.ValidationErrors.DuplicateError).ToArray();
-            Assert.NotNull(errors[0]);
-            Assert.Equal("Test1", (errors[0].CustomState as ImportValidationState<CsvContact>)?.InvalidRecord.Record.ContactFullName);
-            Assert.NotNull(errors[1]);
-            Assert.Equal("Test2", (errors[1].CustomState as ImportValidationState<CsvContact>)?.InvalidRecord.Record.ContactFullName);
+            var error = validationResult.Errors.FirstOrDefault(validationError => validationError.ErrorCode == ModuleConstants.ValidationErrors.DuplicateError);
+            Assert.NotNull(error);
+            Assert.Equal("Test1", (error.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord.Record.ContactFullName);
         }
 
         private ImportContactValidator GetValidator()

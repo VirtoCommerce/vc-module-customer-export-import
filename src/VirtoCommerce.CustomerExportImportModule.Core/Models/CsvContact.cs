@@ -1,26 +1,36 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
+using Newtonsoft.Json;
+using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.StoreModule.Core.Model;
+using Address = VirtoCommerce.CustomerModule.Core.Model.Address;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ExportableContact : ExportableMember
+    public sealed class CsvContact : CsvMember
     {
+        [JsonProperty("contactId")]
         [Name("Contact Id")]
         public override string Id { get; set; }
 
         [Name("Contact First Name")]
-        public string FirstName { get; set; }
+        [Required]
+        public string ContactFirstName { get; set; }
 
         [Name("Contact Last Name")]
-        public string LastName { get; set; }
+        [Required]
+        public string ContactLastName { get; set; }
 
         [Name("Contact Full Name")]
-        public string FullName { get; set; }
+        [Required]
+        public string ContactFullName { get; set; }
 
         [Name("Contact Outer Id")]
         public string ContactOuterId { get; set; }
@@ -56,8 +66,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string AccountStatus { get; set; }
 
         [Name("Email Verified")]
-        [BooleanTrueValues(new[] { "yes", "true" })]
-        [BooleanFalseValues(new[] { "no", "false" })]
+        [BooleanTrueValues("yes", "true")]
+        [BooleanFalseValues("no", "false")]
         public bool? EmailVerified { get; set; }
 
         [Name("Contact Status")]
@@ -67,7 +77,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string AssociatedOrganizationIds { get; set; }
 
         [Name("Birthday")]
-        public DateTime? BirthDate { get; set; }
+        public DateTime? Birthday { get; set; }
 
         [Name("TimeZone")]
         public string TimeZone { get; set; }
@@ -93,15 +103,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Preferred delivery")]
         public string PreferredDelivery { get; set; }
 
-        public ExportableContact FromModel(Contact contact, Organization organization, Store store)
+        public CsvContact ToExportableImportableContact(Contact contact, Organization organization, Store store)
         {
             var account = contact.SecurityAccounts?.FirstOrDefault();
             var address = contact.Addresses?.FirstOrDefault();
 
             Id = contact.Id;
-            FirstName = contact.FirstName;
-            LastName = contact.LastName;
-            FullName = contact.FullName;
+            ContactFirstName = contact.FirstName;
+            ContactLastName = contact.LastName;
+            ContactFullName = contact.FullName;
             ContactOuterId = contact.OuterId;
             OrganizationId = organization?.Id;
             OrganizationOuterId = organization?.OuterId;
@@ -116,7 +126,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             EmailVerified = account?.EmailConfirmed;
             ContactStatus = contact.Status;
             AssociatedOrganizationIds = contact.AssociatedOrganizations.IsNullOrEmpty() ? null : string.Join(", ", contact.AssociatedOrganizations);
-            BirthDate = contact.BirthDate;
+            Birthday = contact.BirthDate;
             TimeZone = contact.TimeZone;
             Phones = contact.Phones.IsNullOrEmpty() ? null : string.Join(", ", contact.Phones);
             UserGroups = contact.Groups.IsNullOrEmpty() ? null : string.Join(", ", contact.Groups);
@@ -131,16 +141,73 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressCountry = address?.CountryName;
             AddressRegion = address?.RegionName;
             AddressCity = address?.City;
-            AddressAddressLine1 = address?.Line1;
-            AddressAddressLine2 = address?.Line2;
+            AddressLine1 = address?.Line1;
+            AddressLine2 = address?.Line2;
             AddressZipCode = address?.PostalCode;
             AddressEmail = address?.Email;
             AddressPhone = address?.Phone;
 
             DynamicProperties = contact.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
-                 .ToArray();
+                .ToArray();
 
             return this;
+        }
+        
+        public Contact ToContact()
+        {
+            return new Contact
+            {
+                Id = Id,
+                FirstName = ContactFirstName,
+                LastName = ContactLastName,
+                FullName = ContactFullName,
+                OuterId = ContactOuterId,
+                SecurityAccounts = AccountId != null
+                    ? new List<ApplicationUser>
+                    {
+                        new ApplicationUser
+                        {
+                            Id = AccountId,
+                            StoreId = StoreId,
+                            UserName = AccountLogin,
+                            Email = AccountEmail,
+                            UserType = AccountType,
+                            Status = AccountStatus,
+                            EmailConfirmed = EmailVerified ?? false
+                        }
+                    }
+                    : null,
+                Status = ContactStatus,
+                AssociatedOrganizations = AssociatedOrganizationIds?.Split(", ").ToList(),
+                BirthDate = Birthday,
+                TimeZone = TimeZone,
+                Phones = Phones?.Split(", "),
+                Groups = UserGroups?.Split(", "),
+                Addresses = new List<Address>
+                {
+                    new Address
+                    {
+                        AddressType = Enum.Parse<AddressType>(AddressType),
+                        FirstName = AddressFirstName,
+                        LastName = AddressLastName,
+                        RegionName = AddressCountry,
+                        City = AddressCity,
+                        Line1 = AddressLine1,
+                        Line2 = AddressLine2,
+                        Zip = AddressZipCode,
+                        Email = AddressEmail,
+                        Phone = AddressPhone,
+                    }
+                },
+                DynamicProperties = DynamicProperties
+            };
+        }
+
+        public Organization ToOrganization()
+        {
+            var result = new Organization { Id = OrganizationId, OuterId = OrganizationOuterId, Name = OrganizationName, };
+
+            return result;
         }
     }
 }

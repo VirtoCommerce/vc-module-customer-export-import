@@ -6,7 +6,7 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ExportableOrganization : ExportableMember
+    public sealed class ExportableOrganization : CsvMember
     {
         [Name("Organization Id")]
         public override string Id { get; set; }
@@ -54,8 +54,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressCountry = address?.CountryName;
             AddressRegion = address?.RegionName;
             AddressCity = address?.City;
-            AddressAddressLine1 = address?.Line1;
-            AddressAddressLine2 = address?.Line2;
+            AddressLine1 = address?.Line1;
+            AddressLine2 = address?.Line2;
             AddressZipCode = address?.PostalCode;
             AddressEmail = address?.Email;
             AddressPhone = address?.Phone;

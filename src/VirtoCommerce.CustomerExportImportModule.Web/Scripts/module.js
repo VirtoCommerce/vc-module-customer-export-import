@@ -1,3 +1,5 @@
+import 'ui-grid-auto-fit-columns';
+
 // Call this to register your module to main application
 var moduleName = "virtoCommerce.customerExportImportModule";
 
@@ -5,12 +7,11 @@ if (AppDependencies !== undefined) {
     AppDependencies.push(moduleName);
 }
 
-angular.module(moduleName, []).run([
+angular.module(moduleName, ['ui.grid.autoFitColumns']).run([
     'virtoCommerce.featureManagerSubscriber', 'platformWebApp.dialogService', 'platformWebApp.toolbarService', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerExportImportModule.export', 'platformWebApp.settings', '$q', 'platformWebApp.bladeNavigationService',
     function (featureManagerSubscriber, dialogService, toolbarService, members, exportResources, settings, $q, bladeNavigationService) {
         featureManagerSubscriber.onLoginStatusChanged('CustomerExportImport', () => {
-            toolbarService.register(
-                {
+            toolbarService.register({
                     name: "platform.commands.import",
                     icon: "fa fa-download",
                     executeMethod: function (blade) {

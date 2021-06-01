@@ -22,7 +22,7 @@
           "progress": "Progress"
         },
         "drag-and-drop": {
-          "placeholder": "Drag and drop files here",
+          "placeholder": "Drag and drop file here",
           "or": "or ",
           "link": "browse your files"
         },

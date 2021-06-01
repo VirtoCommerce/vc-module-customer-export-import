@@ -8,8 +8,8 @@ if (AppDependencies !== undefined) {
 }
 
 angular.module(moduleName, ['ui.grid.autoFitColumns']).run([
-    'virtoCommerce.featureManagerSubscriber', 'platformWebApp.dialogService', 'platformWebApp.toolbarService', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerExportImportModule.export', 'platformWebApp.settings', '$q', 'platformWebApp.bladeNavigationService',
-    function (featureManagerSubscriber, dialogService, toolbarService, members, exportResources, settings, $q, bladeNavigationService) {
+    'virtoCommerce.featureManagerSubscriber', 'platformWebApp.dialogService', 'platformWebApp.toolbarService', 'virtoCommerce.customerModule.members', 'virtoCommerce.customerExportImportModule.export', 'platformWebApp.settings', '$q', 'platformWebApp.bladeNavigationService', '$state',
+    function (featureManagerSubscriber, dialogService, toolbarService, members, exportResources, settings, $q, bladeNavigationService, $state) {
         featureManagerSubscriber.onLoginStatusChanged('CustomerExportImport', () => {
             toolbarService.register({
                     name: "platform.commands.import",
@@ -139,6 +139,10 @@ angular.module(moduleName, ['ui.grid.autoFitColumns']).run([
                 },
                 'virtoCommerce.customerModule.memberListController'
             );
+
+            if ($state.current.url === '/customers') {
+                $state.reload();
+            }
         });
     }
 ]);

@@ -1,12 +1,15 @@
 using System.Collections.Generic;
 using CsvHelper.Configuration.Attributes;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public abstract class CsvMember: IExportable, IHasDynamicProperties
+    public abstract class CsvMember: IExportable, IHasOuterId, IHasDynamicProperties
     {
         public abstract string Id { get; set; }
+
+        public abstract string OuterId { get; set; }
 
         [Name("Address Type")]
         public string AddressType { get; set; }

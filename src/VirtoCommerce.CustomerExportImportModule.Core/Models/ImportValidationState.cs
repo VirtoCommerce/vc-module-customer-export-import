@@ -1,8 +1,8 @@
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ImportValidationState
+    public sealed class ImportValidationState<T>
     {
-        public CsvContact InvalidContact { get; set; }
+        public ImportRecord<T> InvalidRecord { get; set; }
 
         public string FieldName { get; set; }
     }

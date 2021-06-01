@@ -32,8 +32,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Required]
         public string ContactFullName { get; set; }
 
+        [JsonProperty("contactOuterId")]
         [Name("Contact Outer Id")]
-        public string ContactOuterId { get; set; }
+        public override string OuterId { get; set; }
 
         [Name("Organization Id")]
         public string OrganizationId { get; set; }
@@ -109,10 +110,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             var address = contact.Addresses?.FirstOrDefault();
 
             Id = contact.Id;
+            OuterId = contact.OuterId;
             ContactFirstName = contact.FirstName;
             ContactLastName = contact.LastName;
             ContactFullName = contact.FullName;
-            ContactOuterId = contact.OuterId;
             OrganizationId = organization?.Id;
             OrganizationOuterId = organization?.OuterId;
             OrganizationName = organization?.Name;
@@ -158,10 +159,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             return new Contact
             {
                 Id = Id,
+                OuterId = OuterId,
                 FirstName = ContactFirstName,
                 LastName = ContactLastName,
                 FullName = ContactFullName,
-                OuterId = ContactOuterId,
                 SecurityAccounts = AccountId != null
                     ? new List<ApplicationUser>
                     {

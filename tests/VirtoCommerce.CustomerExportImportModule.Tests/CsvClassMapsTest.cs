@@ -11,7 +11,7 @@ using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.StoreModule.Core.Model;
 using Xunit;
 using Address = VirtoCommerce.CustomerModule.Core.Model.Address;
-using ExportableOrganization = VirtoCommerce.CustomerExportImportModule.Core.Models.ExportableOrganization;
+using CsvOrganization = VirtoCommerce.CustomerExportImportModule.Core.Models.CsvOrganization;
 
 namespace VirtoCommerce.CustomerExportImportModule.Tests
 {
@@ -175,7 +175,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             var parent = new Organization() { Id = "parent_org_id", OuterId = "parent_outer_id", Name = "parent_outer_id" };
 
-            var exportableOrganization = new ExportableOrganization();
+            var exportableOrganization = new CsvOrganization();
             exportableOrganization.FromModel(organization, parent);
 
             var stream = new MemoryStream();
@@ -184,7 +184,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             //Act
             var selectedDynamicProperties = new[] { "Size" };
-            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<ExportableOrganization>(selectedDynamicProperties));
+            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<CsvOrganization>(selectedDynamicProperties));
 
             csvWriter.WriteRecords(new[] { exportableOrganization });
 

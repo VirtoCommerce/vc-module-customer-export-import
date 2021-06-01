@@ -1,4 +1,4 @@
-# v1.2.vc-module-customer-export-import.3
+# v1.4.vc-demo-module
 name: Module CI
 
 on:
@@ -142,6 +142,6 @@ jobs:
         if: ${{ github.ref == 'refs/heads/dev' || (github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/master')}}
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: Module deployment
+          workflow: VC deployment
           token: ${{ secrets.REPO_TOKEN }}
-          inputs: '{ "blobUrl": "${{ steps.blobRelease.outputs.packageUrl }}", "moduleId": "${{ steps.image.outputs.moduleId }}", "artifactVersion": "${{ steps.image.outputs.taggedVersion }}"}'
+          inputs: '{ "artifactUrl": "${{ steps.blobRelease.outputs.packageUrl }}" }'

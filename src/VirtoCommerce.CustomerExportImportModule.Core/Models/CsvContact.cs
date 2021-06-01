@@ -178,7 +178,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             return this;
         }
 
-        public Contact ToContact()
+        public Contact ToContact(bool nullId = false)
         {
             var accountSpecified = new[] { AccountId, AccountLogin, AccountEmail }.Any(accountField => accountField != null);
             var accounts = new List<ApplicationUser>();
@@ -222,7 +222,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
             return new Contact
             {
-                Id = Id,
+                Id = nullId ? null : Id,
                 OuterId = OuterId,
                 FirstName = ContactFirstName,
                 LastName = ContactLastName,

@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Model.Search;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Services.Indexed;
+using VirtoCommerce.CustomerModule.Data.Model;
 using VirtoCommerce.CustomerModule.Data.Repositories;
 using VirtoCommerce.CustomerModule.Data.Services;
 using VirtoCommerce.Platform.Core.Caching;
@@ -71,6 +73,22 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
 
             return result;
+        }
+
+        protected override IQueryable<MemberEntity> BuildQuery(IMemberRepository repository, MembersSearchCriteria criteria)
+        {
+            var query = base.BuildQuery(repository, criteria);
+
+            if (criteria is ExtendedMemberSearchCiteria extendedCriteria)
+            {
+
+                if (!extendedCriteria.OuterIds.IsNullOrEmpty())
+                {
+                    query = query.Where(m => extendedCriteria.OuterIds.Contains(m.Id));
+                }
+            }
+
+            return query;
         }
 
         private async Task LoadChildren(MembersSearchCriteria criteria, IEnumerable<Organization> organizations, bool withoutOrganizations, string[] orgMemberTypes, MemberSearchResult result)

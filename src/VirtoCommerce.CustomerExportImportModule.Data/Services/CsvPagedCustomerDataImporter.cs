@@ -7,6 +7,7 @@ using CsvHelper;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
+using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -114,7 +115,41 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                         .Where(importContact => !errorsContext.ErrorsRows.Contains(importContact.Row))
                         .ToArray();
 
+                    // todo: зарезать дубликаты. Вопрос: что делать если в одних дупликатах есть связанные сущности а в других нет...
 
+                    var internalIds = importContacts.Select(x => x.Record.Id).Distinct().Where(x => x != null).ToArray();
+                    var outerIds = importContacts.Select(x => x.Record.OuterId).Distinct().Where(x => x != null).ToArray();
+
+                    var existedContacts = (await SearchMembersByIdAndOuterId(internalIds, outerIds, new[] { nameof(Contact) })).OfType<Contact>();
+
+                    var existedContactsIds = existedContacts.Select(x => x.Id);
+
+                    var createImportContacts = importContacts.Where(x => existedContactsIds.Contains(x.Record.Id)).ToArray();
+
+                    var internalOrgIds = importContacts.Select(x => x.Record.OrganizationId).Distinct().Where(x => x != null).ToArray();
+                    var outerOrgIds = importContacts.Select(x => x.Record.OrganizationOuterId).Distinct().Where(x => x != null).ToArray();
+
+                    var existedOrganizations = (await SearchMembersByIdAndOuterId(internalOrgIds, outerOrgIds, new[] { nameof(Organization) })).OfType<Organization>();
+
+
+
+                    var newContacts = createImportContacts.Select(x =>
+                    {
+                        var contact = x.Record.ToContact(true);
+
+                        var existedOrg = existedOrganizations.FirstOrDefault(o => o.Id == x.Record.OrganizationId)
+                                         ?? existedOrganizations.FirstOrDefault(o => o.OuterId == x.Record.OrganizationOuterId);
+
+                        var orgIdForNewContact = existedOrg?.Id ?? request.OrganizationId;
+
+                        contact.Organizations =
+                            orgIdForNewContact != null ? new[] { orgIdForNewContact }.ToList() : new List<string>();
+
+                        return contact;
+                    }).ToArray();
+
+
+                    await _memberService.SaveChangesAsync(newContacts);
 
                 }
             }
@@ -124,6 +159,27 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 throw;
             }
 
+        }
+
+        private async Task<Member[]> SearchMembersByIdAndOuterId(string[] internalIds, string[] outerIds, string[] memberTypes)
+        {
+            var searchResultById = await _memberSearchService.SearchMembersAsync(new ExtendedMemberSearchCiteria()
+            {
+                ObjectIds = internalIds,
+                MemberTypes = memberTypes,
+                Take = ModuleConstants.Settings.PageSize
+            });
+
+            var searchResultByOuterId = await _memberSearchService.SearchMembersAsync(new ExtendedMemberSearchCiteria()
+            {
+                OuterIds = outerIds,
+                MemberTypes = memberTypes,
+                Take = ModuleConstants.Settings.PageSize
+            });
+
+            var existedMembers = searchResultById.Results.Union(searchResultByOuterId.Results,
+                EqualityComparer<Member>.Default).ToArray();
+            return existedMembers;
         }
 
         private static void HandleError(Action<ImportProgressInfo> progressCallback, ImportProgressInfo importProgress, string error = null)

@@ -5,5 +5,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string OrganizationId { get; set; }
 
         public string FilePath { get; set; }
+
+        public string MemberType { get; set; }
     }
 }

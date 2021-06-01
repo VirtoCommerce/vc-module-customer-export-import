@@ -24,7 +24,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             _stream = stream;
             _streamReader = new StreamReader(stream);
-            
+
             _configuration = configuration;
             _csvReader = new CsvReader(_streamReader, configuration);
 
@@ -69,6 +69,34 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             return _totalCount.Value;
         }
+
+        public string GetHeaderRaw()
+        {
+            var result = string.Empty;
+
+            var streamPosition = _stream.Position;
+            _stream.Seek(0, SeekOrigin.Begin);
+
+            using var streamReader = new StreamReader(_stream, leaveOpen: true);
+            using var csvReader = new CsvReader(streamReader, _configuration, true);
+
+            try
+            {
+                csvReader.Read();
+                csvReader.ReadHeader();
+                csvReader.ValidateHeader<CsvContact>();
+
+                result = string.Join(csvReader.Configuration.Delimiter, csvReader.Context.HeaderRecord);
+
+            }
+            finally
+            {
+                _stream.Seek(streamPosition, SeekOrigin.Begin);
+            }
+
+            return result;
+        }
+
 
         public async Task<bool> FetchAsync()
         {

@@ -1,16 +1,18 @@
+using System;
 using System.Collections.Generic;
-using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.PushNotifications;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ImportProgressInfo : ValueObject
+    public sealed class ImportPushNotification : PushNotification
     {
-        public ImportProgressInfo()
+        public ImportPushNotification(string creator)
+            : base(creator)
         {
             Errors = new List<string>();
         }
 
-        public string Description { get; set; }
+        public string JobId { get; set; }
 
         public int ProcessedCount { get; set; }
 
@@ -24,10 +26,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         public int OrganizationsUpdated { get; set; }
 
-        public int ErrorCount { get; set; }
+        public ICollection<string> Errors { get; set; }
+
+        public DateTime? Finished { get; set; }
 
         public string ReportUrl { get; set; }
-
-        public ICollection<string> Errors { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void AttachValidators()
         {
-            RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntityAreNotDuplicatesValidator<CsvContact>());
+            RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAreNotDuplicatesValidator<CsvContact>());
         }
     }
 }

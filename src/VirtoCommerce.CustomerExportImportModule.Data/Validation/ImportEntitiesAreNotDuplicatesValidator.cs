@@ -6,12 +6,12 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
-    public sealed class ImportEntityAreNotDuplicatesValidator<T> : AbstractValidator<ImportRecord<T>[]>
+    public sealed class ImportEntitiesAreNotDuplicatesValidator<T> : AbstractValidator<ImportRecord<T>[]>
         where T : IEntity, IHasOuterId
     {
         internal const string Duplicates = nameof(Duplicates);
 
-        public ImportEntityAreNotDuplicatesValidator()
+        public ImportEntitiesAreNotDuplicatesValidator()
         {
             AttachValidators();
         }

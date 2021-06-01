@@ -19,7 +19,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(importRecord => importRecord)
                 .Must((_, importRecord, context) =>
                 {
-                    var duplicates = (ImportRecord<T>[])context.ParentContext.RootContextData[ImportEntityAreNotDuplicatesValidator<T>.Duplicates];
+                    var duplicates = (ImportRecord<T>[])context.ParentContext.RootContextData[ImportEntitiesAreNotDuplicatesValidator<T>.Duplicates];
                     return !duplicates.Contains(importRecord);
                 })
                 .WithErrorCode(ModuleConstants.ValidationErrors.DuplicateError)

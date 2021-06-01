@@ -102,7 +102,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     case nameof(Organization):
                         var organization = (Organization)member;
                         var parentOrganizationId = organization.ParentId;
-                        return new ExportableOrganization().FromModel(organization, parentOrganizationId != null ? allOrganizations[parentOrganizationId] : null);
+                        return new CsvOrganization().FromModel(organization, parentOrganizationId != null ? allOrganizations[parentOrganizationId] : null);
                     default:
                         throw new InvalidDataException();
                 }

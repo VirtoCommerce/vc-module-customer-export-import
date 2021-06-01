@@ -11,6 +11,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
 
         public static class ValidationErrors
         {
+            public const string DuplicateError = "Duplicate";
+
             public const string FileNotExisted = "file-not-existed";
 
             public const string NoData = "no-data";

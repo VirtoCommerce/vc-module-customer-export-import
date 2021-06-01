@@ -101,7 +101,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             // Act
             await customerExportPagedDataSource.FetchAsync();
-            var exportedOrganization = (ExportableOrganization)customerExportPagedDataSource.Items.First();
+            var exportedOrganization = (CsvOrganization)customerExportPagedDataSource.Items.First();
 
             // Assert
             Assert.Equal("Organization2", exportedOrganization.ParentOrganizationId);

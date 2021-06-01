@@ -1,18 +1,21 @@
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
+using Newtonsoft.Json;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ExportableOrganization : CsvMember
+    public sealed class CsvOrganization : CsvMember
     {
+        [JsonProperty("organizationId")]
         [Name("Organization Id")]
         public override string Id { get; set; }
-
+        
+        [JsonProperty("organizationOuterId")]
         [Name("Organization Outer Id")]
-        public string OrganizationOuterId { get; set; }
+        public override string OuterId { get; set; }
 
         [Name("Organization Name")]
         public string OrganizationName { get; set; }
@@ -38,13 +41,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Organization Groups")]
         public string OrganizationGroups { get; set; }
 
-        public ExportableOrganization FromModel(Organization organization, Organization parentOrganization)
+        public CsvOrganization FromModel(Organization organization, Organization parentOrganization)
         {
             var address = organization.Addresses?.FirstOrDefault();
 
             Id = organization.Id;
+            OuterId = organization.OuterId;
             OrganizationName = organization.Name;
-            OrganizationOuterId = organization.OuterId;
             ParentOrganizationName = parentOrganization?.Name;
             ParentOrganizationId = organization.ParentId;
             ParentOrganizationOuterId = parentOrganization?.OuterId;

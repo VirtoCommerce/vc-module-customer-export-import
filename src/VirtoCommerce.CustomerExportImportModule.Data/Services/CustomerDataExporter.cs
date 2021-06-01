@@ -70,7 +70,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             var contactExportWriter = _exportWriterFactory.Create<CsvContact>(contactsFilePath, new ExportConfiguration(), contactsDynamicPropertiesNames);
 
             var organizationFilePath = GetExportFilePath("Organizations");
-            var organizationExportWriter = _exportWriterFactory.Create<ExportableOrganization>(organizationFilePath, new ExportConfiguration(), organizationsDynamicPropertiesNames);
+            var organizationExportWriter = _exportWriterFactory.Create<CsvOrganization>(organizationFilePath, new ExportConfiguration(), organizationsDynamicPropertiesNames);
 
             try
             {
@@ -82,7 +82,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                     contactExportWriter.WriteRecords(contacts);
 
-                    var organizations = dataSource.Items.OfType<ExportableOrganization>().ToArray();
+                    var organizations = dataSource.Items.OfType<CsvOrganization>().ToArray();
 
                     organizationExportWriter.WriteRecords(organizations);
 

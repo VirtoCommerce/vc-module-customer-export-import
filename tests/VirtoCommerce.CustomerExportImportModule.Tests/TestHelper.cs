@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
-using VirtoCommerce.CustomerExportImportModule.Core;
-using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.DynamicProperties;
-using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Platform.Core.Security;
 
 namespace VirtoCommerce.CustomerExportImportModule.Tests
 {
@@ -57,57 +56,34 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
         public static string GetCsv(IEnumerable<string> records, string header = null)
         {
-            var csv = new StringBuilder();
+            var csv = "";
 
             if (header != null)
             {
-                csv.AppendLine(header);
+                csv += header + "\r\n";
             }
 
-            foreach (var record in records)
+            return records.Aggregate(csv, (current, record) => current + record + "\r\n");
+        }
+
+        public static IEnumerable<PropertyInfo> GetProperties<T>(T obj)
+        {
+            return obj.GetType()
+                .GetTypeInfo()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(p => p.Name != nameof(ApplicationUser.SecurityStamp) && p.Name != nameof(ApplicationUser.ConcurrencyStamp))
+                .OrderBy(p => p.Name)
+                .ToList();
+        }
+
+        public static string ToString<T>(T obj)
+        {
+            var propertiesAndValues = GetProperties(obj).Select(property =>
             {
-                csv.AppendLine(record);
-            }
-
-            return csv.ToString();
+                var value = property.GetValue(obj);
+                return $"{property.Name}: {(value is IEnumerable<object> enumerable ? $"[{string.Join(", ", enumerable.Select(x => x.ToString()))}]" : value )}";
+            });
+            return $"{{{string.Join(", ", propertiesAndValues)}}}";
         }
-
-        public static string[] GetArrayOfSameRecords(string recordValue, long number)
-        {
-            var result = new List<string>();
-
-            for (long i = 0; i < number; i++)
-            {
-                result.Add(recordValue);
-            }
-
-            return result.ToArray();
-        }
-
-        public static Mock<ISettingsManager> GetSettingsManagerMoq()
-        {
-            var settingsManagerMoq = new Mock<ISettingsManager>();
-
-            settingsManagerMoq.Setup(x =>
-                    x.GetObjectSettingAsync(
-                        It.Is<string>(x => x == ModuleConstants.Settings.General.ImportFileMaxSize.Name),
-                        null, null))
-                .ReturnsAsync(new ObjectSettingEntry()
-                { Value = ModuleConstants.Settings.General.ImportFileMaxSize.DefaultValue });
-
-            settingsManagerMoq.Setup(x =>
-                    x.GetObjectSettingAsync(
-                        It.Is<string>(x => x == ModuleConstants.Settings.General.ImportLimitOfLines.Name),
-                        null, null))
-                .ReturnsAsync(new ObjectSettingEntry()
-                { Value = ModuleConstants.Settings.General.ImportLimitOfLines.DefaultValue });
-            return settingsManagerMoq;
-        }
-
-        public static ImportDataRequest CreateImportDataRequest()
-        {
-            return new ImportDataRequest { FilePath = "https://localhost/test_url.csv" };
-        }
-
     }
 }

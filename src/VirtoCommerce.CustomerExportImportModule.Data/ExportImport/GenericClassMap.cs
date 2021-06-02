@@ -14,7 +14,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
     {
         public GenericClassMap(string[] dynamicPropertyNames = null)
         {
-            AutoMap(new Configuration() { Delimiter = ";", CultureInfo = CultureInfo.InvariantCulture });
+            AutoMap(new Configuration { Delimiter = ";", CultureInfo = CultureInfo.InvariantCulture });
             
             var columnIndex = MemberMaps.Count;
 
@@ -31,13 +31,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                 {
                     // create CsvPropertyMap manually, because this.Map(x =>...) does not allow
                     // to export multiple entries for the same property
-                    var dynamicPropertyWriteMap = MemberMap.CreateGeneric(ClassType, dynamicPropertiesPropertyInfo);
-                    dynamicPropertyWriteMap.Name(dynamicPropertyName);
-
-                    dynamicPropertyWriteMap.Data.Index = columnIndex++;
+                    var dynamicPropertyColumnDefinitionAndWriteMap = MemberMap.CreateGeneric(ClassType, dynamicPropertiesPropertyInfo);
+                    dynamicPropertyColumnDefinitionAndWriteMap.Name(dynamicPropertyName);
+                    dynamicPropertyColumnDefinitionAndWriteMap.Data.IsOptional = true;
+                    dynamicPropertyColumnDefinitionAndWriteMap.Data.Index = columnIndex++;
 
                     // create custom converter instance which will get the required record from the collection
-                    dynamicPropertyWriteMap.UsingExpression<ICollection<DynamicObjectProperty>>(null, dynamicProperties =>
+                    dynamicPropertyColumnDefinitionAndWriteMap.UsingExpression<ICollection<DynamicObjectProperty>>(null, dynamicProperties =>
                     {
                         var dynamicProperty = dynamicProperties.FirstOrDefault(x => x.Name == dynamicPropertyName && x.Values.Any());
                         var dynamicPropertyValues = Array.Empty<string>();
@@ -64,30 +64,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                         return string.Join(',', dynamicPropertyValues);
                     });
 
-                    currentClassMap.MemberMaps.Add(dynamicPropertyWriteMap);
+                    currentClassMap.MemberMaps.Add(dynamicPropertyColumnDefinitionAndWriteMap);
                 }
 
                 var dynamicPropertyReadingMap = MemberMap.CreateGeneric(ClassType, dynamicPropertiesPropertyInfo);
-                dynamicPropertyReadingMap.Data.ReadingConvertExpression = 
-                    (Expression<Func<IReaderRow, object>>)(row => dynamicPropertyNames.Select(dynamicPropertyName =>
+                dynamicPropertyReadingMap.Data.ReadingConvertExpression =
+                    (Expression<Func<IReaderRow, object>>) (row => dynamicPropertyNames.Select(dynamicPropertyName =>
                         new DynamicObjectProperty
                         {
                             Name = dynamicPropertyName,
-                            Values = new List<DynamicPropertyObjectValue>() {
-                                new DynamicPropertyObjectValue()
-                                {
-                                    PropertyName = dynamicPropertyName,
-                                    Value = row.GetField<string>(dynamicPropertyName)
-                                }
+                            Values = new List<DynamicPropertyObjectValue>
+                            {
+                                new DynamicPropertyObjectValue { PropertyName = dynamicPropertyName, Value = row.GetField<string>(dynamicPropertyName) }
                             }
-                        }).ToList());
+                        }).Where(x => x.Values.First().Value != null).ToList());
                 dynamicPropertyReadingMap.UsingExpression<ICollection<DynamicObjectProperty>>(null, null);
                 dynamicPropertyReadingMap.Ignore(true);
-
+                dynamicPropertyReadingMap.Data.IsOptional = true;
                 dynamicPropertyReadingMap.Data.Index = columnIndex + 1;
-
                 MemberMaps.Add(dynamicPropertyReadingMap);
-                dynamicPropertyReadingMap.Ignore(true);
             }
         }
     }

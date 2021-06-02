@@ -11,7 +11,6 @@ using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.StoreModule.Core.Model;
 using Xunit;
 using Address = VirtoCommerce.CustomerModule.Core.Model.Address;
-using CsvOrganization = VirtoCommerce.CustomerExportImportModule.Core.Models.CsvOrganization;
 
 namespace VirtoCommerce.CustomerExportImportModule.Tests
 {
@@ -19,58 +18,49 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
     [Trait("Category", "CI")]
     public class CsvClassMapsTest
     {
-        [Fact]
-        public void Map_ContactWithDynamicProperty_Success()
+        private static readonly List<DynamicObjectProperty> ContactDynamicProperties = new List<DynamicObjectProperty>
         {
-            //Arrange
-            var dynamicProperties = new List<DynamicObjectProperty>
+            new DynamicObjectProperty
             {
-                new DynamicObjectProperty()
+                Name = "Sex",
+                Values = new[] { new DynamicPropertyObjectValue { PropertyName = "Sex", Value = "Male" } }
+            }
+        };
+
+        private static readonly Contact Contact = new Contact
+        {
+            Id = "contact_id",
+            FirstName = "Anton",
+            LastName = "Boroda",
+            FullName = "Anton Boroda",
+            OuterId = "outer_id",
+            SecurityAccounts = new List<ApplicationUser>
+            {
+                new ApplicationUser
                 {
-                    Name = "Sex",
-                    ValueType = DynamicPropertyValueType.ShortText,
-                    Values = new[] {
-                    new DynamicPropertyObjectValue
-                    {
-                        Value = "Male",
-                        ValueType = DynamicPropertyValueType.ShortText
-                    }}
+                    Id = "account_id",
+                    UserName = "login",
+                    StoreId = "b2b-store",
+                    Email = "c@mail.com",
+                    UserType = "customer",
+                    Status = "new",
+                    EmailConfirmed = true
                 }
-            };
-
-            var contact = new Contact()
+            },
+            Status = "new",
+            AssociatedOrganizations = new List<string>(new[] { "org_id1", "org_id2" }),
+            BirthDate = new DateTime(1986, 04, 14),
+            TimeZone = "MSK",
+            Phones = new List<string>(new[] { "777", "555" }),
+            Groups = new List<string>(new[] { "tag1", "tag2" }),
+            Salutation = "mr",
+            DefaultLanguage = "en_US",
+            TaxPayerId = "TaxId",
+            PreferredCommunication = "email",
+            PreferredDelivery = "pickup",
+            Addresses = new List<Address>(new[]
             {
-                Id = "contact_id",
-                FirstName = "Anton",
-                LastName = "Boroda",
-                FullName = "Anton Boroda",
-                OuterId = "outer_id",
-                SecurityAccounts = new List<ApplicationUser>()
-                {
-                    new ApplicationUser()
-                    {
-                        Id = "account_id",
-                        UserName = "login",
-                        StoreId = "b2b-store",
-                        Email = "c@mail.com",
-                        UserType = "customer",
-                        Status = "new",
-                        EmailConfirmed = true
-                    }
-                },
-                Status = "new",
-                AssociatedOrganizations = new[] { "org_id1", "org_id2" },
-                BirthDate = new DateTime(1986, 04, 14),
-                TimeZone = "MSK",
-                Phones = new List<string>(new[] { "777", "555" }),
-                Groups = new List<string>(new[] { "tag1", "tag2" }),
-                Salutation = "mr",
-                DefaultLanguage = "en_US",
-                TaxPayerId = "TaxId",
-                PreferredCommunication = "email",
-                PreferredDelivery = "pickup",
-
-                Addresses = new List<Address>(new[]{new Address()
+                new Address
                 {
                     AddressType = AddressType.Pickup,
                     FirstName = "Anton",
@@ -83,55 +73,57 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     Email = "c@mail.com",
                     PostalCode = "610033",
                     Phone = "777"
-                }}),
+                }
+            }),
+            DynamicProperties = ContactDynamicProperties
+        };
 
-                DynamicProperties = dynamicProperties
-            };
+        private static readonly Organization ContactOrganization = new Organization { Id = "org_id", Name = "Boroda ltd", OuterId = "org_outer_id" };
 
-            var organization = new Organization()
-            {
-                Id = "org_id",
-                Name = "Boroda ltd",
-                OuterId = "org_outer_id"
+        private static readonly Store Store = new Store { Id = "b2b-store", Name = "b2b-store" };
 
-            };
+        private static readonly string ContactCsvHeader =
+            "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Associated Organization Ids;Birthday;TimeZone;Phones;User groups;Salutation;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Sex";
+        private static readonly string ContactCsvRecord =
+            "contact_id;Anton;Boroda;Anton Boroda;outer_id;org_id;org_outer_id;Boroda ltd;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;new;org_id1, org_id2;04/14/1986 00:00:00;MSK;777, 555;tag1, tag2;mr;en_US;TaxId;email;pickup;BillingAndShipping;Anton;Boroda;Russia;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Male";
 
-            var store = new Store() { Id = "b2b-store", Name = "b2b-store" };
+        [Fact]
+        public void Export_ContactWithDynamicProperty_HeaderAndValuesAreCorrect()
+        {
+            // Arrange
             var exportableContact = new CsvContact();
-            exportableContact.ToExportableImportableContact(contact, organization, store);
+            exportableContact.ToExportableImportableContact(Contact, ContactOrganization, Store);
 
             var stream = new MemoryStream();
-            var sw = new StreamWriter(stream, leaveOpen: true);
-            var csvWriter = new CsvWriter(sw, new ExportConfiguration());
-
-            //Act
+            var streamWriter = new StreamWriter(stream, leaveOpen: true);
+            var csvWriter = new CsvWriter(streamWriter, new ExportConfiguration());
             var selectedDynamicProperties = new[] { "Sex" };
             csvWriter.Configuration.RegisterClassMap(new GenericClassMap<CsvContact>(selectedDynamicProperties));
+
+            // Act
             csvWriter.WriteRecords(new[] { exportableContact });
 
-            sw.Dispose();
+            streamWriter.Dispose();
             csvWriter.Dispose();
 
-
+            // Assert
             stream.Seek(0, SeekOrigin.Begin);
-
-            //Assert
-            var expected = "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Associated Organization Ids;Birthday;TimeZone;Phones;User groups;Salutation;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Address Type;Address First Name;Address Last Name;Address Country;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Sex\r\n"
-                           + "contact_id;Anton;Boroda;Anton Boroda;outer_id;org_id;org_outer_id;Boroda ltd;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;new;org_id1, org_id2;04/14/1986 00:00:00;MSK;777, 555;tag1, tag2;mr;en_US;TaxId;email;pickup;BillingAndShipping;Anton;Boroda;Russia;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Male\r\n";
 
             var sr = new StreamReader(stream);
             var csv = sr.ReadToEnd();
 
-            Assert.Equal(expected, csv);
+            var expectedCsv = TestHelper.GetCsv(new[] { ContactCsvRecord }, ContactCsvHeader);
+
+            Assert.Equal(expectedCsv, csv);
         }
 
         [Fact]
-        public void Map_OrganizationWithDynamicProperty_Success()
+        public void Export_OrganizationWithDynamicProperty_HeaderAndValuesAreCorrect()
         {
             //Arrange
             var dynamicProperties = new List<DynamicObjectProperty>
             {
-                new DynamicObjectProperty()
+                new DynamicObjectProperty
                 {
                     Name = "Size",
                     ValueType = DynamicPropertyValueType.ShortText,
@@ -144,7 +136,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 }
             };
 
-            var organization = new Organization()
+            var organization = new Organization
             {
                 Id = "org_id1",
                 Name = "Boroda ltd",
@@ -155,7 +147,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 Description = "org desc",
                 Groups = new List<string>(new[] { "tag1", "tag2" }),
 
-                Addresses = new List<Address>(new[]{new Address()
+                Addresses = new List<Address>(new[]{new Address
                 {
                     AddressType = AddressType.Pickup,
                     FirstName = "Anton",
@@ -173,7 +165,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 DynamicProperties = dynamicProperties
             };
 
-            var parent = new Organization() { Id = "parent_org_id", OuterId = "parent_outer_id", Name = "parent_outer_id" };
+            var parent = new Organization { Id = "parent_org_id", OuterId = "parent_outer_id", Name = "parent_outer_id" };
 
             var exportableOrganization = new CsvOrganization();
             exportableOrganization.FromModel(organization, parent);
@@ -201,6 +193,46 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var csv = sr.ReadToEnd();
 
             Assert.Equal(expected, csv);
+        }
+
+        [Theory]
+        [MemberData(nameof(ContactImportData))]
+        public void Import_ContactWithAndWithoutOptionalFields_HeaderAndValuesAreCorrect(string header, string record, Contact expectedContact, Organization expectedOrganization)
+        {
+            // Arrange
+            var csv = TestHelper.GetCsv(new[] { record }, header);
+            using var stream = TestHelper.GetStream(csv);
+            using var streamReader = new StreamReader(stream);
+            using var csvReader = new CsvReader(streamReader, new ImportConfiguration());
+            var selectedDynamicProperties = new[] { "Sex" };
+            csvReader.Configuration.RegisterClassMap(new GenericClassMap<CsvContact>(selectedDynamicProperties));
+
+            // Act
+            csvReader.Read();
+            csvReader.ReadHeader();
+            csvReader.ValidateHeader<CsvContact>();
+            csvReader.Read();
+            var csvContact = csvReader.GetRecord<CsvContact>();
+
+            // Assert
+            var contact = csvContact.ToContact();
+            var organization = csvContact.ToOrganization();
+            
+            Assert.Equal(expectedContact, contact, new ByFieldValuesEqualityComparer<Contact>());
+            Assert.Equal(expectedOrganization, organization, new ByFieldValuesEqualityComparer<Organization>());
+        }
+
+        public static IEnumerable<object[]> ContactImportData
+        {
+            get
+            {
+                yield return new object[] { ContactCsvHeader, ContactCsvRecord, Contact, ContactOrganization };
+                yield return new object[]
+                {
+                    "Contact First Name;Contact Last Name;Contact Full Name", "FirstName;LastName;FullName",
+                    new Contact { FirstName = "FirstName", LastName = "LastName", FullName = "FullName", Addresses = new List<Address>(), DynamicProperties = new List<DynamicObjectProperty>() }, new Organization()
+                };
+            }
         }
     }
 }

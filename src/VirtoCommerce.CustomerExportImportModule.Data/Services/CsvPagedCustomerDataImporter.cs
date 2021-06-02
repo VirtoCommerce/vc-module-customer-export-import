@@ -110,7 +110,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 importProgress.Description = "Fetching...";
                 progressCallback(importProgress);
 
-
                 while (await dataSource.FetchAsync())
                 {
                     var importContacts = dataSource.Items
@@ -160,7 +159,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                             return contact;
                         }).ToArray();
-
 
                         await _memberService.SaveChangesAsync(newContacts);
                     }
@@ -215,8 +213,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 Take = ModuleConstants.Settings.PageSize
             });
 
-            var existedMembers = searchResultById.Results.Union(searchResultByOuterId.Results,
-                EqualityComparer<Member>.Default).ToArray();
+            var existedMembers = searchResultById.Results.Union(searchResultByOuterId.Results
+                , AnonymousComparer.Create<Member>((x, y) => x.Id == y.Id, x => x.Id.GetHashCode())).ToArray();
+
             return existedMembers;
         }
 

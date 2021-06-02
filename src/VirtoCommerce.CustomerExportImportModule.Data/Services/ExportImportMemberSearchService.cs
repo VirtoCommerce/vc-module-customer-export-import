@@ -81,7 +81,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             if (criteria is ExtendedMemberSearchCiteria extendedCriteria)
             {
-
                 if (!extendedCriteria.OuterIds.IsNullOrEmpty())
                 {
                     query = query.Where(m => extendedCriteria.OuterIds.Contains(m.Id));

@@ -47,6 +47,17 @@
         "labels": {
           "preview-count": "Preview count:"
         }
+      },
+      "import-processing": {
+        "title": "Import progress",
+        "labels": {
+          "start": "Start",
+          "end": "End",
+          "lines-created": "Lines created",
+          "lines-updated": "Lines updated",
+          "error-count": "Error count",
+          "errors-report": "Errors report download Url:"
+        }
       }
     },
     "dialogs": {
@@ -64,6 +75,14 @@
         "contacts": "contacts",
         "organizations": "organizations",
         "export": "Export"
+      },
+      "customer-import": {
+        "title": "Contacts import",
+        "contacts": "contacts",
+        "main-text-middle": "will be imported into the",
+        "root": "root",
+        "current-organization": "current organization",
+        "import": "import"
       },
       "customer-warning": {
         "title": "Contacts & Organizations export",

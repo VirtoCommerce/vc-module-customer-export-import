@@ -1,5 +1,5 @@
 angular.module('virtoCommerce.customerExportImportModule')
-    .controller('virtoCommerce.customerExportImportModule.importPreviewController', ['$scope', 'virtoCommerce.customerExportImportModule.import', 'platformWebApp.bladeNavigationService', 'uiGridConstants', 'platformWebApp.bladeUtils', function ($scope, importResources, bladeNavigationService, uiGridConstants, bladeUtils) {
+    .controller('virtoCommerce.customerExportImportModule.importPreviewController', ['$scope', 'virtoCommerce.customerExportImportModule.import', 'platformWebApp.bladeNavigationService', 'uiGridConstants', 'platformWebApp.bladeUtils', 'platformWebApp.dialogService', function ($scope, importResources, bladeNavigationService, uiGridConstants, bladeUtils, dialogService) {
         $scope.uiGridConstants = uiGridConstants;
 
         var blade = $scope.blade;
@@ -42,9 +42,48 @@ angular.module('virtoCommerce.customerExportImportModule')
         blade.toolbarCommands = [
             {
                 name: "platform.commands.import",
-                icon: 'fa fa-download',
-                canExecuteMethod: () => true ,
-                executeMethod: () => {},
+                icon: "fa fa-download",
+                canExecuteMethod: () => true,
+                executeMethod: () => {
+                    const dialog = {
+                        id: "customerImportDialog",
+                        membersQty: blade.totalCount,
+                        organizationName: blade.organizationName,
+                        callback: (confirm) => {
+                            if (confirm) {
+                                // const importDataRequest = {
+                                //     filePath: blade.csvFilePath,
+                                //     organizationId: blade.organizationId
+                                // };
+
+                                // importResources.run(importDataRequest, (data) => {
+                                //     var newBlade = {
+                                //         id: "customerImportProcessing",
+                                //         notification: data,
+                                //         headIcon: "fa fa-download",
+                                //         title: "customerExportImport.blades.import-processing.title",
+                                //         controller: "virtoCommerce.customerExportImportModule.importProcessingController",
+                                //         template: "Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/blades/import-processing.tpl.html",
+                                //     };
+
+                                //     bladeNavigationService.showBlade(newBlade, blade);
+                                // });
+
+                                //temporary solution for mock
+                                var newBlade = {
+                                    id: "customerImportProcessing",
+                                    headIcon: "fa fa-download",
+                                    title: "customerExportImport.blades.import-processing.title",
+                                    controller: "virtoCommerce.customerExportImportModule.importProcessingController",
+                                    template: "Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/blades/import-processing.tpl.html"
+                                };
+
+                                bladeNavigationService.showBlade(newBlade, blade);
+                            }
+                        }
+                    };
+                    dialogService.showDialog(dialog, "Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/dialogs/customerImport-dialog.tpl.html", "platformWebApp.confirmDialogController");
+                },
                 permission: blade.importPermission
             },
             {

@@ -119,8 +119,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                     try
                     {
-                        // todo: зарезать дубликаты. Вопрос: что делать если в одних дупликатах есть связанные сущности а в других нет...
-
                         var internalIds = importContacts.Select(x => x.Record.Id).Distinct().Where(x => x != null)
                             .ToArray();
                         var outerIds = importContacts.Select(x => x.Record.OuterId).Distinct().Where(x => x != null)

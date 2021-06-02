@@ -56,19 +56,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
         public static string GetCsv(IEnumerable<string> records, string header = null)
         {
-            var csv = new StringBuilder();
+            var csv = "";
 
             if (header != null)
             {
-                csv.AppendLine(header);
+                csv += header + "\r\n";
             }
 
-            foreach (var record in records)
-            {
-                csv.AppendLine(record);
-            }
-
-            return csv.ToString();
+            return records.Aggregate(csv, (current, record) => current + record + "\r\n");
         }
 
         public static IEnumerable<PropertyInfo> GetProperties<T>(T obj)

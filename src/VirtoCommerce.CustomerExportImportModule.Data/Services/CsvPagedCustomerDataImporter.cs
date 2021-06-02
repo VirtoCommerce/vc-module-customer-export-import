@@ -119,24 +119,28 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                     try
                     {
-                        var internalIds = importContacts.Select(x => x.Record.Id).Distinct().Where(x => x != null)
+                        var internalIds = importContacts.Select(x => x.Record?.Id).Distinct()
+                            .Where(x => !x.IsNullOrEmpty())
                             .ToArray();
-                        var outerIds = importContacts.Select(x => x.Record.OuterId).Distinct().Where(x => x != null)
+
+                        var outerIds = importContacts.Select(x => x.Record?.OuterId).Distinct()
+                            .Where(x => !x.IsNullOrEmpty())
                             .ToArray();
 
                         var existedContacts =
                             (await SearchMembersByIdAndOuterId(internalIds, outerIds, new[] { nameof(Contact) }))
                             .OfType<Contact>();
 
-                        var existedContactsIds = existedContacts.Select(x => x.Id);
+                        var existedContactsIds = existedContacts.Select(x => x.Id).ToArray();
 
-                        var createImportContacts = importContacts.Where(x => existedContactsIds.Contains(x.Record.Id))
+                        var createImportContacts = importContacts.Where(x => !existedContactsIds.Contains(x.Record.Id))
                             .ToArray();
 
-                        var internalOrgIds = importContacts.Select(x => x.Record.OrganizationId).Distinct()
-                            .Where(x => x != null).ToArray();
-                        var outerOrgIds = importContacts.Select(x => x.Record.OrganizationOuterId).Distinct()
-                            .Where(x => x != null).ToArray();
+                        var internalOrgIds = importContacts.Select(x => x.Record?.OrganizationId).Distinct()
+                            .Where(x => !x.IsNullOrEmpty()).ToArray();
+
+                        var outerOrgIds = importContacts.Select(x => x.Record?.OrganizationOuterId).Distinct()
+                            .Where(x => !x.IsNullOrEmpty()).ToArray();
 
                         var existedOrganizations =
                             (await SearchMembersByIdAndOuterId(internalOrgIds, outerOrgIds,

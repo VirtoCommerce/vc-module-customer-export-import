@@ -164,6 +164,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressFirstName = address?.FirstName;
             AddressLastName = address?.LastName;
             AddressCountry = address?.CountryName;
+            AddressCountryCode = address?.CountryCode;
             AddressRegion = address?.RegionName;
             AddressCity = address?.City;
             AddressLine1 = address?.Line1;
@@ -185,7 +186,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             target.LastName = ContactLastName;
             target.FullName = ContactFullName;
             target.Status = ContactStatus;
-            target.AssociatedOrganizations = AssociatedOrganizationIds?.Split(", ").ToList();
+            target.AssociatedOrganizations = AssociatedOrganizationIds?.Split(", ").Select(x => x.Trim()).Where(x => !x.IsNullOrEmpty()).ToList();
             target.BirthDate = Birthday;
             target.TimeZone = TimeZone;
             target.Phones = Phones?.Split(", ");
@@ -198,17 +199,17 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             target.DynamicProperties = DynamicProperties;
 
             target.Addresses ??= new List<Address>();
-            var isAddressSpecified = new[] { AddressCountry, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => addressField != null);
+            var isAddressSpecified = new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => addressField != null);
 
             if (isAddressSpecified)
             {
-
                 target.Addresses.Add(new Address
                 {
                     AddressType = AddressType != null ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
                     FirstName = AddressFirstName,
                     LastName = AddressLastName,
                     CountryName = AddressCountry,
+                    CountryCode = AddressCountryCode,
                     RegionName = AddressRegion,
                     City = AddressCity,
                     Line1 = AddressLine1,

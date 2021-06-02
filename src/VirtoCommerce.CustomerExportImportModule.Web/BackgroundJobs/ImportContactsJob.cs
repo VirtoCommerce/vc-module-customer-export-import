@@ -42,7 +42,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
             }
             finally
             {
-                pushNotification.Description = "Export finished";
+                pushNotification.Description = "Import finished";
                 pushNotification.Finished = DateTime.UtcNow;
 
                 await _pushNotificationManager.SendAsync(pushNotification);

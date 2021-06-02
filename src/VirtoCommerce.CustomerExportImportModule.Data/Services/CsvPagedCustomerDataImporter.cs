@@ -146,7 +146,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                         var newContacts = createImportContacts.Select(x =>
                         {
-                            var contact = x.Record.ToContact(true);
+                            var contact = AbstractTypeFactory<Contact>.TryCreateInstance<Contact>();
+
+                            x.Record.PatchContact(contact);
 
                             var existedOrg = existedOrganizations.FirstOrDefault(o => o.Id == x.Record.OrganizationId)
                                              ?? existedOrganizations.FirstOrDefault(o =>
@@ -161,6 +163,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                         }).ToArray();
 
                         await _memberService.SaveChangesAsync(newContacts);
+
+                        importProgress.ContactsCreated += newContacts.Length;
                     }
                     catch (Exception e)
                     {

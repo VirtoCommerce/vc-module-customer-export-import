@@ -14,7 +14,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
-    public sealed class CsvPagedCustomerDataImporter
+    public sealed class CsvPagedCustomerDataImporter : ICsvPagedCustomerDataImporter
     {
         private readonly IMemberService _memberService;
         private readonly IMemberSearchService _memberSearchService;

@@ -18,8 +18,11 @@
         "title-root": "Import into root",
         "title-member": "Import into {{member}}",
         "subtitle": "Upload CSV",
+        "data-type-placeholder": "Select data type to import",
+        "data-type-description": "Select the type of data to be loaded for the import to work correctly",
         "labels": {
-          "progress": "Progress"
+          "progress": "Progress",
+          "data-type": "Data type"
         },
         "drag-and-drop": {
           "placeholder": "Drag and drop file here",

@@ -19,6 +19,7 @@ angular.module(moduleName, ['ui.grid.autoFitColumns']).run([
                             id: 'customerImportFileUpload',
                             title: (blade.currentEntity && blade.currentEntity.name) ? 'customerExportImport.blades.file-upload.title-member' : 'customerExportImport.blades.file-upload.title-root',
                             titleValues: (blade.currentEntity && blade.currentEntity.name) && { member: blade.currentEntity.name },
+                            importFromRoot: !(blade.currentEntity && blade.currentEntity.name),
                             subtitle: 'customerExportImport.blades.file-upload.subtitle',
                             controller: 'virtoCommerce.customerExportImportModule.fileUploadController',
                             template: 'Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/blades/file-upload.tpl.html'

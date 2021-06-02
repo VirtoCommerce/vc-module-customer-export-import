@@ -19,6 +19,12 @@ angular.module('virtoCommerce.customerExportImportModule')
             canExecuteMethod: () => true
         }];
 
+        if (!blade.importFromRoot) {
+            blade.dataType = 'Contacts';
+        } else {
+            blade.availableDataTypes = ['Contacts', 'Organizations'];
+        }
+
         function initialize () {
             resetState();
 

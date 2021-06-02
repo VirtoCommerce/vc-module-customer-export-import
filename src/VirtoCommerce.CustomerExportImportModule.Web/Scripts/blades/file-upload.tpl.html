@@ -3,16 +3,25 @@
         <div class="inner-block">
             <form class="form" name="formScope">
                 <fieldset>
-                    <input id="selectCustomerCsv" class="__hide" type="file" accept=".csv" nv-file-select uploader="uploader" multiple />
-                    <div over-class="bd-blue" nv-file-over nv-file-drop uploader="uploader" class="drag-area">
-                        <span class="drag-content">
-                            <i class="fa fa-cloud-upload fa-2x icon-cloud" aria-hidden="true"></i>
-                            <br>
-                            <small>{{ 'customerExportImport.blades.file-upload.drag-and-drop.placeholder' | translate }}</small>
-                            <br>
-                            <small>{{ 'customerExportImport.blades.file-upload.drag-and-drop.or' | translate }}</small>
-                            <a ng-click="browse()">{{ 'customerExportImport.blades.file-upload.drag-and-drop.link' | translate }}</a>
-                        </span>
+                    <div class="form-group __info list mb-40">
+                        <label class="form-label font-weight-500">{{ 'customerExportImport.blades.file-upload.labels.data-type' | translate }}</label>
+                        <div class="form-input" data-role="input-control">
+                            <ui-select ng-model="blade.dataType" ng-disabled="!blade.importFromRoot">
+                                <ui-select-match allow-clear="true" placeholder="{{ 'customerExportImport.blades.file-upload.data-type-placeholder' | translate }}">{{$select.selected}}</ui-select-match>
+                                <ui-select-choices repeat="x in blade.availableDataTypes | filter: $select.search">
+                                    <span ng-bind-html="x | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="list-descr">{{ 'customerExportImport.blades.file-upload.data-type-description' | translate }}</div>
+                    </div>
+                    <input id="selectCustomerCsv" class="__hide" type="file" accept=".csv" nv-file-select uploader="uploader" multiple ng-disabled="!blade.dataType"/>
+
+                    <div ng-if="!blade.dataType" over-class="bd-blue" class="drag-area">
+                        <ng-include src="'dragContent'"></ng-include>
+                    </div>
+                    <div ng-if="blade.dataType" over-class="bd-blue" nv-file-over nv-file-drop uploader="uploader" class="drag-area">
+                        <ng-include src="'dragContent'"></ng-include>
                     </div>
 
                     <div ng-show="uploader.isUploading">
@@ -63,3 +72,15 @@
         </div>
     </div>
 </div>
+
+
+<script type='text/ng-template' id="dragContent">
+    <span class="drag-content">
+        <i class="fa fa-cloud-upload fa-2x icon-cloud" aria-hidden="true"></i>
+        <br>
+        <small>{{ 'customerExportImport.blades.file-upload.drag-and-drop.placeholder' | translate }}</small>
+        <br>
+        <small>{{ 'customerExportImport.blades.file-upload.drag-and-drop.or' | translate }}</small>
+        <a ng-click="browse()">{{ 'customerExportImport.blades.file-upload.drag-and-drop.link' | translate }}</a>
+    </span>
+</script>

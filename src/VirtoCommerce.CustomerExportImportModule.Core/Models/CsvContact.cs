@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
@@ -196,9 +197,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             target.PreferredDelivery = PreferredDelivery;
             target.DynamicProperties = DynamicProperties;
 
+            target.Addresses ??= new List<Address>();
             var isAddressSpecified = new[] { AddressCountry, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => addressField != null);
+
             if (isAddressSpecified)
             {
+
                 target.Addresses.Add(new Address
                 {
                     AddressType = AddressType != null ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
@@ -215,8 +219,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 });
             }
 
-
+            target.SecurityAccounts ??= new List<ApplicationUser>();
             var accountSpecified = new[] { AccountId, AccountLogin, AccountEmail }.Any(accountField => accountField != null);
+
             if (accountSpecified)
             {
                 target.SecurityAccounts.Add(

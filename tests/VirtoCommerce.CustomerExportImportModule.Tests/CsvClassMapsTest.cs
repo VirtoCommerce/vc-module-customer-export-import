@@ -215,9 +215,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var csvContact = csvReader.GetRecord<CsvContact>();
 
             // Assert
-            var contact = csvContact.ToContact();
+            var contact = new Contact();
+            csvContact.PatchContact(contact);
             var organization = csvContact.ToOrganization();
-            
+            expectedContact.Id = null;
             Assert.Equal(expectedContact, contact, new ByFieldValuesEqualityComparer<Contact>());
             Assert.Equal(expectedOrganization, organization, new ByFieldValuesEqualityComparer<Organization>());
         }

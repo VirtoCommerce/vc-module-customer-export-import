@@ -4,10 +4,10 @@ using VirtoCommerce.Platform.Core.Assets;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
-    public sealed class CsvPriceImportReporterFactory : ICsvCustomerImportReporterFactory
+    public sealed class CsvCustomerImportReporterFactory : ICsvCustomerImportReporterFactory
     {
         private readonly IBlobStorageProvider _blobStorageProvider;
-        public CsvPriceImportReporterFactory(IBlobStorageProvider blobStorageProvider)
+        public CsvCustomerImportReporterFactory(IBlobStorageProvider blobStorageProvider)
         {
             _blobStorageProvider = blobStorageProvider;
         }

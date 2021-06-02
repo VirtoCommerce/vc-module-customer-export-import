@@ -30,12 +30,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             var connectionString = Configuration.GetConnectionString("VirtoCommerce.CustomerExportImport") ?? Configuration.GetConnectionString("VirtoCommerce");
             serviceCollection.AddDbContext<VirtoCommerceCustomerExportImportDbContext>(options => options.UseSqlServer(connectionString));
 
-            serviceCollection.AddTransient<ICsvCustomerDataValidator, CsvCustomerDataValidator>();
+
             serviceCollection.AddTransient<ICustomerExportPagedDataSourceFactory, CustomerExportPagedDataSourceFactory>();
-            serviceCollection.AddTransient<ICustomerImportPagedDataSourceFactory, CustomerImportPagedDataSourceFactory>();
             serviceCollection.AddTransient<IExportWriterFactory, ExportWriterFactory>();
             serviceCollection.AddTransient<ICustomerDataExporter, CustomerDataExporter>();
             serviceCollection.AddTransient<IMemberSearchService, ExportImportMemberSearchService>();
+
+            serviceCollection.AddTransient<ICustomerImportPagedDataSourceFactory, CustomerImportPagedDataSourceFactory>();
+            serviceCollection.AddTransient<ICsvCustomerDataValidator, CsvCustomerDataValidator>();
+            serviceCollection.AddTransient<ICsvCustomerImportReporterFactory, CsvCustomerImportReporterFactory>();
+            serviceCollection.AddTransient<ICsvPagedCustomerDataImporter, ICsvPagedCustomerDataImporter>();
 
             serviceCollection.AddOptions<ExportOptions>().Bind(Configuration.GetSection("CustomerExportImport:Export")).ValidateDataAnnotations();
             serviceCollection.AddOptions<ImportOptions>().Bind(Configuration.GetSection("CustomerExportImport:Import")).ValidateDataAnnotations();

@@ -230,7 +230,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 yield return new object[]
                 {
                     "Contact First Name;Contact Last Name;Contact Full Name", "FirstName;LastName;FullName",
-                    new Contact { FirstName = "FirstName", LastName = "LastName", FullName = "FullName", DynamicProperties = new List<DynamicObjectProperty>() }, new Organization()
+                    new Contact { FirstName = "FirstName", LastName = "LastName", FullName = "FullName", Addresses = new List<Address>(), DynamicProperties = new List<DynamicObjectProperty>() }, new Organization()
                 };
             }
         }

@@ -177,12 +177,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
             return this;
         }
-        
+
         public Contact ToContact()
         {
-            var accounts = AccountId != null
-                ? new List<ApplicationUser>
-                {
+            var accountSpecified = new[] { AccountId, AccountLogin, AccountEmail }.Any(accountField => accountField != null);
+            var accounts = new List<ApplicationUser>();
+            if (accountSpecified)
+            {
+                accounts.Add(
                     new ApplicationUser
                     {
                         Id = AccountId,
@@ -193,16 +195,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                         Status = AccountStatus,
                         EmailConfirmed = EmailVerified ?? false
                     }
-                }
-                : new List<ApplicationUser>();
+                );
+            }
 
-            var isAddressSpecified = new[]
+            var isAddressSpecified = new[] { AddressCountry, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => addressField != null);
+            var addresses = new List<Address>();
+            if (isAddressSpecified)
             {
-                AddressType, AddressFirstName, AddressLastName, AddressCountry, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode, AddressEmail, AddressPhone
-            }.Any(addressField => addressField != null);
-            var address = isAddressSpecified
-                ? new List<Address>
-                {
+                addresses.Add(
                     new Address
                     {
                         AddressType = AddressType != null ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
@@ -217,8 +217,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                         Email = AddressEmail,
                         Phone = AddressPhone,
                     }
-                }
-                : null;
+                );
+            }
 
             return new Contact
             {
@@ -239,7 +239,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 TaxPayerId = TaxPayerId,
                 PreferredCommunication = PreferredCommunication,
                 PreferredDelivery = PreferredDelivery,
-                Addresses = address,
+                Addresses = addresses,
                 DynamicProperties = DynamicProperties
             };
         }

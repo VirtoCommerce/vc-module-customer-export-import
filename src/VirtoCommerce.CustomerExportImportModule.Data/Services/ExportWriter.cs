@@ -4,6 +4,7 @@ using CsvHelper.Configuration;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerExportImportModule.Data.ExportImport;
 using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
@@ -12,7 +13,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly StreamWriter _streamWriter;
         private readonly CsvWriter _csvWriter;
 
-        public ExportWriter(string filePath, IBlobStorageProvider blobStorageProvider, Configuration csvConfiguration, string[] dynamicProperties = null)
+        public ExportWriter(string filePath, IBlobStorageProvider blobStorageProvider, Configuration csvConfiguration, DynamicProperty[] dynamicProperties = null)
         {
             var stream = blobStorageProvider.OpenWrite(filePath);
             _streamWriter = new StreamWriter(stream);

@@ -24,12 +24,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string AddressLastName { get; set; }
 
         [Optional]
-        [Name("Address Country")]
-        public string AddressCountry { get; set; }
-
-        [Optional]
         [Name("Address Country Code")]
         public string AddressCountryCode { get; set; }
+        
+        [Optional]
+        [Name("Address Country")]
+        public string AddressCountry { get; set; }
 
         [Optional]
         [Name("Address Region")]

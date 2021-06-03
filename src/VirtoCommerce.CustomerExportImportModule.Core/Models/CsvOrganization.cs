@@ -54,6 +54,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressType = address?.AddressType.ToString();
             AddressFirstName = address?.FirstName;
             AddressLastName = address?.LastName;
+            AddressCountryCode = address?.CountryCode;
             AddressCountry = address?.CountryName;
             AddressCountryCode = address?.CountryCode;
             AddressRegion = address?.RegionName;

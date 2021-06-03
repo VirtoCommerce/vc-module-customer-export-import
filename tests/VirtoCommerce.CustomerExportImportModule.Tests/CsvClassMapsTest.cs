@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CsvHelper;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
@@ -18,7 +19,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
     [Trait("Category", "CI")]
     public class CsvClassMapsTest
     {
-        private static readonly List<DynamicObjectProperty> ContactDynamicProperties = new List<DynamicObjectProperty>
+        private static readonly List<DynamicProperty> ContactDynamicProperties = new List<DynamicProperty>
         {
             new DynamicObjectProperty
             {
@@ -58,7 +59,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             TaxPayerId = "TaxId",
             PreferredCommunication = "email",
             PreferredDelivery = "pickup",
-            Addresses = new List<Address>(new[]
+            Addresses = new List<Address>
             {
                 new Address
                 {
@@ -75,8 +76,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     PostalCode = "610033",
                     Phone = "777"
                 }
-            }),
-            DynamicProperties = ContactDynamicProperties
+            },
+            DynamicProperties = ContactDynamicProperties.OfType<DynamicObjectProperty>().ToList()
         };
 
         private static readonly Organization ContactOrganization = new Organization { Id = "org_id", Name = "Boroda ltd", OuterId = "org_outer_id" };
@@ -98,8 +99,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var stream = new MemoryStream();
             var streamWriter = new StreamWriter(stream, leaveOpen: true);
             var csvWriter = new CsvWriter(streamWriter, new ExportConfiguration());
-            var selectedDynamicProperties = new[] { "Sex" };
-            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<CsvContact>(selectedDynamicProperties));
+            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<CsvContact>(ContactDynamicProperties));
 
             // Act
             csvWriter.WriteRecords(new[] { exportableContact });
@@ -122,7 +122,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         public void Export_OrganizationWithDynamicProperty_HeaderAndValuesAreCorrect()
         {
             //Arrange
-            var dynamicProperties = new List<DynamicObjectProperty>
+            var dynamicProperties = new List<DynamicProperty>
             {
                 new DynamicObjectProperty
                 {
@@ -147,24 +147,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 BusinessCategory = "Market Place",
                 Description = "org desc",
                 Groups = new List<string>(new[] { "tag1", "tag2" }),
-
-                Addresses = new List<Address>(new[]{new Address
+                Addresses = new List<Address>
                 {
-                    AddressType = AddressType.Pickup,
-                    FirstName = "Anton",
-                    LastName = "Boroda",
-                    CountryName = "Russia",
-                    CountryCode = "RUS",
-                    RegionName = "Kirov region",
-                    City = "Kirov",
-                    Line1 = "1 st",
-                    Line2 = "169",
-                    Email = "c@mail.com",
-                    PostalCode = "610033",
-                    Phone = "777"
-                }}),
-
-                DynamicProperties = dynamicProperties
+                    new Address
+                    {
+                        AddressType = AddressType.Pickup,
+                        FirstName = "Anton",
+                        LastName = "Boroda",
+                        CountryName = "Russia",
+                        CountryCode = "RUS",
+                        RegionName = "Kirov region",
+                        City = "Kirov",
+                        Line1 = "1 st",
+                        Line2 = "169",
+                        Email = "c@mail.com",
+                        PostalCode = "610033",
+                        Phone = "777"
+                    }
+                },
+                DynamicProperties = dynamicProperties.OfType<DynamicObjectProperty>().ToList()
             };
 
             var parent = new Organization { Id = "parent_org_id", OuterId = "parent_outer_id", Name = "parent_outer_id" };
@@ -177,8 +178,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var csvWriter = new CsvWriter(sw, new ExportConfiguration());
 
             //Act
-            var selectedDynamicProperties = new[] { "Size" };
-            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<CsvOrganization>(selectedDynamicProperties));
+            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<CsvOrganization>(dynamicProperties));
 
             csvWriter.WriteRecords(new[] { exportableOrganization });
 
@@ -206,8 +206,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             using var stream = TestHelper.GetStream(csv);
             using var streamReader = new StreamReader(stream);
             using var csvReader = new CsvReader(streamReader, new ImportConfiguration());
-            var selectedDynamicProperties = new[] { "Sex" };
-            csvReader.Configuration.RegisterClassMap(new GenericClassMap<CsvContact>(selectedDynamicProperties));
+            csvReader.Configuration.RegisterClassMap(new GenericClassMap<CsvContact>(ContactDynamicProperties));
 
             // Act
             csvReader.Read();

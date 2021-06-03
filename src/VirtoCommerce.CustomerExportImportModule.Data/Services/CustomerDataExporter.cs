@@ -55,22 +55,22 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var dynamicProperties = await _dynamicPropertySearchService.SearchDynamicPropertiesAsync(new DynamicPropertySearchCriteria()
             {
-                ObjectTypes = new List<string>() { typeof(Contact).FullName, typeof(Organization).FullName },
+                ObjectTypes = new List<string> { typeof(Contact).FullName, typeof(Organization).FullName },
                 Skip = 0,
                 Take = int.MaxValue
             });
 
-            var contactsDynamicPropertiesNames =
-                dynamicProperties.Results.Where(x => x.ObjectType == typeof(Contact).FullName).Select(x => x.Name).ToArray();
+            var contactsDynamicProperties =
+                dynamicProperties.Results.Where(x => x.ObjectType == typeof(Contact).FullName).ToArray();
 
-            var organizationsDynamicPropertiesNames =
-                dynamicProperties.Results.Where(x => x.ObjectType == typeof(Organization).FullName).Select(x => x.Name).ToArray();
+            var organizationsDynamicProperties =
+                dynamicProperties.Results.Where(x => x.ObjectType == typeof(Organization).FullName).ToArray();
 
             var contactsFilePath = GetExportFilePath("Contacts");
-            var contactExportWriter = _exportWriterFactory.Create<CsvContact>(contactsFilePath, new ExportConfiguration(), contactsDynamicPropertiesNames);
+            var contactExportWriter = _exportWriterFactory.Create<CsvContact>(contactsFilePath, new ExportConfiguration(), contactsDynamicProperties);
 
             var organizationFilePath = GetExportFilePath("Organizations");
-            var organizationExportWriter = _exportWriterFactory.Create<CsvOrganization>(organizationFilePath, new ExportConfiguration(), organizationsDynamicPropertiesNames);
+            var organizationExportWriter = _exportWriterFactory.Create<CsvOrganization>(organizationFilePath, new ExportConfiguration(), organizationsDynamicProperties);
 
             try
             {

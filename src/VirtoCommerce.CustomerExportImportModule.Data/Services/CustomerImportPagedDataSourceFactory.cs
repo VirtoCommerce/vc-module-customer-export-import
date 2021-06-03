@@ -24,16 +24,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async Task<ICustomerImportPagedDataSource> CreateAsync(string filePath, int pageSize, Configuration configuration = null)
         {
-            var dynamicProperties = await _dynamicPropertySearchService.SearchDynamicPropertiesAsync(new DynamicPropertySearchCriteria()
+            var dynamicPropertiesSearchResult = await _dynamicPropertySearchService.SearchDynamicPropertiesAsync(new DynamicPropertySearchCriteria()
             {
                 ObjectTypes = new List<string>() { typeof(Contact).FullName },
                 Skip = 0,
                 Take = int.MaxValue
             });
-            var dynamicPropertyNames = dynamicProperties.Results.Select(x => x.Name).ToArray();
+            var dynamicProperties = dynamicPropertiesSearchResult.Results;
 
             configuration ??= new ImportConfiguration();
-            configuration.RegisterClassMap(new GenericClassMap<CsvContact>(dynamicPropertyNames));
+            configuration.RegisterClassMap(new GenericClassMap<CsvContact>(dynamicProperties));
             return new CustomerImportPagedDataSource(filePath, _blobStorageProvider, pageSize, configuration);
         }
     }

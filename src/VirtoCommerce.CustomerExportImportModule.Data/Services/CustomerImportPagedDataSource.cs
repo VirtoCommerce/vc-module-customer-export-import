@@ -97,7 +97,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             return result;
         }
 
-
         public async Task<bool> FetchAsync()
         {
             if (CurrentPageNumber * PageSize >= GetTotalCount())

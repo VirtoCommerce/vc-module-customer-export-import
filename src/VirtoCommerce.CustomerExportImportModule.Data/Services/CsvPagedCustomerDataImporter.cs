@@ -199,9 +199,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 }
 
                 progressCallback(importProgress);
-
             }
         }
+
 
         private async Task<Member[]> SearchMembersByIdAndOuterId(string[] internalIds, string[] outerIds, string[] memberTypes)
         {

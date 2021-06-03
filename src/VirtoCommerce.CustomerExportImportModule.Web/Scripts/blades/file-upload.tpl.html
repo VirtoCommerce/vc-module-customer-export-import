@@ -81,6 +81,6 @@
         <small>{{ 'customerExportImport.blades.file-upload.drag-and-drop.placeholder' | translate }}</small>
         <br>
         <small>{{ 'customerExportImport.blades.file-upload.drag-and-drop.or' | translate }}</small>
-        <a ng-click="browse()">{{ 'customerExportImport.blades.file-upload.drag-and-drop.link' | translate }}</a>
+        <a ng-click="browse()" ng-class="{'disabled-cursor': !blade.dataType}" ng-disabled="!blade.dataType">{{ 'customerExportImport.blades.file-upload.drag-and-drop.link' | translate }}</a>
     </span>
 </script>

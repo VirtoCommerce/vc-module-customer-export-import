@@ -225,4 +225,7 @@
     height: calc(100% - 84px);
 }
 
+.customer-export-import .disabled-cursor {
+    cursor: not-allowed !important;
+}
 

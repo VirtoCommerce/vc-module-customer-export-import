@@ -12,7 +12,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [JsonProperty("organizationId")]
         [Name("Organization Id")]
         public override string Id { get; set; }
-        
+
         [JsonProperty("organizationOuterId")]
         [Name("Organization Outer Id")]
         public override string OuterId { get; set; }
@@ -55,6 +55,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressFirstName = address?.FirstName;
             AddressLastName = address?.LastName;
             AddressCountry = address?.CountryName;
+            AddressCountryCode = address?.CountryCode;
             AddressRegion = address?.RegionName;
             AddressCity = address?.City;
             AddressLine1 = address?.Line1;

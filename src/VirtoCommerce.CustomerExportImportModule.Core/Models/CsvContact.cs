@@ -199,13 +199,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             target.DynamicProperties = DynamicProperties;
 
             target.Addresses ??= new List<Address>();
-            var isAddressSpecified = new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => addressField != null);
+            var isAddressSpecified = new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => !addressField.IsNullOrEmpty());
 
             if (isAddressSpecified)
             {
                 target.Addresses.Add(new Address
                 {
-                    AddressType = AddressType != null ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
+                    AddressType = !AddressType.IsNullOrEmpty() ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
                     FirstName = AddressFirstName,
                     LastName = AddressLastName,
                     CountryName = AddressCountry,
@@ -221,7 +221,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             }
 
             target.SecurityAccounts ??= new List<ApplicationUser>();
-            var accountSpecified = new[] { AccountId, AccountLogin, AccountEmail }.Any(accountField => accountField != null);
+            var accountSpecified = new[] { AccountId, AccountLogin, AccountEmail }.Any(accountField => !accountField.IsNullOrEmpty());
 
             if (accountSpecified)
             {

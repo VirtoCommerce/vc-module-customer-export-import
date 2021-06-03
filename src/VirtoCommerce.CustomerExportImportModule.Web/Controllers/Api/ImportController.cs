@@ -14,7 +14,7 @@ using VirtoCommerce.Platform.Core.Security;
 
 namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
 {
-    [Route("api/customers/import")]
+    [Route("api/customer/import")]
     [Authorize(ModuleConstants.Security.Permissions.ImportAccess)]
     [ApiController]
     public class ImportController : ControllerBase

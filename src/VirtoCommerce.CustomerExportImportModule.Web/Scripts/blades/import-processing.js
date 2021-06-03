@@ -3,20 +3,11 @@ angular.module("virtoCommerce.customerExportImportModule").controller("virtoComm
         var blade = $scope.blade;
         blade.isLoading = false;
 
-        // $scope.$on("new-notification-event", function (event, notification) {
-        //     console.log('on event');
-        //     if (blade.notification && notification.id === blade.notification.id) {
-        //         angular.copy(notification, blade.notification);
-        //     }
-        // });
-
-                    //temporary solution for mock
-                    blade.notification = {
-                        created: new Date()
-                    };
-                    importResources.run().$promise.then((data) => {
-                        Object.assign(blade.notification, data);
-                    });
+        $scope.$on("new-notification-event", function (event, notification) {
+            if (blade.notification && notification.id === blade.notification.id) {
+                angular.copy(notification, blade.notification);
+            }
+        });
 
         blade.toolbarCommands = [
             {

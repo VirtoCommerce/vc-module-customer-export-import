@@ -51,34 +51,24 @@ angular.module('virtoCommerce.customerExportImportModule')
                         organizationName: blade.organizationName,
                         callback: (confirm) => {
                             if (confirm) {
-                                // const importDataRequest = {
-                                //     filePath: blade.csvFilePath,
-                                //     organizationId: blade.organizationId
-                                // };
-
-                                // importResources.run(importDataRequest, (data) => {
-                                //     var newBlade = {
-                                //         id: "customerImportProcessing",
-                                //         notification: data,
-                                //         headIcon: "fa fa-download",
-                                //         title: "customerExportImport.blades.import-processing.title",
-                                //         controller: "virtoCommerce.customerExportImportModule.importProcessingController",
-                                //         template: "Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/blades/import-processing.tpl.html",
-                                //     };
-
-                                //     bladeNavigationService.showBlade(newBlade, blade);
-                                // });
-
-                                //temporary solution for mock
-                                var newBlade = {
-                                    id: "customerImportProcessing",
-                                    headIcon: "fa fa-download",
-                                    title: "customerExportImport.blades.import-processing.title",
-                                    controller: "virtoCommerce.customerExportImportModule.importProcessingController",
-                                    template: "Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/blades/import-processing.tpl.html"
+                                const importDataRequest = {
+                                    filePath: blade.csvFilePath,
+                                    organizationId: blade.organizationId
                                 };
 
-                                bladeNavigationService.showBlade(newBlade, blade);
+                                importResources.run(importDataRequest, (data) => {
+                                    var newBlade = {
+                                        id: "customerImportProcessing",
+                                        notification: data,
+                                        headIcon: "fa fa-download",
+                                        title: "customerExportImport.blades.import-processing.title",
+                                        controller: "virtoCommerce.customerExportImportModule.importProcessingController",
+                                        template: "Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/blades/import-processing.tpl.html",
+                                    };
+
+                                    bladeNavigationService.showBlade(newBlade, blade);
+                                });
+
                             }
                         }
                     };

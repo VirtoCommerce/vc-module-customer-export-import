@@ -40,7 +40,7 @@
     display: none;
 }
 
-.customer-export-import .fs-13 .ui-grid-header-cell-label {
+.customer-export-import .fs-13 .ui-grid-header-cell-label, .customer-export-import .list-descr, .customer-export-import .list-descr a {
     font-size: 13px !important;
 }
 
@@ -96,7 +96,7 @@
     padding-left: 7px;
 }
 
-.customer-export-import .font-weight-500 {
+.customer-export-import .font-weight-500, .customer-export-import .list-t {
     font-weight: 500 !important;
 }
 
@@ -263,10 +263,6 @@
     margin-bottom: 24px;
 }
 
-.customer-export-import .list-t {
-    font-weight: 500;
-}
-
 .customer-export-import .list-sub {
     display: flex;
     margin: 0;
@@ -281,9 +277,6 @@
     color: #6d889b;
 }
 
-.customer-export-import .list-descr, .customer-export-import .list-descr a {
-    font-size: 13px !important;
-}
 
 
 

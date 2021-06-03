@@ -19,29 +19,29 @@
                     </div>
                 </div>
 
-                <div class="block" ng-if="blade.notification.createdLinesQty || blade.notification.updatedLinesQty || blade.notification.errorsQty">
+                <div class="block" ng-if="blade.notification.contactsCreated || blade.notification.contactsUpdated || blade.notification.errorsQty">
                     <ul class="list __info list-main">
                         <li class="list-item" id="contacts">
-                            <p class="list-item-title">Contacts</p>
+                            <p class="list-item-title">{{ 'customerExportImport.blades.import-processing.subtitles.contacts' | translate }}</p>
                             <ul class="list __info list-sub">
                                 <li class="list-item mr-30">
                                     <div class="list-t">{{ 'customerExportImport.blades.import-processing.labels.lines-created' | translate }}</div>
-                                    <div class="list-descr">{{blade.notification.createdLinesQty | number:0}}</div>
+                                    <div class="list-descr">{{blade.notification.contactsCreated | number:0}}</div>
                                 </li>
                                 <li class="list-item">
                                     <div class="list-t">{{ 'customerExportImport.blades.import-processing.labels.lines-updated' | translate }}</div>
-                                    <div class="list-descr">{{blade.notification.updatedLinesQty | number:0}}</div>
+                                    <div class="list-descr">{{blade.notification.contactsUpdated | number:0}}</div>
                                 </li>
                             </ul>
                         </li>
                         <li class="list-item" id="errors">
-                            <p class="list-item-title">Errors</p>
+                            <p class="list-item-title">{{ 'customerExportImport.blades.import-processing.subtitles.errors' | translate }}</p>
                             <ul class="list __info list-sub flex-column">
                                 <li class="list-item">
                                     <div class="list-t">{{ 'customerExportImport.blades.import-processing.labels.error-count' | translate }}</div>
-                                    <div class="list-descr">{{blade.notification.errorsQty | number:0}}</div>
+                                    <div class="list-descr">{{ blade.notification.errors.length }}</div>
                                 </li>
-                                <li class="list-item mt-10" ng-if="blade.notification.errorsQty && blade.notification.reportUrl">
+                                <li class="list-item mt-10" ng-if="blade.notification.reportUrl">
                                     <div class="list-t">{{ 'customerExportImport.blades.import-processing.labels.errors-report' | translate }}</div>
                                     <div class="list-descr"><a href="{{blade.notification.reportUrl}}" target="_blank">{{blade.notification.reportUrl}}</a></div>
                                 </li>

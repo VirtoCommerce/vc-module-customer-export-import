@@ -79,12 +79,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             var query = base.BuildQuery(repository, criteria);
 
-            if (criteria is ExtendedMemberSearchCiteria extendedCriteria)
+            if (criteria is ExtendedMemberSearchCiteria extendedCriteria && !extendedCriteria.OuterIds.IsNullOrEmpty())
             {
-                if (!extendedCriteria.OuterIds.IsNullOrEmpty())
-                {
-                    query = query.Where(m => extendedCriteria.OuterIds.Contains(m.Id));
-                }
+                query = query.Where(m => extendedCriteria.OuterIds.Contains(m.Id));
             }
 
             return query;

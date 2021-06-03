@@ -72,38 +72,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             const string importDescription = "{0} out of {1} have been imported.";
 
-            configuration.ReadingExceptionOccurred = exception =>
-            {
-                var context = exception.ReadingContext;
-
-                if (!errorsContext.ErrorsRows.Contains(context.Row))
-                {
-                    var fieldSourceValue = context.Record[context.CurrentIndex];
-
-                    if (context.HeaderRecord.Length != context.Record.Length)
-                    {
-                        HandleNotClosedQuoteError(progressCallback, importProgress, importReporter, context, errorsContext);
-                    }
-                    else if (fieldSourceValue == "")
-                    {
-                        HandleRequiredValueError(progressCallback, importProgress, importReporter, context, errorsContext);
-                    }
-                    else
-                    {
-                        HandleWrongValueError(progressCallback, importProgress, importReporter, context, errorsContext);
-                    }
-                }
-
-                return false;
-            };
-
-            configuration.BadDataFound = async context =>
-            {
-                await HandleBadDataError(progressCallback, importProgress, importReporter, context, errorsContext);
-            };
-
-            configuration.MissingFieldFound = async (headerNames, index, context) =>
-                await HandleMissedColumnError(progressCallback, importProgress, importReporter, context, errorsContext);
+            SetupCsvConfigurationErrorsHandlers(progressCallback, configuration, errorsContext, importProgress, importReporter);
 
             try
             {
@@ -200,6 +169,43 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 progressCallback(importProgress);
             }
+        }
+
+        private static void SetupCsvConfigurationErrorsHandlers(Action<ImportProgressInfo> progressCallback, ImportConfiguration configuration,
+            ImportErrorsContext errorsContext, ImportProgressInfo importProgress, ICsvCustomerImportReporter importReporter)
+        {
+            configuration.ReadingExceptionOccurred = exception =>
+            {
+                var context = exception.ReadingContext;
+
+                if (!errorsContext.ErrorsRows.Contains(context.Row))
+                {
+                    var fieldSourceValue = context.Record[context.CurrentIndex];
+
+                    if (context.HeaderRecord.Length != context.Record.Length)
+                    {
+                        HandleNotClosedQuoteError(progressCallback, importProgress, importReporter, context, errorsContext);
+                    }
+                    else if (fieldSourceValue == "")
+                    {
+                        HandleRequiredValueError(progressCallback, importProgress, importReporter, context, errorsContext);
+                    }
+                    else
+                    {
+                        HandleWrongValueError(progressCallback, importProgress, importReporter, context, errorsContext);
+                    }
+                }
+
+                return false;
+            };
+
+            configuration.BadDataFound = async context =>
+            {
+                await HandleBadDataError(progressCallback, importProgress, importReporter, context, errorsContext);
+            };
+
+            configuration.MissingFieldFound = async (headerNames, index, context) =>
+                await HandleMissedColumnError(progressCallback, importProgress, importReporter, context, errorsContext);
         }
 
 

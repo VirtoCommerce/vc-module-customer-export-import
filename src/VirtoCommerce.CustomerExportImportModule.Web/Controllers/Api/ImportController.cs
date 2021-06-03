@@ -1,12 +1,16 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
+using VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.PushNotifications;
+using VirtoCommerce.Platform.Core.Security;
 
 namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
 {
@@ -18,13 +22,18 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
         private readonly ICsvCustomerDataValidator _csvCustomerDataValidator;
         private readonly IBlobStorageProvider _blobStorageProvider;
         private readonly ICustomerImportPagedDataSourceFactory _customerImportPagedDataSourceFactory;
+        private readonly IUserNameResolver _userNameResolver;
+        private readonly IPushNotificationManager _pushNotificationManager;
 
         public ImportController(IBlobStorageProvider blobStorageProvider,
-            ICustomerImportPagedDataSourceFactory customerImportPagedDataSourceFactory, ICsvCustomerDataValidator csvCustomerDataValidator)
+            ICustomerImportPagedDataSourceFactory customerImportPagedDataSourceFactory, ICsvCustomerDataValidator csvCustomerDataValidator,
+            IUserNameResolver userNameResolver, IPushNotificationManager pushNotificationManager)
         {
             _csvCustomerDataValidator = csvCustomerDataValidator;
             _blobStorageProvider = blobStorageProvider;
             _customerImportPagedDataSourceFactory = customerImportPagedDataSourceFactory;
+            _userNameResolver = userNameResolver;
+            _pushNotificationManager = pushNotificationManager;
         }
 
         [HttpPost]
@@ -69,6 +78,31 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
             result.Results = csvDataSource.Items.Select(item => item.Record).ToArray();
 
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("run")]
+        public async Task<ActionResult<ExportPushNotification>> RunExport([FromBody] ImportDataRequest request)
+        {
+            var notification = new ImportPushNotification(_userNameResolver.GetCurrentUserName())
+            {
+                Title = "Customers import",
+                Description = "Starting import task..."
+            };
+
+            await _pushNotificationManager.SendAsync(notification);
+
+            notification.JobId = BackgroundJob.Enqueue<ImportContactsJob>(importJob => importJob.ImportBackgroundAsync(request, notification, JobCancellationToken.Null, null));
+
+            return Ok(notification);
+        }
+
+        [HttpPost]
+        [Route("cancel")]
+        public ActionResult CancelImport([FromBody] ImportCancellationRequest cancellationRequest)
+        {
+            BackgroundJob.Delete(cancellationRequest.JobId);
+            return Ok();
         }
     }
 }

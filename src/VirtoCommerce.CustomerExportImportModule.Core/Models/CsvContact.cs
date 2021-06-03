@@ -32,98 +32,98 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Contact Full Name")]
         [Required]
         public string ContactFullName { get; set; }
-        
+
         [Optional]
         [JsonProperty("contactOuterId")]
         [Name("Contact Outer Id")]
         public override string OuterId { get; set; }
-        
+
         [Optional]
         [Name("Organization Id")]
         public string OrganizationId { get; set; }
-        
+
         [Optional]
         [Name("Organization Outer Id")]
         public string OrganizationOuterId { get; set; }
-        
+
         [Optional]
         [Name("Organization Name")]
         public string OrganizationName { get; set; }
-        
+
         [Optional]
         [Name("Account Id")]
         public string AccountId { get; set; }
-        
+
         [Optional]
         [Name("Account Login")]
         public string AccountLogin { get; set; }
-        
+
         [Optional]
         [Name("Store Id")]
         public string StoreId { get; set; }
-        
+
         [Optional]
         [Name("Store Name")]
         public string StoreName { get; set; }
-        
+
         [Optional]
         [Name("Account Email")]
         public string AccountEmail { get; set; }
-        
+
         [Optional]
         [Name("Account Type")]
         public string AccountType { get; set; }
-        
+
         [Optional]
         [Name("Account Status")]
         public string AccountStatus { get; set; }
-        
+
         [Optional]
         [Name("Email Verified")]
         [BooleanTrueValues("yes", "true")]
         [BooleanFalseValues("no", "false")]
         public bool? EmailVerified { get; set; }
-        
+
         [Optional]
         [Name("Contact Status")]
         public string ContactStatus { get; set; }
-        
+
         [Optional]
         [Name("Associated Organization Ids")]
         public string AssociatedOrganizationIds { get; set; }
-        
+
         [Optional]
         [Name("Birthday")]
         public DateTime? Birthday { get; set; }
-        
+
         [Optional]
         [Name("TimeZone")]
         public string TimeZone { get; set; }
-        
+
         [Optional]
         [Name("Phones")]
         public string Phones { get; set; }
-        
+
         [Optional]
         [Name("User groups")]
         public string UserGroups { get; set; }
-        
+
         [Optional]
         [Name("Salutation")]
         public string Salutation { get; set; }
-        
+
         [Optional]
         [Name("Default language")]
         public string DefaultLanguage { get; set; }
-        
+
         [Optional]
         [Name("Taxpayer ID")]
         public string TaxPayerId { get; set; }
-        
+
         [Optional]
         [Name("Preferred communication")]
         public string PreferredCommunication { get; set; }
-        
+
         [Optional]
         [Name("Preferred delivery")]
         public string PreferredDelivery { get; set; }
@@ -164,6 +164,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressFirstName = address?.FirstName;
             AddressLastName = address?.LastName;
             AddressCountry = address?.CountryName;
+            AddressCountryCode = address?.CountryCode;
             AddressRegion = address?.RegionName;
             AddressCity = address?.City;
             AddressLine1 = address?.Line1;
@@ -178,13 +179,53 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             return this;
         }
 
-        public Contact ToContact()
+        public Contact PatchContact(Contact target)
         {
-            var accountSpecified = new[] { AccountId, AccountLogin, AccountEmail }.Any(accountField => accountField != null);
-            var accounts = new List<ApplicationUser>();
+            target.OuterId = OuterId;
+            target.FirstName = ContactFirstName;
+            target.LastName = ContactLastName;
+            target.FullName = ContactFullName;
+            target.Status = ContactStatus;
+            target.AssociatedOrganizations = AssociatedOrganizationIds?.Split(", ").Select(x => x.Trim()).Where(x => !x.IsNullOrEmpty()).ToList();
+            target.BirthDate = Birthday;
+            target.TimeZone = TimeZone;
+            target.Phones = Phones?.Split(", ");
+            target.Groups = UserGroups?.Split(", ");
+            target.Salutation = Salutation;
+            target.DefaultLanguage = DefaultLanguage;
+            target.TaxPayerId = TaxPayerId;
+            target.PreferredCommunication = PreferredCommunication;
+            target.PreferredDelivery = PreferredDelivery;
+            target.DynamicProperties = DynamicProperties;
+
+            target.Addresses ??= new List<Address>();
+            var isAddressSpecified = new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => !addressField.IsNullOrEmpty());
+
+            if (isAddressSpecified)
+            {
+                target.Addresses.Add(new Address
+                {
+                    AddressType = !AddressType.IsNullOrEmpty() ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
+                    FirstName = AddressFirstName,
+                    LastName = AddressLastName,
+                    CountryName = AddressCountry,
+                    CountryCode = AddressCountryCode,
+                    RegionName = AddressRegion,
+                    City = AddressCity,
+                    Line1 = AddressLine1,
+                    Line2 = AddressLine2,
+                    PostalCode = AddressZipCode,
+                    Email = AddressEmail,
+                    Phone = AddressPhone,
+                });
+            }
+
+            target.SecurityAccounts ??= new List<ApplicationUser>();
+            var accountSpecified = new[] { AccountId, AccountLogin, AccountEmail }.Any(accountField => !accountField.IsNullOrEmpty());
+
             if (accountSpecified)
             {
-                accounts.Add(
+                target.SecurityAccounts.Add(
                     new ApplicationUser
                     {
                         Id = AccountId,
@@ -198,50 +239,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 );
             }
 
-            var isAddressSpecified = new[] { AddressCountry, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => addressField != null);
-            var addresses = new List<Address>();
-            if (isAddressSpecified)
-            {
-                addresses.Add(
-                    new Address
-                    {
-                        AddressType = AddressType != null ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
-                        FirstName = AddressFirstName,
-                        LastName = AddressLastName,
-                        CountryName = AddressCountry,
-                        RegionName = AddressRegion,
-                        City = AddressCity,
-                        Line1 = AddressLine1,
-                        Line2 = AddressLine2,
-                        PostalCode = AddressZipCode,
-                        Email = AddressEmail,
-                        Phone = AddressPhone,
-                    }
-                );
-            }
-
-            return new Contact
-            {
-                Id = Id,
-                OuterId = OuterId,
-                FirstName = ContactFirstName,
-                LastName = ContactLastName,
-                FullName = ContactFullName,
-                SecurityAccounts = accounts,
-                Status = ContactStatus,
-                AssociatedOrganizations = AssociatedOrganizationIds?.Split(", ").ToList(),
-                BirthDate = Birthday,
-                TimeZone = TimeZone,
-                Phones = Phones?.Split(", "),
-                Groups = UserGroups?.Split(", "),
-                Salutation = Salutation,
-                DefaultLanguage = DefaultLanguage,
-                TaxPayerId = TaxPayerId,
-                PreferredCommunication = PreferredCommunication,
-                PreferredDelivery = PreferredDelivery,
-                Addresses = addresses,
-                DynamicProperties = DynamicProperties
-            };
+            return target;
         }
 
         public Organization ToOrganization()

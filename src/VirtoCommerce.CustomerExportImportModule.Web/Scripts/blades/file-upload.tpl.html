@@ -17,7 +17,7 @@
                     </div>
                     <input id="selectCustomerCsv" class="__hide" type="file" accept=".csv" nv-file-select uploader="uploader" multiple ng-disabled="!blade.dataType"/>
 
-                    <div ng-if="!blade.dataType" over-class="bd-blue" class="drag-area">
+                    <div ng-if="!blade.dataType" over-class="bd-blue" class="drag-area disabled">
                         <ng-include src="'dragContent'"></ng-include>
                     </div>
                     <div ng-if="blade.dataType" over-class="bd-blue" nv-file-over nv-file-drop uploader="uploader" class="drag-area">

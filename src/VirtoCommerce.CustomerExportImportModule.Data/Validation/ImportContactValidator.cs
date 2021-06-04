@@ -42,9 +42,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 , () =>
                 {
 
-                    RuleFor(x => x.Record.AccountLogin).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns); ;
-                    RuleFor(x => x.Record.AccountEmail).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns); ;
-                    RuleFor(x => x.Record.StoreId).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns); ;
+                    RuleFor(x => x.Record.AccountLogin).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
+                    RuleFor(x => x.Record.AccountEmail).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
+                    RuleFor(x => x.Record.StoreId).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
                 });
         }
     }

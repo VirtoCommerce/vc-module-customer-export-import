@@ -37,18 +37,18 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                     RuleFor(x => x.Record.AddressLine1).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
                     RuleFor(x => x.Record.AddressLine2).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
 
-                    RuleFor(x => x.Record.AddressCity).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns); ;
+                    RuleFor(x => x.Record.AddressCity).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
                     RuleFor(x => x.Record.AddressCity).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
 
                     RuleFor(x => x.Record.AddressRegion).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
 
-                    RuleFor(x => x.Record.AddressCountryCode).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns); ;
+                    RuleFor(x => x.Record.AddressCountryCode).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
                     RuleFor(x => x.Record.AddressCountryCode).MaximumLength(64).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
 
-                    RuleFor(x => x.Record.AddressCountry).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns); ;
+                    RuleFor(x => x.Record.AddressCountry).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
                     RuleFor(x => x.Record.AddressCountry).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
 
-                    RuleFor(x => x.Record.AddressZipCode).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns); ;
+                    RuleFor(x => x.Record.AddressZipCode).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
                     RuleFor(x => x.Record.AddressZipCode).MaximumLength(32).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
                 });
 

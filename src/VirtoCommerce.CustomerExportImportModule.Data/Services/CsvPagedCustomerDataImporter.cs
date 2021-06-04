@@ -7,6 +7,7 @@ using CsvHelper;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
+using VirtoCommerce.CustomerExportImportModule.Data.Validation;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.Platform.Core.Assets;
@@ -40,6 +41,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             ValidateParameters(request, progressCallback, cancellationToken);
 
             var errorsContext = new ImportErrorsContext();
+
+            var importContactsValidator = new ImportContactValidator();
 
             var csvPriceDataValidationResult = await _dataValidator.ValidateAsync(request.FilePath);
 
@@ -85,6 +88,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                         // expect records that was parsed with errors
                         .Where(importContact => !errorsContext.ErrorsRows.Contains(importContact.Row))
                         .ToArray();
+
+                    var validationResult = await importContactsValidator.ValidateAsync(importContacts);
+
+                    var invalidImportContacts = validationResult.Errors.Select(x => (x.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord).Distinct().ToArray();
+
+                    importProgress.ErrorCount += invalidImportContacts.Length;
+                    importContacts = importContacts.Except(invalidImportContacts).ToArray();
 
                     try
                     {

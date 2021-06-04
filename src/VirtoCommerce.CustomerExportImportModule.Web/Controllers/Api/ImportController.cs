@@ -82,7 +82,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
 
         [HttpPost]
         [Route("run")]
-        public async Task<ActionResult<ExportPushNotification>> RunExport([FromBody] ImportDataRequest request)
+        public async Task<ActionResult<ExportPushNotification>> RunImport([FromBody] ImportDataRequest request)
         {
             var notification = new ImportPushNotification(_userNameResolver.GetCurrentUserName())
             {

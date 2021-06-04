@@ -97,13 +97,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                             .ToArray();
 
                         var existedContacts =
-                            (await SearchMembersByIdAndOuterId(internalIds, outerIds, new[] { nameof(Contact) }))
-                            .OfType<Contact>();
+                            (await SearchMembersByIdAndOuterId(internalIds, outerIds, new[] { nameof(Contact) }, true))
+                            .OfType<Contact>().ToArray();
 
-                        var existedContactsIds = existedContacts.Select(x => x.Id).ToArray();
+                        var updateImportContacts = importContacts.Where(x => existedContacts.Any(ec => ec.Id.EqualsInvariant(x.Record.Id)
+                               || (!ec.OuterId.IsNullOrEmpty() && ec.OuterId.EqualsInvariant(x.Record.OuterId)))
+                            ).ToArray();
 
-                        var createImportContacts = importContacts.Where(x => !existedContactsIds.Contains(x.Record.Id))
-                            .ToArray();
+                        var createImportContacts = importContacts.Except(updateImportContacts).ToArray();
 
                         var internalOrgIds = importContacts.Select(x => x.Record?.OrganizationId).Distinct()
                             .Where(x => !x.IsNullOrEmpty()).ToArray();
@@ -113,29 +114,18 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                         var existedOrganizations =
                             (await SearchMembersByIdAndOuterId(internalOrgIds, outerOrgIds,
-                                new[] { nameof(Organization) })).OfType<Organization>();
+                                new[] { nameof(Organization) })).OfType<Organization>().ToArray();
 
-                        var newContacts = createImportContacts.Select(x =>
-                        {
-                            var contact = AbstractTypeFactory<Contact>.TryCreateInstance<Contact>();
+                        var newContacts = CreateNewContacts(createImportContacts, existedOrganizations, request);
 
-                            x.Record.PatchContact(contact);
+                        PatchExistedContacts(existedContacts, updateImportContacts, existedOrganizations, request);
 
-                            var existedOrg = existedOrganizations.FirstOrDefault(o => o.Id == x.Record.OrganizationId)
-                                             ?? existedOrganizations.FirstOrDefault(o =>
-                                                 o.OuterId == x.Record.OrganizationOuterId);
+                        var contactsForSave = newContacts.Union(existedContacts).ToArray();
 
-                            var orgIdForNewContact = existedOrg?.Id ?? request.OrganizationId;
-
-                            contact.Organizations =
-                                orgIdForNewContact != null ? new[] { orgIdForNewContact }.ToList() : new List<string>();
-
-                            return contact;
-                        }).ToArray();
-
-                        await _memberService.SaveChangesAsync(newContacts);
+                        await _memberService.SaveChangesAsync(contactsForSave);
 
                         importProgress.ContactsCreated += newContacts.Length;
+                        importProgress.ContactsUpdated += existedContacts.Length;
                     }
                     catch (Exception e)
                     {
@@ -169,6 +159,54 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 progressCallback(importProgress);
             }
+        }
+
+        private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<CsvContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
+        {
+            foreach (var existedContact in existedContacts)
+            {
+                var importContact = updateImportContacts.LastOrDefault(x => existedContact.Id.EqualsInvariant(x.Record.Id)
+                                                                            || (!existedContact.OuterId.IsNullOrEmpty() && existedContact.OuterId.EqualsInvariant(x.Record.OuterId)));
+
+
+                var existedOrg = existedOrganizations.FirstOrDefault(o => o.Id.EqualsInvariant(importContact.Record.OrganizationId))
+                                 ?? existedOrganizations.FirstOrDefault(o =>
+                                     !o.OuterId.IsNullOrEmpty() && o.OuterId.EqualsInvariant(importContact.Record.OrganizationOuterId));
+
+                var orgIdForNewContact = existedOrg?.Id ?? request.OrganizationId;
+
+
+                importContact?.Record.PatchContact(existedContact);
+
+                if (!orgIdForNewContact.IsNullOrEmpty() && !existedContact.Organizations.Contains(orgIdForNewContact))
+                {
+                    existedContact.Organizations ??= new List<string>();
+                    existedContact.Organizations.Add(orgIdForNewContact);
+                }
+            }
+        }
+
+        private static Contact[] CreateNewContacts(ImportRecord<CsvContact>[] createImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
+        {
+            var newContacts = createImportContacts.Select(x =>
+            {
+                var contact = AbstractTypeFactory<Contact>.TryCreateInstance<Contact>();
+
+                x.Record.PatchContact(contact);
+
+                var existedOrg = existedOrganizations.FirstOrDefault(o => o.Id == x.Record.OrganizationId)
+                                 ?? existedOrganizations.FirstOrDefault(o =>
+                                     o.OuterId == x.Record.OrganizationOuterId);
+
+                var orgIdForNewContact = existedOrg?.Id ?? request.OrganizationId;
+
+                contact.Organizations =
+                    orgIdForNewContact != null ? new[] { orgIdForNewContact }.ToList() : new List<string>();
+
+                return contact;
+            }).ToArray();
+
+            return newContacts;
         }
 
         private static void SetupCsvConfigurationErrorsHandlers(Action<ImportProgressInfo> progressCallback, ImportConfiguration configuration,
@@ -209,23 +247,31 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         }
 
 
-        private async Task<Member[]> SearchMembersByIdAndOuterId(string[] internalIds, string[] outerIds, string[] memberTypes)
+        private async Task<Member[]> SearchMembersByIdAndOuterId(string[] internalIds, string[] outerIds, string[] memberTypes, bool deepSearch = false)
         {
-            var searchResultById = await _memberSearchService.SearchMembersAsync(new ExtendedMemberSearchCiteria()
+            var criteriaById = new ExtendedMembersSearchCriteria()
             {
                 ObjectIds = internalIds,
                 MemberTypes = memberTypes,
+                DeepSearch = deepSearch,
+                Skip = 0,
                 Take = ModuleConstants.Settings.PageSize
-            });
+            };
 
-            var searchResultByOuterId = await _memberSearchService.SearchMembersAsync(new ExtendedMemberSearchCiteria()
+            var membersById = internalIds.IsNullOrEmpty() ? Array.Empty<Member>() : (await _memberSearchService.SearchMembersAsync(criteriaById)).Results;
+
+            var criteriaByOuterId = new ExtendedMembersSearchCriteria()
             {
                 OuterIds = outerIds,
                 MemberTypes = memberTypes,
+                DeepSearch = deepSearch,
+                Skip = 0,
                 Take = ModuleConstants.Settings.PageSize
-            });
+            };
 
-            var existedMembers = searchResultById.Results.Union(searchResultByOuterId.Results
+            var membersByOuterId = outerIds.IsNullOrEmpty() ? Array.Empty<Member>() : (await _memberSearchService.SearchMembersAsync(criteriaByOuterId)).Results;
+
+            var existedMembers = membersById.Union(membersByOuterId
                 , AnonymousComparer.Create<Member>((x, y) => x.Id == y.Id, x => x.Id.GetHashCode())).ToArray();
 
             return existedMembers;

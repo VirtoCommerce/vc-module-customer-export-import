@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CsvHelper;
+using FluentValidation;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
@@ -20,16 +21,18 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly IMemberService _memberService;
         private readonly IMemberSearchService _memberSearchService;
         private readonly ICsvCustomerDataValidator _dataValidator;
+        private readonly IValidator<ImportRecord<CsvContact>[]> _importContactValidator;
         private readonly ICsvCustomerImportReporterFactory _importReporterFactory;
         private readonly ICustomerImportPagedDataSourceFactory _dataSourceFactory;
         private readonly IBlobUrlResolver _blobUrlResolver;
 
-        public CsvPagedCustomerDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator
+        public CsvPagedCustomerDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<CsvContact>[]> importContactValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
         {
             _memberService = memberService;
             _memberSearchService = memberSearchService;
             _dataValidator = dataValidator;
+            _importContactValidator = importContactValidator;
             _importReporterFactory = importReporterFactory;
             _dataSourceFactory = dataSourceFactory;
             _blobUrlResolver = blobUrlResolver;
@@ -98,6 +101,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                     try
                     {
+                        var validationResult = await _importContactValidator.ValidateAsync(importContacts);
+
+                        var invalidImportContacts = validationResult.Errors.Select(x => (x.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord).Distinct().ToArray();
+
+                        importProgress.ErrorCount += invalidImportContacts.Length;
+                        importContacts = importContacts.Except(invalidImportContacts).ToArray();
+
                         var internalIds = importContacts.Select(x => x.Record?.Id).Distinct()
                             .Where(x => !x.IsNullOrEmpty())
                             .ToArray();

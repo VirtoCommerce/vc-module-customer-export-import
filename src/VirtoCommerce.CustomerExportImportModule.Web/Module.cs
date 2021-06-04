@@ -1,4 +1,5 @@
 using System.Linq;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerExportImportModule.Data.Repositories;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
+using VirtoCommerce.CustomerExportImportModule.Data.Validation;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.FeatureManagementModule.Core.Services;
 using VirtoCommerce.Platform.Core.Modularity;
@@ -38,6 +40,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
 
             serviceCollection.AddTransient<ICustomerImportPagedDataSourceFactory, CustomerImportPagedDataSourceFactory>();
             serviceCollection.AddTransient<ICsvCustomerDataValidator, CsvCustomerDataValidator>();
+            serviceCollection.AddTransient<IValidator<ImportRecord<CsvContact>[]>, ImportContactsValidator>();
             serviceCollection.AddTransient<ICsvCustomerImportReporterFactory, CsvCustomerImportReporterFactory>();
             serviceCollection.AddTransient<ICsvPagedCustomerDataImporter, CsvPagedCustomerDataImporter>();
 

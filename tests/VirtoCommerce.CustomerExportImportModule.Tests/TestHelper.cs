@@ -26,22 +26,33 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             return blobStorageProviderMock.Object;
         }
 
-        public static IDynamicPropertySearchService GetDynamicPropertySearchService(string[] dynamicPropertyNames)
+        public static IDynamicPropertySearchService GetDynamicPropertySearchService(IList<DynamicProperty> dynamicProperties)
         {
             var dynamicPropertySearchServiceMock = new Mock<IDynamicPropertySearchService>();
             dynamicPropertySearchServiceMock.Setup(x => x.SearchDynamicPropertiesAsync(It.IsAny<DynamicPropertySearchCriteria>()))
-                .Returns(() => Task.FromResult(new DynamicPropertySearchResult()
+                .Returns<DynamicPropertySearchCriteria>(criteria => Task.FromResult(new DynamicPropertySearchResult
                 {
-                    Results = dynamicPropertyNames.Select(dynamicPropertyName => new DynamicProperty { Name = dynamicPropertyName }).ToList(),
-                    TotalCount = dynamicPropertyNames.Length
+                    Results = dynamicProperties,
+                    TotalCount = dynamicProperties.Count
                 }));
             return dynamicPropertySearchServiceMock.Object;
         }
-
-
-        public static CustomerImportPagedDataSourceFactory GetCustomerImportPagedDataSourceFactory(IBlobStorageProvider blobStorageProvider, IDynamicPropertySearchService dynamicPropertySearchService)
+        public static IDynamicPropertyDictionaryItemsSearchService GetDynamicPropertyDictionaryItemsSearchService(IList<DynamicProperty> dynamicProperties, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dictionaryItems)
         {
-            return new CustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService);
+            var dynamicPropertySearchServiceMock = new Mock<IDynamicPropertyDictionaryItemsSearchService>();
+            dynamicPropertySearchServiceMock.Setup(x => x.SearchDictionaryItemsAsync(It.IsAny<DynamicPropertyDictionaryItemSearchCriteria>()))
+                .Returns<DynamicPropertyDictionaryItemSearchCriteria>(criteria =>
+                {
+                    var results = dictionaryItems.ContainsKey(criteria.PropertyId) ? dictionaryItems[criteria.PropertyId] : new List<DynamicPropertyDictionaryItem>();
+                    return Task.FromResult(new DynamicPropertyDictionaryItemSearchResult { Results = results, TotalCount = results.Count });
+                });
+            return dynamicPropertySearchServiceMock.Object;
+        }
+
+        public static CustomerImportPagedDataSourceFactory GetCustomerImportPagedDataSourceFactory(IBlobStorageProvider blobStorageProvider, IDynamicPropertySearchService dynamicPropertySearchService,
+            IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService)
+        {
+            return new CustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService, dynamicPropertyDictionaryItemsSearchService);
         }
 
         public static Stream GetStream(string csv)

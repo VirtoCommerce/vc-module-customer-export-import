@@ -12,7 +12,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
 {
     public sealed class GenericClassMap<T> : ClassMap<T>
     {
-        public GenericClassMap(IList<DynamicProperty> dynamicProperties = null)
+        public GenericClassMap(IList<DynamicProperty> dynamicProperties, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems = null)
         {
             AutoMap(new Configuration { Delimiter = ";", CultureInfo = CultureInfo.InvariantCulture });
             
@@ -88,7 +88,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                                     PropertyName = dynamicProperty.Name,
                                     PropertyId = dynamicProperty.Id,
                                     Value = row.GetField<string>(dynamicProperty.Name),
-                                    ValueType = dynamicProperty.ValueType
+                                    ValueType = dynamicProperty.ValueType,
+                                    ValueId =
+                                        dynamicProperty.IsDictionary && dynamicPropertyDictionaryItems[dynamicProperty.Id]
+                                            .Any(dictionaryItem => dictionaryItem.Name == row.GetField<string>(dynamicProperty.Name))
+                                            ? dynamicPropertyDictionaryItems[dynamicProperty.Id]
+                                                .FirstOrDefault(dictionaryItem => dictionaryItem.Name == row.GetField<string>(dynamicProperty.Name)).Id
+                                            : null
                                 }
                             }
                         }).Where(x => x.Values.First().Value != null).ToList());

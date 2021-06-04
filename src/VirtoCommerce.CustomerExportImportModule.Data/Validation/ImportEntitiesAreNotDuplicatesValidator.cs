@@ -25,11 +25,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void GetDuplicates(ImportRecord<T>[] importRecords, CustomContext context)
         {
-            var duplicatesById = importRecords.Where(importRecord => importRecord.Record != null)
+            var duplicatesById = importRecords.Where(importRecord => importRecord.Record != null && !importRecord.Record.Id.IsNullOrEmpty())
                 .GroupBy(importRecord => importRecord.Record.Id)
                 .SelectMany(group => group.Take(group.Count() - 1))
                 .ToArray();
-            var duplicatesByOuterId = importRecords.Where(importRecord => importRecord.Record != null)
+
+            var duplicatesByOuterId = importRecords.Where(importRecord => importRecord.Record != null && !importRecord.Record.OuterId.IsNullOrEmpty())
                 .GroupBy(importRecord => importRecord.Record.OuterId)
                 .SelectMany(group => group.Take(group.Count() - 1))
                 .ToArray();

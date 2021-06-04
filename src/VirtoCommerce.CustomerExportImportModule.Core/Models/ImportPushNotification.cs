@@ -26,6 +26,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         public int OrganizationsUpdated { get; set; }
 
+        public int ErrorCount { get; set; }
+
         public ICollection<string> Errors { get; set; }
 
         public DateTime? Finished { get; set; }

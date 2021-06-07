@@ -50,9 +50,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             Assert.Equal("Test1", (error.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord.Record.ContactFullName);
         }
 
-        private ImportContactValidator GetValidator()
+        private ImportContactsValidator GetValidator()
         {
-            return new ImportContactValidator();
+            return new ImportContactsValidator();
         }
     }
 }

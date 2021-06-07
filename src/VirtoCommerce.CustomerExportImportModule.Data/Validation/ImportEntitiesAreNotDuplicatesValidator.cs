@@ -33,7 +33,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .GroupBy(importRecord => importRecord.Record.OuterId)
                 .SelectMany(group => group.Take(group.Count() - 1))
                 .ToArray();
-            context.ParentContext.RootContextData[Duplicates] = duplicatesById.Concat(duplicatesByOuterId).ToArray();
+            context.ParentContext.RootContextData[Duplicates] = duplicatesById.Concat(duplicatesByOuterId).Distinct().ToArray();
         }
     }
 }

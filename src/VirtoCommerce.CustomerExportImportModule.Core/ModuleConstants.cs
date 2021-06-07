@@ -24,6 +24,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
             public const string ExceedingLineLimits = "exceeding-line-limits";
 
             public const string MissingRequiredColumns = "missing-required-columns";
+
+            public const string ExceedingMaxLength = "exceeding-max-length";
+
+            public const string InvalidValue = "invalid-value";
         }
 
         public static class Features

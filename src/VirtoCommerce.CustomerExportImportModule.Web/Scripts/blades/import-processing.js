@@ -5,6 +5,7 @@ angular.module("virtoCommerce.customerExportImportModule").controller("virtoComm
 
         $scope.$on("new-notification-event", function (event, notification) {
             if (blade.notification && notification.id === blade.notification.id) {
+                blade.progressPercentage = notification.processedCount/notification.totalCount * 100 || 0;
                 angular.copy(notification, blade.notification);
             }
         });

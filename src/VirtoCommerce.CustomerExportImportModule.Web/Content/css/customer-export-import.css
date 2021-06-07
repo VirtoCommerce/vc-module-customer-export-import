@@ -277,6 +277,22 @@
     color: #6d889b;
 }
 
+.customer-export-import .pb-background {
+    background-color: #EAEDF3;
+    width: 100%;
+    animation: none;
+    background-image: none;
+}
+
+.customer-export-import .absolute {
+    position: absolute;
+}
+
+.customer-export-import .relative {
+    position: relative;
+}
+
+
 
 
 

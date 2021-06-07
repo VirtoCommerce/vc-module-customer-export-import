@@ -2,7 +2,6 @@
     <div class="blade-inner">
         <div class="inner-block">
             <div class="form">
-
                 <div class="sub-t import-result-title">{{blade.notification.description}}</div>
 
                 <div class="block progress-wrap" ng-if="blade.notification.created || blade.notification.finished">
@@ -10,13 +9,15 @@
                         <span class="progress-status">{{ 'customerExportImport.blades.import-processing.labels.start' | translate }}</span>
                         <span class="progress-time"> — <i class="fa fa-clock-o"></i>&nbsp;{{ blade.notification.created | amParse | date:'mediumTime' }}</span>
                     </div>
-                    <p ng-if="!blade.notification.finished" class="dropdown-content">
-                        <span class="list-bar progress-bar" data-role="progress-bar" data-value="30" style="margin-left: 0"></span>
-                    </p>
                     <div ng-if="blade.notification.finished" ng-class="{'no-data': blade.notification.finished}" class="text progress-timing">
                         <span class="progress-status">{{ 'customerExportImport.blades.import-processing.labels.end' | translate }}</span>
                         <span class="progress-time"> — <i class="fa fa-clock-o"></i>&nbsp;{{ blade.notification.finished | amParse | date:'mediumTime' }}</span>
                     </div>
+                </div>
+
+                <div class="block relative mb-40" ng-if="blade.notification.created && !blade.notification.finished">
+                    <div class="progress-bar absolute pb-background"></div>
+                    <div class="progress-bar absolute" ng-style="{'width': blade.progressPercentage + '%'}"></div>
                 </div>
 
                 <div class="block" ng-if="blade.notification.contactsCreated || blade.notification.contactsUpdated || blade.notification.errorCount || blade.notification.totalCount">

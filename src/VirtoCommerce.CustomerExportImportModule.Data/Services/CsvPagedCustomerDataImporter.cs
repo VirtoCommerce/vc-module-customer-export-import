@@ -67,7 +67,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             if (!headerRaw.IsNullOrEmpty())
             {
-                importReporter.WriteHeader(headerRaw);
+                await importReporter.WriteHeaderAsync(headerRaw);
             }
 
             importProgress.TotalCount = dataSource.GetTotalCount();
@@ -250,8 +250,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 await HandleBadDataError(progressCallback, importProgress, importReporter, context, errorsContext);
             };
 
-            configuration.MissingFieldFound = async (headerNames, index, context) =>
-                await HandleMissedColumnError(progressCallback, importProgress, importReporter, context, errorsContext);
+            configuration.MissingFieldFound = null;
         }
 
 
@@ -310,7 +309,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             var importError = new ImportError { Error = "This row has invalid data. Quotes should be closed.", RawRow = context.RawRecord };
 
-            reporter.Write(importError);
+            reporter.WriteAsync(importError).GetAwaiter().GetResult();
 
             errorsContext.ErrorsRows.Add(context.Row);
             HandleError(progressCallback, importProgress);
@@ -321,7 +320,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             var invalidFieldName = context.HeaderRecord[context.CurrentIndex];
             var importError = new ImportError { Error = $"This row has invalid value in the column {invalidFieldName}.", RawRow = context.RawRecord };
 
-            reporter.Write(importError);
+            reporter.WriteAsync(importError).GetAwaiter().GetResult();
 
             errorsContext.ErrorsRows.Add(context.Row);
             HandleError(progressCallback, importProgress);
@@ -348,21 +347,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 importError.Error = $"The required values in columns: {string.Join(", ", missedValueColumns)} - are missing.";
             }
 
-            reporter.Write(importError);
-
-            errorsContext.ErrorsRows.Add(context.Row);
-            HandleError(progressCallback, importProgress);
-        }
-
-        private static async Task HandleMissedColumnError(Action<ImportProgressInfo> progressCallback, ImportProgressInfo importProgress, ICsvCustomerImportReporter reporter, ReadingContext context, ImportErrorsContext errorsContext)
-        {
-            var headerColumns = context.HeaderRecord;
-            var recordFields = context.Record;
-            var missedColumns = headerColumns.Skip(recordFields.Length).ToArray();
-            var error = $"This row has next missing columns: {string.Join(", ", missedColumns)}.";
-            var importError = new ImportError { Error = error, RawRow = context.RawRecord };
-
-            await reporter.WriteAsync(importError);
+            reporter.WriteAsync(importError).GetAwaiter().GetResult();
 
             errorsContext.ErrorsRows.Add(context.Row);
             HandleError(progressCallback, importProgress);

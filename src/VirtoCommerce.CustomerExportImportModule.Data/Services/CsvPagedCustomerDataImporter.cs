@@ -92,13 +92,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                         .Where(importContact => !errorsContext.ErrorsRows.Contains(importContact.Row))
                         .ToArray();
 
-                    var validationResult = await importContactsValidator.ValidateAsync(importContacts);
-
-                    var invalidImportContacts = validationResult.Errors.Select(x => (x.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord).Distinct().ToArray();
-
-                    importProgress.ErrorCount += invalidImportContacts.Length;
-                    importContacts = importContacts.Except(invalidImportContacts).ToArray();
-
                     try
                     {
                         var validationResult = await _importContactValidator.ValidateAsync(importContacts);

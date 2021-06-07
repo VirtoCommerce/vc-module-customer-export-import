@@ -45,8 +45,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var errorsContext = new ImportErrorsContext();
 
-            var importContactsValidator = new ImportContactValidator();
-
             var csvPriceDataValidationResult = await _dataValidator.ValidateAsync(request.FilePath);
 
             if (csvPriceDataValidationResult.Errors.Any())

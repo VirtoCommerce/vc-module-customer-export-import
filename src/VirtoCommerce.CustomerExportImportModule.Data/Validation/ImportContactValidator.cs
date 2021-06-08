@@ -2,6 +2,7 @@ using System.Linq;
 using FluentValidation;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
+using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
@@ -14,25 +15,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void AttachValidators()
         {
-            RuleFor(x => x.Record.ContactFirstName).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
-            RuleFor(x => x.Record.ContactFirstName).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
+            RuleFor(x => x.Record.ContactFirstName).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns).WithImportState();
+            RuleFor(x => x.Record.ContactFirstName).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
 
-            RuleFor(x => x.Record.ContactLastName).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
-            RuleFor(x => x.Record.ContactLastName).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
+            RuleFor(x => x.Record.ContactLastName).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns).WithImportState();
+            RuleFor(x => x.Record.ContactLastName).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
 
-            RuleFor(x => x.Record.ContactFullName).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
-            RuleFor(x => x.Record.ContactFullName).MaximumLength(254).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
+            RuleFor(x => x.Record.ContactFullName).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns).WithImportState();
+            RuleFor(x => x.Record.ContactFullName).MaximumLength(254).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
 
-            RuleFor(x => x.Record.OrganizationOuterId).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
-            RuleFor(x => x.Record.OrganizationName).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
+            RuleFor(x => x.Record.OrganizationOuterId).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
+            RuleFor(x => x.Record.OrganizationName).MaximumLength(128).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
 
-            RuleFor(x => x.Record.ContactStatus).MaximumLength(64).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
-            RuleFor(x => x.Record.TimeZone).MaximumLength(32).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
-            RuleFor(x => x.Record.Salutation).MaximumLength(256).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
-            RuleFor(x => x.Record.DefaultLanguage).MaximumLength(32).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
-            RuleFor(x => x.Record.TaxPayerId).MaximumLength(64).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
-            RuleFor(x => x.Record.PreferredDelivery).MaximumLength(64).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
-            RuleFor(x => x.Record.PreferredCommunication).MaximumLength(64).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength);
+            RuleFor(x => x.Record.ContactStatus).MaximumLength(64).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
+            RuleFor(x => x.Record.TimeZone).MaximumLength(32).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
+            RuleFor(x => x.Record.Salutation).MaximumLength(256).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
+            RuleFor(x => x.Record.DefaultLanguage).MaximumLength(32).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
+            RuleFor(x => x.Record.TaxPayerId).MaximumLength(64).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
+            RuleFor(x => x.Record.PreferredDelivery).MaximumLength(64).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
+            RuleFor(x => x.Record.PreferredCommunication).MaximumLength(64).WithErrorCode(ModuleConstants.ValidationErrors.ExceedingMaxLength).WithImportState();
 
             When(x => new[]
                 {
@@ -42,9 +43,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 , () =>
                 {
 
-                    RuleFor(x => x.Record.AccountLogin).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
-                    RuleFor(x => x.Record.AccountEmail).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
-                    RuleFor(x => x.Record.StoreId).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns);
+                    RuleFor(x => x.Record.AccountLogin).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns).WithImportState();
+                    RuleFor(x => x.Record.AccountEmail).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns).WithImportState();
+                    RuleFor(x => x.Record.StoreId).NotEmpty().WithErrorCode(ModuleConstants.ValidationErrors.MissingRequiredColumns).WithImportState();
                 });
         }
     }

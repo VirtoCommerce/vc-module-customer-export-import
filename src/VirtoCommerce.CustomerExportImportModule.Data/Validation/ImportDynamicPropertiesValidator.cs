@@ -1,10 +1,9 @@
-using System.Collections.Generic;
 using FluentValidation;
-using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.CustomerExportImportModule.Core.Models;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
-    public class ImportDynamicPropertiesValidator: AbstractValidator<ICollection<DynamicObjectProperty>>
+    public class ImportDynamicPropertiesValidator: AbstractValidator<ImportRecord<CsvContact>>
     {
         public ImportDynamicPropertiesValidator()
         {
@@ -13,7 +12,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void AttachValidators()
         {
-            RuleForEach(x => x).SetValidator(new ImportDynamicPropertyValidator());
+            RuleForEach(x => x.Record.DynamicProperties).SetValidator(new ImportDynamicPropertyValidator());
         }
     }
 }

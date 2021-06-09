@@ -93,9 +93,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     {
                         var validationResult = await _importContactValidator.ValidateAsync(importContacts);
 
-                        var invalidImportContacts = validationResult.Errors.Select(x => (x.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord).Distinct().ToArray();
+                        var invalidImportContacts = validationResult.Errors
+                            .Select(x => (x.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord).Distinct().ToArray();
 
-                        importProgress.ErrorCount += invalidImportContacts.Length;
                         importContacts = importContacts.Except(invalidImportContacts).ToArray();
 
                         var internalIds = importContacts.Select(x => x.Record?.Id).Distinct()
@@ -144,6 +144,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     finally
                     {
                         importProgress.ProcessedCount = Math.Min(dataSource.CurrentPageNumber * dataSource.PageSize, importProgress.TotalCount);
+                        importProgress.ErrorCount = importProgress.ProcessedCount - importProgress.ContactsCreated - importProgress.ContactsUpdated;
                     }
 
                     if (importProgress.ProcessedCount != importProgress.TotalCount)
@@ -291,7 +292,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 importProgress.Errors.Add(error);
             }
 
-            importProgress.ErrorCount++;
             progressCallback(importProgress);
         }
 

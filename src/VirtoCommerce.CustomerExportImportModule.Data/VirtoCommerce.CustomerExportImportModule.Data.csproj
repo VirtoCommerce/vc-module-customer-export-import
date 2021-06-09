@@ -28,6 +28,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
         <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.28.0" />
+        <PackageReference Include="VirtoCommerce.DemoSolutionFeaturesModule.Data" Version="1.12.0" />
         <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.53.0" />
         <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.53.0" />
     </ItemGroup>

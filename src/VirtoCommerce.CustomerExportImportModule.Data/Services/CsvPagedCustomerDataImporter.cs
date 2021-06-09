@@ -134,7 +134,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                         var newContacts = newContactsDict.Values.ToArray();
 
-                        PatchExistedContacts(existedContacts, updateImportContacts, existedOrganizations, request);
+                        await PatchExistedContacts(existedContacts, updateImportContacts, existedOrganizations, request);
 
                         var contactsForSave = newContacts.Union(existedContacts).ToArray();
 

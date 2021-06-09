@@ -202,7 +202,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             await _taggedMemberService.SaveChangesAsync(newTaggedMembers.ToArray());
         }
 
-        private async void PatchExistedContacts(Contact[] existedContacts, ImportRecord<CsvContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
+        private async Task PatchExistedContacts(Contact[] existedContacts, ImportRecord<CsvContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
         {
             var taggedMembers = (await _taggedMemberService.GetByIdsAsync(existedContacts.Select(x => x.Id).ToArray())).ToList();
 

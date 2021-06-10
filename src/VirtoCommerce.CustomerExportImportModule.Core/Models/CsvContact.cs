@@ -192,11 +192,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             target.LastName = ContactLastName;
             target.FullName = ContactFullName;
             target.Status = ContactStatus;
-            target.AssociatedOrganizations = AssociatedOrganizationIds?.Split(", ").Select(x => x.Trim()).Where(x => !x.IsNullOrEmpty()).ToList();
+            target.AssociatedOrganizations = (string.IsNullOrEmpty(AssociatedOrganizationIds) ? null : AssociatedOrganizationIds?.Split(", "))?.Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
             target.BirthDate = Birthday;
             target.TimeZone = TimeZone;
-            target.Phones = Phones?.Split(", ");
-            target.Groups = UserGroups?.Split(", ");
+            target.Phones = string.IsNullOrEmpty(Phones) ? null : Phones.Split(", ");
+            target.Groups = string.IsNullOrEmpty(UserGroups) ? null : UserGroups.Split(", ");
             target.Salutation = Salutation;
             target.DefaultLanguage = DefaultLanguage;
             target.TaxPayerId = TaxPayerId;
@@ -205,13 +205,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             target.DynamicProperties = DynamicProperties;
 
             target.Addresses ??= new List<Address>();
-            var isAddressSpecified = new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => !addressField.IsNullOrEmpty());
+            var isAddressSpecified = new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => !string.IsNullOrEmpty(addressField));
 
             if (isAddressSpecified)
             {
                 target.Addresses.Add(new Address
                 {
-                    AddressType = !AddressType.IsNullOrEmpty() ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
+                    AddressType = !string.IsNullOrEmpty(AddressType) ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
                     FirstName = AddressFirstName,
                     LastName = AddressLastName,
                     CountryName = AddressCountry,
@@ -227,7 +227,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             }
 
             target.SecurityAccounts ??= new List<ApplicationUser>();
-            var accountSpecified = new[] { AccountId, AccountLogin, AccountEmail }.Any(accountField => !accountField.IsNullOrEmpty());
+            var accountSpecified = new[] { AccountId, AccountLogin, AccountEmail }.Any(accountField => !string.IsNullOrEmpty(accountField));
 
             if (accountSpecified)
             {

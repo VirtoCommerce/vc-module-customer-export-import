@@ -2,6 +2,7 @@ using System.Linq;
 using FluentValidation;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
+using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
@@ -23,7 +24,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                     return !duplicates.Contains(importRecord);
                 })
                 .WithErrorCode(ModuleConstants.ValidationErrors.DuplicateError)
-                .WithState(importRecord => new ImportValidationState<T> { InvalidRecord = importRecord })
+                .WithImportState()
                 .WithMessage("This customer is a duplicate.");
         }
     }

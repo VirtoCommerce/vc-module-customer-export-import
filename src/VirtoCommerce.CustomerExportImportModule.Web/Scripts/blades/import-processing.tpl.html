@@ -1,0 +1,56 @@
+<div class="blade-content customer-export-import">
+    <div class="blade-inner">
+        <div class="inner-block">
+            <div class="form">
+                <div class="sub-t import-result-title">{{blade.notification.description}}</div>
+
+                <div class="block progress-wrap" ng-if="blade.notification.created || blade.notification.finished">
+                    <div ng-if="blade.notification.created" ng-class="{'no-data': blade.notification.created}" class="text progress-timing fs-13">
+                        <span class="progress-status">{{ 'customerExportImport.blades.import-processing.labels.start' | translate }}</span>
+                        <span class="progress-time"> — <i class="fa fa-clock-o"></i>&nbsp;{{ blade.notification.created | amParse | date:'mediumTime' }}</span>
+                    </div>
+                    <div ng-if="blade.notification.finished" ng-class="{'no-data': blade.notification.finished}" class="text progress-timing">
+                        <span class="progress-status">{{ 'customerExportImport.blades.import-processing.labels.end' | translate }}</span>
+                        <span class="progress-time"> — <i class="fa fa-clock-o"></i>&nbsp;{{ blade.notification.finished | amParse | date:'mediumTime' }}</span>
+                    </div>
+                </div>
+
+                <div class="block relative mb-40" ng-if="blade.notification.created && !blade.notification.finished">
+                    <div class="progress-bar absolute pb-background"></div>
+                    <div class="progress-bar absolute" ng-style="{'width': blade.progressPercentage + '%'}"></div>
+                </div>
+
+                <div class="block" ng-if="blade.notification.contactsCreated || blade.notification.contactsUpdated || blade.notification.errorCount || blade.notification.totalCount">
+                    <ul class="list __info list-main">
+                        <li class="list-item" id="contacts">
+                            <p class="list-item-title">{{ 'customerExportImport.blades.import-processing.subtitles.contacts' | translate }}</p>
+                            <ul class="list __info list-sub">
+                                <li class="list-item mr-30">
+                                    <div class="list-t">{{ 'customerExportImport.blades.import-processing.labels.lines-created' | translate }}</div>
+                                    <div class="list-descr">{{blade.notification.contactsCreated | number:0}}</div>
+                                </li>
+                                <li class="list-item">
+                                    <div class="list-t">{{ 'customerExportImport.blades.import-processing.labels.lines-updated' | translate }}</div>
+                                    <div class="list-descr">{{blade.notification.contactsUpdated | number:0}}</div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="list-item" id="errors">
+                            <p class="list-item-title">{{ 'customerExportImport.blades.import-processing.subtitles.errors' | translate }}</p>
+                            <ul class="list __info list-sub flex-column">
+                                <li class="list-item">
+                                    <div class="list-t">{{ 'customerExportImport.blades.import-processing.labels.error-count' | translate }}</div>
+                                    <div class="list-descr">{{ blade.notification.errorCount }}</div>
+                                </li>
+                                <li class="list-item mt-10" ng-if="blade.notification.reportUrl">
+                                    <div class="list-t">{{ 'customerExportImport.blades.import-processing.labels.errors-report' | translate }}</div>
+                                    <div class="list-descr"><a href="{{blade.notification.reportUrl}}" target="_blank">{{blade.notification.reportUrl}}</a></div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

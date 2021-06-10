@@ -17,6 +17,8 @@ angular.module(moduleName, ['ui.grid.autoFitColumns']).run([
                     executeMethod: function (blade) {
                         const newBlade = {
                             id: 'customerImportFileUpload',
+                            organizationId: blade.currentEntity.id,
+                            organizationName: blade.currentEntity.name,
                             title: (blade.currentEntity && blade.currentEntity.name) ? 'customerExportImport.blades.file-upload.title-member' : 'customerExportImport.blades.file-upload.title-root',
                             titleValues: (blade.currentEntity && blade.currentEntity.name) && { member: blade.currentEntity.name },
                             importFromRoot: !(blade.currentEntity && blade.currentEntity.name),

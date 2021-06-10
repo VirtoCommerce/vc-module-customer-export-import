@@ -40,7 +40,7 @@
     display: none;
 }
 
-.customer-export-import .fs-13 .ui-grid-header-cell-label {
+.customer-export-import .fs-13 .ui-grid-header-cell-label, .customer-export-import .list-descr, .customer-export-import .list-descr a {
     font-size: 13px !important;
 }
 
@@ -96,7 +96,7 @@
     padding-left: 7px;
 }
 
-.customer-export-import .font-weight-500 {
+.customer-export-import .font-weight-500, .customer-export-import .list-t {
     font-weight: 500 !important;
 }
 
@@ -228,4 +228,71 @@
 .customer-export-import .disabled-cursor {
     cursor: not-allowed !important;
 }
+.customer-export-import .import-result-title {
+    margin: 10px 0 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaecf2;
+}
+
+.customer-export-import .progress-wrap {
+    display: flex;
+    width: fit-content;
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.customer-export-import .progress-timing {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    font-size: 13px;
+}
+
+.customer-export-import .progress-status {
+    margin-right: 2px;
+}
+
+.customer-export-import .list-main {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    margin-top: 17px;
+}
+
+.customer-export-import .list-main > .list-item {
+    margin-bottom: 24px;
+}
+
+.customer-export-import .list-sub {
+    display: flex;
+    margin: 0;
+}
+
+.customer-export-import .mr-30 {
+    margin-right: 30px;
+}
+
+.customer-export-import .list-item-title {
+    font-size: 18px;
+    color: #6d889b;
+}
+
+.customer-export-import .pb-background {
+    background-color: #EAEDF3;
+    width: 100%;
+    animation: none;
+    background-image: none;
+}
+
+.customer-export-import .absolute {
+    position: absolute;
+}
+
+.customer-export-import .relative {
+    position: relative;
+}
+
+
+
+
 

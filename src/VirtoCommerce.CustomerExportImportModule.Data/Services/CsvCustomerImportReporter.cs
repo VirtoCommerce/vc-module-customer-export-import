@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
@@ -27,29 +28,32 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async Task WriteAsync(ImportError error)
         {
-            ReportIsNotEmpty = true;
-            await _streamWriter.WriteLineAsync(GetLine(error));
+            using (await AsyncLock.GetLockByKey(_reportFilePath).LockAsync())
+            {
+                ReportIsNotEmpty = true;
+                await _streamWriter.WriteLineAsync(GetLine(error));
+            }
         }
 
-        public void Write(ImportError error)
+        public async Task WriteHeaderAsync(string header)
         {
-            ReportIsNotEmpty = true;
-            _streamWriter.WriteLine(GetLine(error));
-        }
-
-        public void WriteHeader(string header)
-        {
-            _streamWriter.WriteLine($"{ErrorsColumnName}{_delimiter}{header}");
+            using (await AsyncLock.GetLockByKey(_reportFilePath).LockAsync())
+            {
+                await _streamWriter.WriteLineAsync($"{ErrorsColumnName}{_delimiter}{header}");
+            }
         }
 
         public async ValueTask DisposeAsync()
         {
-            await _streamWriter.FlushAsync();
-            _streamWriter.Close();
-
-            if (!ReportIsNotEmpty)
+            using (await AsyncLock.GetLockByKey(_reportFilePath).LockAsync())
             {
-                await _blobStorageProvider.RemoveAsync(new[] { _reportFilePath });
+                await _streamWriter.FlushAsync();
+                _streamWriter.Close();
+
+                if (!ReportIsNotEmpty)
+                {
+                    await _blobStorageProvider.RemoveAsync(new[] { _reportFilePath });
+                }
             }
         }
 

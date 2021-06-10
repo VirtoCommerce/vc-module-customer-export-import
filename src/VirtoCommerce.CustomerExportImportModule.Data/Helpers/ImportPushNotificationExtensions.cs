@@ -11,6 +11,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Helpers
             target.TotalCount = source.TotalCount;
             target.ContactsCreated = source.ContactsCreated;
             target.ContactsUpdated = source.ContactsUpdated;
+            target.ErrorCount = source.ErrorCount;
             target.Errors = source.Errors;
             target.ReportUrl = source.ReportUrl;
         }

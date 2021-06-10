@@ -7,8 +7,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Services
     public interface ICsvCustomerImportReporter : IAsyncDisposable
     {
         bool ReportIsNotEmpty { get; }
-        void WriteHeader(string header);
+        Task WriteHeaderAsync(string header);
         Task WriteAsync(ImportError error);
-        void Write(ImportError error);
     }
 }

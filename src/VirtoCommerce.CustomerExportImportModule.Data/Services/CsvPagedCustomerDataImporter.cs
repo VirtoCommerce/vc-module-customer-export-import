@@ -10,8 +10,6 @@ using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
-using VirtoCommerce.DemoSolutionFeaturesModule.Core.Models.Customer;
-using VirtoCommerce.DemoSolutionFeaturesModule.Core.Services.Customer;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -26,10 +24,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly ICsvCustomerImportReporterFactory _importReporterFactory;
         private readonly ICustomerImportPagedDataSourceFactory _dataSourceFactory;
         private readonly IBlobUrlResolver _blobUrlResolver;
-        private readonly IDemoTaggedMemberService _taggedMemberService;
 
         public CsvPagedCustomerDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<CsvContact>[]> importContactValidator
-            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver, IDemoTaggedMemberService taggedMemberService)
+            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
         {
             _memberService = memberService;
             _memberSearchService = memberSearchService;
@@ -38,7 +35,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             _importReporterFactory = importReporterFactory;
             _dataSourceFactory = dataSourceFactory;
             _blobUrlResolver = blobUrlResolver;
-            _taggedMemberService = taggedMemberService;
         }
 
         public async Task ImportAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback,
@@ -130,17 +126,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                             (await SearchMembersByIdAndOuterId(internalOrgIds, outerOrgIds,
                                 new[] { nameof(Organization) })).OfType<Organization>().ToArray();
 
-                        var newContactsDict = CreateNewContactsDict(createImportContacts, existedOrganizations, request);
+                        var newContacts = CreateNewContacts(createImportContacts, existedOrganizations, request);
 
-                        var newContacts = newContactsDict.Values.ToArray();
-
-                        await PatchExistedContacts(existedContacts, updateImportContacts, existedOrganizations, request);
+                        PatchExistedContacts(existedContacts, updateImportContacts, existedOrganizations, request);
 
                         var contactsForSave = newContacts.Union(existedContacts).ToArray();
 
                         await _memberService.SaveChangesAsync(contactsForSave);
-
-                        await CreateNSaveTagsForNewContacts(newContactsDict);
 
                         importProgress.ContactsCreated += newContacts.Length;
                         importProgress.ContactsUpdated += existedContacts.Length;
@@ -180,32 +172,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-        private async Task CreateNSaveTagsForNewContacts(Dictionary<CsvContact, Contact> newContactsDict)
+        private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<CsvContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
         {
-            if (newContactsDict.IsNullOrEmpty())
-            {
-                return;
-            }
-
-            var newTaggedMembers = new List<DemoTaggedMember>();
-
-            foreach (var csvContact in newContactsDict.Keys.Where(x => !string.IsNullOrWhiteSpace(x.UserGroups)))
-            {
-                var contact = newContactsDict[csvContact];
-                var taggedMember = AbstractTypeFactory<DemoTaggedMember>.TryCreateInstance();
-                taggedMember.Id = contact.Id;
-                taggedMember.Tags = csvContact.UserGroups.Split(", ");
-
-                newTaggedMembers.Add(taggedMember);
-            }
-
-            await _taggedMemberService.SaveChangesAsync(newTaggedMembers.ToArray());
-        }
-
-        private async Task PatchExistedContacts(Contact[] existedContacts, ImportRecord<CsvContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
-        {
-            var taggedMembers = (await _taggedMemberService.GetByIdsAsync(existedContacts.Select(x => x.Id).ToArray())).ToList();
-
             foreach (var existedContact in existedContacts)
             {
                 var importContact = updateImportContacts.LastOrDefault(x => existedContact.Id.EqualsInvariant(x.Record.Id)
@@ -224,42 +192,30 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     existedContact.Organizations ??= new List<string>();
                     existedContact.Organizations.Add(orgIdForNewContact);
                 }
-
-                // update tags
-                if (!string.IsNullOrWhiteSpace(importContact.Record.UserGroups))
-                {
-                    var taggedMember = taggedMembers.FirstOrDefault(x => x.MemberId.EqualsInvariant(existedContact.Id));
-                    taggedMember ??= AbstractTypeFactory<DemoTaggedMember>.TryCreateInstance();
-                    taggedMember.Id = existedContact.Id;
-                    taggedMember.Tags = importContact.Record.UserGroups.Split(", ");
-                }
             }
-
-            await _taggedMemberService.SaveChangesAsync(taggedMembers.ToArray());
         }
 
-        private static Dictionary<CsvContact, Contact> CreateNewContactsDict(ImportRecord<CsvContact>[] createImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
+        private static Contact[] CreateNewContacts(ImportRecord<CsvContact>[] createImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
         {
-            var result = new Dictionary<CsvContact, Contact>();
-            foreach (var importContact in createImportContacts)
+            var newContacts = createImportContacts.Select(x =>
             {
                 var contact = AbstractTypeFactory<Contact>.TryCreateInstance<Contact>();
 
-                importContact.Record.PatchContact(contact);
+                x.Record.PatchContact(contact);
 
-                var existedOrg = existedOrganizations.FirstOrDefault(o => o.Id == importContact.Record.OrganizationId)
+                var existedOrg = existedOrganizations.FirstOrDefault(o => o.Id == x.Record.OrganizationId)
                                  ?? existedOrganizations.FirstOrDefault(o =>
-                                     o.OuterId == importContact.Record.OrganizationOuterId);
+                                     o.OuterId == x.Record.OrganizationOuterId);
 
                 var orgIdForNewContact = existedOrg?.Id ?? request.OrganizationId;
 
                 contact.Organizations =
                     orgIdForNewContact != null ? new[] { orgIdForNewContact }.ToList() : new List<string>();
 
-                result.Add(importContact.Record, contact);
-            }
+                return contact;
+            }).ToArray();
 
-            return result;
+            return newContacts;
         }
 
         private static void SetupCsvConfigurationErrorsHandlers(Action<ImportProgressInfo> progressCallback, ImportConfiguration configuration,

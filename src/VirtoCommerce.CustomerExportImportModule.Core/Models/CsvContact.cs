@@ -24,7 +24,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public override string Id
         {
             get => _id;
-            set => _id = value.Trim();
+            set => _id = value?.Trim();
         }
 
         [Name("Contact First Name")]

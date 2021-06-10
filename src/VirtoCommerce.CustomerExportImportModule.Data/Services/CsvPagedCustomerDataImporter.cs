@@ -91,13 +91,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                     try
                     {
-                        var validationResult = await _importContactValidator.ValidateAsync(importContacts);
-
-                        var invalidImportContacts = validationResult.Errors
-                            .Select(x => (x.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord).Distinct().ToArray();
-
-                        importContacts = importContacts.Except(invalidImportContacts).ToArray();
-
                         var internalIds = importContacts.Select(x => x.Record?.Id).Distinct()
                             .Where(x => !x.IsNullOrEmpty())
                             .ToArray();
@@ -109,6 +102,21 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                         var existedContacts =
                             (await SearchMembersByIdAndOuterId(internalIds, outerIds, new[] { nameof(Contact) }, true))
                             .OfType<Contact>().ToArray();
+
+                        SetIdToNullForNotExisted(importContacts, existedContacts);
+
+                        var validationResult = await _importContactValidator.ValidateAsync(importContacts);
+
+                        var invalidImportContacts = validationResult.Errors
+                            .Select(x => (x.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord).Distinct().ToArray();
+
+                        importContacts = importContacts.Except(invalidImportContacts).ToArray();
+
+                        //reduce existed set after validation
+                        existedContacts = existedContacts.Where(ec => importContacts.Any(ic =>
+                                ec.Id.EqualsInvariant(ic.Record.Id)
+                                || !string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId)))
+                            .ToArray();
 
                         var updateImportContacts = importContacts.Where(x => existedContacts.Any(ec => ec.Id.EqualsInvariant(x.Record.Id)
                                || (!ec.OuterId.IsNullOrEmpty() && ec.OuterId.EqualsInvariant(x.Record.OuterId)))
@@ -169,6 +177,20 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 }
 
                 progressCallback(importProgress);
+            }
+        }
+
+        private static void SetIdToNullForNotExisted(ImportRecord<CsvContact>[] importContacts, Contact[] existedContacts)
+        {
+            foreach (var importContact in importContacts)
+            {
+                var existedContact =
+                    existedContacts.FirstOrDefault(x => x.Id.EqualsInvariant(importContact.Record.Id));
+
+                if (existedContact == null)
+                {
+                    importContact.Record.Id = null;
+                }
             }
         }
 

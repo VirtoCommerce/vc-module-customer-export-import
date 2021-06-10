@@ -100,20 +100,16 @@ angular.module('virtoCommerce.customerExportImportModule')
                     });
                     const fullNameColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'contactFullName'});
                     const idColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'contactId'});
-                    const birthdayColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'birthday'});
-                    if (fullNameColumn) {
-                        fullNameColumn.pinnedLeft = true;
-                        fullNameColumn.cellClass = "pl-7 bl-0 font-weight-500 fs-12";
-                        fullNameColumn.headerCellClass = "pl-7 font-weight-500 fs-13";
-                    }
+                    const birthdayColumn = _.findWhere(gridApi.grid.options.columnDefs, { name: "birthday" });
+                    fullNameColumn.pinnedLeft = true;
+                    fullNameColumn.cellClass = "pl-7 bl-0 font-weight-500 fs-12";
+                    fullNameColumn.headerCellClass = "pl-7 font-weight-500 fs-13";
                     if (idColumn) {
                         idColumn.enablePinning = true;
                         idColumn.hidePinLeft = false;
                     }
                     if (birthdayColumn) {
-                        delete birthdayColumn.cellTemplate;
-                        birthdayColumn.type = "date";
-                        birthdayColumn.cellFilter = "date:'dd.MM.yyyy'";
+                        birthdayColumn.cellTemplate = "birthday.col.html";
                     }
                     grid.api.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
                 },[uiGridConstants.dataChange.ROW])

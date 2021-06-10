@@ -9,9 +9,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
     public sealed class CsvOrganization : CsvMember
     {
+        private string _id;
+
         [JsonProperty("organizationId")]
         [Name("Organization Id")]
-        public override string Id { get; set; }
+        public override string Id
+        {
+            get => _id;
+            set => _id = value.Trim();
+        }
 
         [JsonProperty("organizationOuterId")]
         [Name("Organization Outer Id")]

@@ -16,10 +16,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
     public sealed class CsvContact : CsvMember
     {
+        private string _id;
+
         [Optional]
         [JsonProperty("contactId")]
         [Name("Contact Id")]
-        public override string Id { get; set; }
+        public override string Id
+        {
+            get => _id;
+            set => _id = value.Trim();
+        }
 
         [Name("Contact First Name")]
         [Required]
@@ -179,7 +185,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             return this;
         }
 
-        public Contact PatchContact(Contact target)
+        public void PatchContact(Contact target)
         {
             target.OuterId = OuterId;
             target.FirstName = ContactFirstName;
@@ -238,8 +244,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                     }
                 );
             }
-
-            return target;
         }
 
         public Organization ToOrganization()

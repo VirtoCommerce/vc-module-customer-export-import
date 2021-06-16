@@ -40,7 +40,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                 headers: {Accept: 'application/json'},
                 url: 'api/platform/assets?folderUrl=tmp',
                 method: 'POST',
-                autoUpload: false,
+                autoUpload: false, //We need to set this to false in order to prevent our async operations (delete asset/ validate file) from running in the wrong order
                 removeAfterUpload: true,
                 filters: [
                     {

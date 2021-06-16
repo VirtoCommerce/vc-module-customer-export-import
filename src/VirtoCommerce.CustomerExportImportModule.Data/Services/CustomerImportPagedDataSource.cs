@@ -10,7 +10,7 @@ using VirtoCommerce.Platform.Core.Assets;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
-    public sealed class CustomerImportPagedDataSource<T> : ICustomerImportPagedDataSource<T>
+    public sealed class CustomerImportPagedDataSource<T> : ICustomerImportPagedDataSource where T : CsvMember
     {
         private readonly Stream _stream;
         private readonly Configuration _configuration;
@@ -101,11 +101,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             if (CurrentPageNumber * PageSize >= GetTotalCount())
             {
-                Items = Array.Empty<ImportRecord<T>>();
+                Items = Array.Empty<ImportRecord<CsvMember>>();
                 return false;
             }
 
-            var items = new List<ImportRecord<T>>();
+            var items = new List<ImportRecord<CsvMember>>();
 
             for (var i = 0; i < PageSize && await _csvReader.ReadAsync(); i++)
             {
@@ -116,7 +116,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     var rawRecord = _csvReader.Context.RawRecord;
                     var row = _csvReader.Context.Row;
 
-                    items.Add(new ImportRecord<T> { Row = row, RawRecord = rawRecord, Record = record });
+                    items.Add(new ImportRecord<CsvMember> { Row = row, RawRecord = rawRecord, Record = record });
                 }
             }
 
@@ -127,7 +127,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             return true;
         }
 
-        public ImportRecord<T>[] Items { get; private set; }
+        public ImportRecord<CsvMember>[] Items { get; private set; }
 
         public void Dispose()
         {

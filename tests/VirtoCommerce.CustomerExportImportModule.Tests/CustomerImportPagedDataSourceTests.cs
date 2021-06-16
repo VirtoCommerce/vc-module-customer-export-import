@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CsvHelper;
+using VirtoCommerce.CustomerExportImportModule.Core.Models;
+using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using Xunit;
 
@@ -32,7 +34,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var dynamicPropertySearchService = TestHelper.GetDynamicPropertySearchService(DynamicProperties);
             var dynamicPropertyDictionaryItemsSearchService = TestHelper.GetDynamicPropertyDictionaryItemsSearchService(DynamicProperties, new Dictionary<string, IList<DynamicPropertyDictionaryItem>>());
             var customerImportPagedDataSourceFactory = TestHelper.GetCustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService, dynamicPropertyDictionaryItemsSearchService);
-            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync(CsvFileName, 10);
+            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync<CsvContact, Contact>(CsvFileName, 10);
 
             // Act
             var totalCount = customerImportPagedDataSource.GetTotalCount();
@@ -50,7 +52,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var dynamicPropertySearchService = TestHelper.GetDynamicPropertySearchService(DynamicProperties);
             var dynamicPropertyDictionaryItemsSearchService = TestHelper.GetDynamicPropertyDictionaryItemsSearchService(DynamicProperties, new Dictionary<string, IList<DynamicPropertyDictionaryItem>>());
             var customerImportPagedDataSourceFactory = TestHelper.GetCustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService, dynamicPropertyDictionaryItemsSearchService);
-            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync(CsvFileName, 10);
+            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync<CsvContact, Contact>(CsvFileName, 10);
 
             // Act
             customerImportPagedDataSource.GetTotalCount();
@@ -77,7 +79,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 var dynamicPropertySearchService = TestHelper.GetDynamicPropertySearchService(DynamicProperties);
                 var dynamicPropertyDictionaryItemsSearchService = TestHelper.GetDynamicPropertyDictionaryItemsSearchService(DynamicProperties, new Dictionary<string, IList<DynamicPropertyDictionaryItem>>());
                 var customerImportPagedDataSourceFactory = TestHelper.GetCustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService, dynamicPropertyDictionaryItemsSearchService);
-                using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync(CsvFileName, 10);
+                using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync<CsvContact, Contact>(CsvFileName, 10);
 
                 // Act
                 await customerImportPagedDataSource.FetchAsync();
@@ -96,7 +98,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var dynamicPropertySearchService = TestHelper.GetDynamicPropertySearchService(DynamicProperties);
             var dynamicPropertyDictionaryItemsSearchService = TestHelper.GetDynamicPropertyDictionaryItemsSearchService(DynamicProperties, new Dictionary<string, IList<DynamicPropertyDictionaryItem>>());
             var customerImportPagedDataSourceFactory = TestHelper.GetCustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService, dynamicPropertyDictionaryItemsSearchService);
-            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync(CsvFileName, 1);
+            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync<CsvContact, Contact>(CsvFileName, 1);
 
             // Act
             await customerImportPagedDataSource.FetchAsync();
@@ -115,7 +117,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var dynamicPropertySearchService = TestHelper.GetDynamicPropertySearchService(DynamicProperties);
             var dynamicPropertyDictionaryItemsSearchService = TestHelper.GetDynamicPropertyDictionaryItemsSearchService(DynamicProperties, new Dictionary<string, IList<DynamicPropertyDictionaryItem>>());
             var customerImportPagedDataSourceFactory = TestHelper.GetCustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService, dynamicPropertyDictionaryItemsSearchService);
-            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync(CsvFileName, 1);
+            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync<CsvContact, Contact>(CsvFileName, 1);
 
             // Act
             await customerImportPagedDataSource.FetchAsync();
@@ -135,7 +137,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var dynamicPropertySearchService = TestHelper.GetDynamicPropertySearchService(DynamicProperties);
             var dynamicPropertyDictionaryItemsSearchService = TestHelper.GetDynamicPropertyDictionaryItemsSearchService(DynamicProperties, new Dictionary<string, IList<DynamicPropertyDictionaryItem>>());
             var customerImportPagedDataSourceFactory = TestHelper.GetCustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService, dynamicPropertyDictionaryItemsSearchService);
-            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync(CsvFileName, 1);
+            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync<CsvContact, Contact>(CsvFileName, 1);
 
             // Act
             var result = await customerImportPagedDataSource.FetchAsync();
@@ -153,7 +155,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var dynamicPropertySearchService = TestHelper.GetDynamicPropertySearchService(DynamicProperties);
             var dynamicPropertyDictionaryItemsSearchService = TestHelper.GetDynamicPropertyDictionaryItemsSearchService(DynamicProperties, new Dictionary<string, IList<DynamicPropertyDictionaryItem>>());
             var customerImportPagedDataSourceFactory = TestHelper.GetCustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService, dynamicPropertyDictionaryItemsSearchService);
-            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync(CsvFileName, 10);
+            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync<CsvContact, Contact>(CsvFileName, 10);
 
             // Act
             await customerImportPagedDataSource.FetchAsync();
@@ -172,7 +174,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var dynamicPropertySearchService = TestHelper.GetDynamicPropertySearchService(DynamicProperties);
             var dynamicPropertyDictionaryItemsSearchService = TestHelper.GetDynamicPropertyDictionaryItemsSearchService(DynamicProperties, new Dictionary<string, IList<DynamicPropertyDictionaryItem>>());
             var customerImportPagedDataSourceFactory = TestHelper.GetCustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService, dynamicPropertyDictionaryItemsSearchService);
-            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync(CsvFileName, 10);
+            using var customerImportPagedDataSource = await customerImportPagedDataSourceFactory.CreateAsync<CsvContact, Contact>(CsvFileName, 10);
 
             // Act
             await customerImportPagedDataSource.FetchAsync();

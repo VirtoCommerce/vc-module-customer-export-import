@@ -136,6 +136,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                 organizationId: blade.organizationId,
                 organizationName: blade.organizationName,
                 csvFilePath: blade.csvFilePath,
+                dataType: blade.dataType,
                 headIcon: "fas fa-file-csv",
                 title: 'customerExportImport.blades.import-preview.title',
                 subtitle: 'customerExportImport.blades.import-preview.subtitle',

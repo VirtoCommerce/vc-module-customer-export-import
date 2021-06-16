@@ -21,12 +21,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
     {
         private readonly ICsvCustomerDataValidator _csvCustomerDataValidator;
         private readonly IBlobStorageProvider _blobStorageProvider;
-        private readonly ICustomerImportPagedDataSourceFactory<CsvContact> _customerImportPagedDataSourceFactory;
+        private readonly ICustomerImportPagedDataSourceFactory _customerImportPagedDataSourceFactory;
         private readonly IUserNameResolver _userNameResolver;
         private readonly IPushNotificationManager _pushNotificationManager;
 
         public ImportController(IBlobStorageProvider blobStorageProvider,
-            ICustomerImportPagedDataSourceFactory<CsvContact> customerImportPagedDataSourceFactory, ICsvCustomerDataValidator csvCustomerDataValidator,
+            ICustomerImportPagedDataSourceFactory customerImportPagedDataSourceFactory, ICsvCustomerDataValidator csvCustomerDataValidator,
             IUserNameResolver userNameResolver, IPushNotificationManager pushNotificationManager)
         {
             _csvCustomerDataValidator = csvCustomerDataValidator;
@@ -66,15 +66,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
                 return BadRequest("Blob with the such url does not exist.");
             }
 
-            using var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync(request.FilePath, 10);
+            var result = new ImportDataPreview();
 
-            var result = new ImportDataPreview
-            {
-                TotalCount = csvDataSource.GetTotalCount()
-            };
-
+            using var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync(request.DataType, request.FilePath, 10, null);
+            result.TotalCount = csvDataSource.GetTotalCount();
             await csvDataSource.FetchAsync();
-
             result.Results = csvDataSource.Items.Select(item => item.Record).ToArray();
 
             return Ok(result);

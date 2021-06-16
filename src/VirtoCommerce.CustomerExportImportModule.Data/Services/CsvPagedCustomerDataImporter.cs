@@ -22,11 +22,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly ICsvCustomerDataValidator _dataValidator;
         private readonly IValidator<ImportRecord<CsvContact>[]> _importContactValidator;
         private readonly ICsvCustomerImportReporterFactory _importReporterFactory;
-        private readonly ICustomerImportPagedDataSourceFactory<CsvContact> _dataSourceFactory;
+        private readonly ICustomerImportPagedDataSourceFactory _dataSourceFactory;
         private readonly IBlobUrlResolver _blobUrlResolver;
 
         public CsvPagedCustomerDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<CsvContact>[]> importContactValidator
-            , ICustomerImportPagedDataSourceFactory<CsvContact> dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
+            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
         {
             _memberService = memberService;
             _memberSearchService = memberSearchService;
@@ -61,7 +61,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var importProgress = new ImportProgressInfo { Description = "Import has started" };
 
-            using var dataSource = await _dataSourceFactory.CreateAsync(request.FilePath, ModuleConstants.Settings.PageSize, configuration);
+            using var dataSource = await _dataSourceFactory.CreateAsync<CsvContact, Contact>(request.FilePath, ModuleConstants.Settings.PageSize, configuration);
 
             var headerRaw = dataSource.GetHeaderRaw();
 
@@ -87,6 +87,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     var importContacts = dataSource.Items
                         // expect records that was parsed with errors
                         .Where(importContact => !errorsContext.ErrorsRows.Contains(importContact.Row))
+                        .Select(x => new ImportRecord<CsvContact>() { Record = x.Record as CsvContact, RawRecord = x.RawRecord, Row = x.Row })
                         .ToArray();
 
                     try

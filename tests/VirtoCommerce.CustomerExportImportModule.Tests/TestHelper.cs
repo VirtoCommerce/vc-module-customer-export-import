@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Moq;
-using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.DynamicProperties;
@@ -49,10 +48,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             return dynamicPropertySearchServiceMock.Object;
         }
 
-        public static CustomerImportPagedDataSourceFactory<CsvContact> GetCustomerImportPagedDataSourceFactory(IBlobStorageProvider blobStorageProvider, IDynamicPropertySearchService dynamicPropertySearchService,
+        public static CustomerImportPagedDataSourceFactory GetCustomerImportPagedDataSourceFactory(IBlobStorageProvider blobStorageProvider, IDynamicPropertySearchService dynamicPropertySearchService,
             IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService)
         {
-            return new CustomerImportPagedDataSourceFactory<CsvContact>(blobStorageProvider, dynamicPropertySearchService, dynamicPropertyDictionaryItemsSearchService);
+            return new CustomerImportPagedDataSourceFactory(blobStorageProvider, dynamicPropertySearchService, dynamicPropertyDictionaryItemsSearchService);
         }
 
         public static Stream GetStream(string csv)

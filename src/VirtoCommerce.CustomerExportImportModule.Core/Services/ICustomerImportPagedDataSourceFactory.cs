@@ -3,8 +3,8 @@ using CsvHelper.Configuration;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Services
 {
-    public interface ICustomerImportPagedDataSourceFactory
+    public interface ICustomerImportPagedDataSourceFactory<T>
     {
-        Task<ICustomerImportPagedDataSource> CreateAsync(string filePath, int pageSize, Configuration configuration = null);
+        Task<ICustomerImportPagedDataSource<T>> CreateAsync(string filePath, int pageSize, Configuration configuration = null);
     }
 }

@@ -21,12 +21,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
     {
         private readonly ICsvCustomerDataValidator _csvCustomerDataValidator;
         private readonly IBlobStorageProvider _blobStorageProvider;
-        private readonly ICustomerImportPagedDataSourceFactory _customerImportPagedDataSourceFactory;
+        private readonly ICustomerImportPagedDataSourceFactory<CsvContact> _customerImportPagedDataSourceFactory;
         private readonly IUserNameResolver _userNameResolver;
         private readonly IPushNotificationManager _pushNotificationManager;
 
         public ImportController(IBlobStorageProvider blobStorageProvider,
-            ICustomerImportPagedDataSourceFactory customerImportPagedDataSourceFactory, ICsvCustomerDataValidator csvCustomerDataValidator,
+            ICustomerImportPagedDataSourceFactory<CsvContact> customerImportPagedDataSourceFactory, ICsvCustomerDataValidator csvCustomerDataValidator,
             IUserNameResolver userNameResolver, IPushNotificationManager pushNotificationManager)
         {
             _csvCustomerDataValidator = csvCustomerDataValidator;

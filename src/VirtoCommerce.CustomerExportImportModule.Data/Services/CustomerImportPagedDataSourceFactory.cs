@@ -11,7 +11,7 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
-    public sealed class CustomerImportPagedDataSourceFactory : ICustomerImportPagedDataSourceFactory
+    public sealed class CustomerImportPagedDataSourceFactory<T> : ICustomerImportPagedDataSourceFactory<T>
     {
         private readonly IBlobStorageProvider _blobStorageProvider;
         private readonly IDynamicPropertySearchService _dynamicPropertySearchService;
@@ -24,7 +24,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             _dynamicPropertyDictionaryItemsSearchService = dynamicPropertyDictionaryItemsSearchService;
         }
 
-        public async Task<ICustomerImportPagedDataSource> CreateAsync(string filePath, int pageSize, Configuration configuration = null)
+        public async Task<ICustomerImportPagedDataSource<T>> CreateAsync(string filePath, int pageSize, Configuration configuration = null)
         {
             var dynamicPropertiesSearchResult = await _dynamicPropertySearchService.SearchDynamicPropertiesAsync(new DynamicPropertySearchCriteria()
             {
@@ -43,8 +43,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
 
             configuration ??= new ImportConfiguration();
-            configuration.RegisterClassMap(new GenericClassMap<CsvContact>(dynamicProperties, dynamicPropertyDictionaryItems));
-            return new CustomerImportPagedDataSource(filePath, _blobStorageProvider, pageSize, configuration);
+            configuration.RegisterClassMap(new GenericClassMap<T>(dynamicProperties, dynamicPropertyDictionaryItems));
+            return new CustomerImportPagedDataSource<T>(filePath, _blobStorageProvider, pageSize, configuration);
         }
     }
 }

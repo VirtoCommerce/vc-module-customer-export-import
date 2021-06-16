@@ -4,7 +4,7 @@ using VirtoCommerce.CustomerExportImportModule.Core.Models;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Services
 {
-    public interface ICustomerImportPagedDataSource : IDisposable
+    public interface ICustomerImportPagedDataSource<T> : IDisposable
     {
         int CurrentPageNumber { get; }
 
@@ -16,6 +16,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Services
 
         Task<bool> FetchAsync();
 
-        ImportRecord<CsvContact>[] Items { get; }
+        ImportRecord<T>[] Items { get; }
     }
 }

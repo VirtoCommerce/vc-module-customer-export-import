@@ -10,7 +10,7 @@ using VirtoCommerce.Platform.Core.Assets;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
-    public sealed class CustomerImportPagedDataSource : ICustomerImportPagedDataSource
+    public sealed class CustomerImportPagedDataSource<T> : ICustomerImportPagedDataSource<T>
     {
         private readonly Stream _stream;
         private readonly Configuration _configuration;
@@ -53,7 +53,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             {
                 csvReader.Read();
                 csvReader.ReadHeader();
-                csvReader.ValidateHeader<CsvContact>();
+                csvReader.ValidateHeader<T>();
             }
             catch (ValidationException)
             {
@@ -84,7 +84,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             {
                 csvReader.Read();
                 csvReader.ReadHeader();
-                csvReader.ValidateHeader<CsvContact>();
+                csvReader.ValidateHeader<T>();
 
                 result = string.Join(csvReader.Configuration.Delimiter, csvReader.Context.HeaderRecord);
 
@@ -101,22 +101,22 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             if (CurrentPageNumber * PageSize >= GetTotalCount())
             {
-                Items = Array.Empty<ImportRecord<CsvContact>>();
+                Items = Array.Empty<ImportRecord<T>>();
                 return false;
             }
 
-            var items = new List<ImportRecord<CsvContact>>();
+            var items = new List<ImportRecord<T>>();
 
             for (var i = 0; i < PageSize && await _csvReader.ReadAsync(); i++)
             {
-                var record = _csvReader.GetRecord<CsvContact>();
+                var record = _csvReader.GetRecord<T>();
 
                 if (record != null)
                 {
                     var rawRecord = _csvReader.Context.RawRecord;
                     var row = _csvReader.Context.Row;
 
-                    items.Add(new ImportRecord<CsvContact> { Row = row, RawRecord = rawRecord, Record = record });
+                    items.Add(new ImportRecord<T> { Row = row, RawRecord = rawRecord, Record = record });
                 }
             }
 
@@ -127,7 +127,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             return true;
         }
 
-        public ImportRecord<CsvContact>[] Items { get; private set; }
+        public ImportRecord<T>[] Items { get; private set; }
 
         public void Dispose()
         {

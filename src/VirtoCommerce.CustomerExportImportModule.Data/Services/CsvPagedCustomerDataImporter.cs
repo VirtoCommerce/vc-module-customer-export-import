@@ -22,11 +22,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly ICsvCustomerDataValidator _dataValidator;
         private readonly IValidator<ImportRecord<CsvContact>[]> _importContactValidator;
         private readonly ICsvCustomerImportReporterFactory _importReporterFactory;
-        private readonly ICustomerImportPagedDataSourceFactory _dataSourceFactory;
+        private readonly ICustomerImportPagedDataSourceFactory<CsvContact> _dataSourceFactory;
         private readonly IBlobUrlResolver _blobUrlResolver;
 
         public CsvPagedCustomerDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<CsvContact>[]> importContactValidator
-            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
+            , ICustomerImportPagedDataSourceFactory<CsvContact> dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
         {
             _memberService = memberService;
             _memberSearchService = memberSearchService;

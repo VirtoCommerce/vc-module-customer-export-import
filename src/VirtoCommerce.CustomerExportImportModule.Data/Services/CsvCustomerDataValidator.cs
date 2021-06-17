@@ -31,7 +31,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             {
                 nameof(Contact) => await ValidateAsync<CsvContact>(filePath),
                 nameof(Organization) => await ValidateAsync<CsvOrganization>(filePath),
-                _ => await ValidateAsync<CsvContact>(filePath),
+                _ => throw new ArgumentException("Not allowed argument value", nameof(dataType)),
             };
         }
 

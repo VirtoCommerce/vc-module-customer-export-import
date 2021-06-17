@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             {
                 nameof(Contact) => await CreateAsync<CsvContact, Contact>(filePath, pageSize, configuration),
                 nameof(Organization) => await CreateAsync<CsvOrganization, Organization>(filePath, pageSize, configuration),
-                _ => await CreateAsync<CsvContact, Contact>(filePath, pageSize, configuration),
+                _ => throw new ArgumentException("Not allowed argument value", nameof(dataType)),
             };
         }
 

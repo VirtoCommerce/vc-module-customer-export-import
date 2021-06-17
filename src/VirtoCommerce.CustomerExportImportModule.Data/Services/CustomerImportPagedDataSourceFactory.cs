@@ -25,18 +25,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             _dynamicPropertyDictionaryItemsSearchService = dynamicPropertyDictionaryItemsSearchService;
         }
 
-        public async Task<ICustomerImportPagedDataSource> CreateAsync(string dataType, string filePath,
-            int pageSize, Configuration configuration = null)
-        {
-            return dataType switch
-            {
-                nameof(Contact) => await CreateAsync<CsvContact, Contact>(filePath, pageSize, configuration),
-                nameof(Organization) => await CreateAsync<CsvOrganization, Organization>(filePath, pageSize, configuration),
-                _ => throw new ArgumentException("Not allowed argument value", nameof(dataType)),
-            };
-        }
-
-        public async Task<ICustomerImportPagedDataSource> CreateAsync<TCsvCustomer, TCustomer>(string filePath, int pageSize, Configuration configuration = null) where TCsvCustomer : CsvMember
+        public async Task<ICustomerImportPagedDataSource<TCsvCustomer>> CreateAsync<TCsvCustomer, TCustomer>(string filePath, int pageSize, Configuration configuration = null) where TCsvCustomer : CsvMember
         {
             var dynamicPropertiesSearchResult = await _dynamicPropertySearchService.SearchDynamicPropertiesAsync(new DynamicPropertySearchCriteria()
             {

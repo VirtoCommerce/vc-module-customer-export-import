@@ -7,6 +7,7 @@ using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs;
+using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.PushNotifications;
@@ -68,10 +69,27 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
 
             var result = new ImportDataPreview();
 
-            using var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync(request.DataType, request.FilePath, 10, null);
-            result.TotalCount = csvDataSource.GetTotalCount();
-            await csvDataSource.FetchAsync();
-            result.Results = csvDataSource.Items.Select(item => item.Record).ToArray();
+            switch (request.DataType)
+            {
+                case nameof(Contact):
+                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<CsvContact, Contact>(request.FilePath,
+                            10, null))
+                    {
+                        result.TotalCount = csvDataSource.GetTotalCount();
+                        await csvDataSource.FetchAsync();
+                        result.Results = csvDataSource.Items.Select(item => item.Record).ToArray();
+                    }
+                    break;
+                case nameof(Organization):
+                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<CsvOrganization, Organization>(request.FilePath,
+                        10, null))
+                    {
+                        result.TotalCount = csvDataSource.GetTotalCount();
+                        await csvDataSource.FetchAsync();
+                        result.Results = csvDataSource.Items.Select(item => item.Record).ToArray();
+                    }
+                    break;
+            }
 
             return Ok(result);
         }

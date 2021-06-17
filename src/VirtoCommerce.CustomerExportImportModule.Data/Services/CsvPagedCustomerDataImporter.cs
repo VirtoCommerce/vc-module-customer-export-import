@@ -87,7 +87,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     var importContacts = dataSource.Items
                         // expect records that was parsed with errors
                         .Where(importContact => !errorsContext.ErrorsRows.Contains(importContact.Row))
-                        .Select(x => new ImportRecord<CsvContact>() { Record = x.Record as CsvContact, RawRecord = x.RawRecord, Row = x.Row })
                         .ToArray();
 
                     try

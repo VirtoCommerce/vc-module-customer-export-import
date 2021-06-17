@@ -45,7 +45,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
                 return BadRequest($"{nameof(request.FilePath)} can not be null or empty.");
             }
 
-            var result = await _csvCustomerDataValidator.ValidateAsync(request.FilePath);
+            var result = await _csvCustomerDataValidator.ValidateAsync(request.DataType, request.FilePath);
 
             return Ok(result);
         }

@@ -4,6 +4,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
     {
         public string FilePath { get; set; }
 
-        public string MemberType { get; set; }
+        public string DataType { get; set; }
     }
 }

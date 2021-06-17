@@ -162,7 +162,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                 $scope.tmpCsvInfo = {};
             }
 
-            importResources.validate({ filePath: blade.csvFilePath }, (data) => {
+            importResources.validate({ dataType: blade.dataType.value, filePath: blade.csvFilePath }, (data) => {
                 $scope.csvValidationErrors = data.errors;
                 $scope.internalCsvError = !!$scope.csvValidationErrors.length;
                 $scope.showUploadResult = true;

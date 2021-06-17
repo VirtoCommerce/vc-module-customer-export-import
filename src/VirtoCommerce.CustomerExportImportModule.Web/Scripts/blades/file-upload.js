@@ -20,9 +20,9 @@ angular.module('virtoCommerce.customerExportImportModule')
         }];
 
         if (!blade.importFromRoot) {
-            blade.dataType = 'Contacts';
+            blade.dataType = { key: 'Contacts', value: 'Contact' };
         } else {
-            blade.availableDataTypes = ['Contacts', 'Organizations'];
+            blade.availableDataTypes = [{ key: 'Contacts', value: 'Contact' }, { key: 'Organizations', value: 'Organization'}];
         }
 
         function initialize () {

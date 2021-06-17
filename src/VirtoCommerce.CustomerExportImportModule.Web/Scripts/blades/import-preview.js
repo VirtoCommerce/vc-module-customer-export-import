@@ -10,7 +10,7 @@ angular.module('virtoCommerce.customerExportImportModule')
             blade.isLoading = true;
             $scope.showUnparsedRowsWarning = false;
 
-            importResources.preview({ filePath: blade.csvFilePath, dataType: blade.dataType }, (response) => {
+            importResources.preview({ filePath: blade.csvFilePath, dataType: blade.dataType.value }, (response) => {
                 const records = response.results;
 
                 _.each(records, record => {

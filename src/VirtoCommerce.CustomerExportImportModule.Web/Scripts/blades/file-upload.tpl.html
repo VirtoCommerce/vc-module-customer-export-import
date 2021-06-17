@@ -44,9 +44,9 @@
                                     <i class="fab fas fa-exclamation fa-stack-1x text-white mt-10 pl-7"></i>
                                 </span>
                                 <div class="d-flex flex-column ml-10">
-                                    <span class="word-break-all font-weight-500">{{uploadedFile.name}}</span>
+                                    <span class="word-break-all font-weight-500">{{newUploadedFile.name}}</span>
                                     <div ng-if="!internalCsvError">
-                                        <small ng-if="!(csvMaxSizeError || fileTypeError)" class="upload-result-message">{{uploadedFile.size}}</small>
+                                        <small ng-if="!(csvMaxSizeError || fileTypeError)" class="upload-result-message">{{newUploadedFile.size}}</small>
                                         <small ng-if="csvMaxSizeError && fileTypeError" class="upload-result-message">{{ 'customerExportImport.blades.file-upload.upload-result.file-type-error' | translate }}</small>
                                         <small ng-if="csvMaxSizeError && !fileTypeError" class="upload-result-message">{{ 'customerExportImport.blades.file-upload.upload-result.max-size-error' | translate: {fileMaxSize: formattedSizeLimit} }}</small>
                                         <small ng-if="fileTypeError && !csvMaxSizeError" class="upload-result-message">{{ 'customerExportImport.blades.file-upload.upload-result.file-type-error' | translate }}</small>

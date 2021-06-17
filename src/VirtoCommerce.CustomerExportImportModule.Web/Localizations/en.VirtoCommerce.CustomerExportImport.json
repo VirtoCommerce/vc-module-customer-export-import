@@ -69,6 +69,10 @@
         "title": "Delete CSV",
         "subtitle": "Are you sure you want to delete this csv file?"
       },
+      "csv-file-delete-and-close-preview": {
+        "title": "Delete CSV",
+        "subtitle": "Are you sure you want to close preview and delete file "
+      },
       "customer-export": {
         "title": "Contacts export",
         "all": "All",

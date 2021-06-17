@@ -1,14 +1,15 @@
 angular.module('virtoCommerce.customerExportImportModule')
 .controller('virtoCommerce.customerExportImportModule.fileUploadController',
-    ['FileUploader', '$document', '$scope', '$timeout', 'platformWebApp.bladeNavigationService', 'platformWebApp.assets.api', 'virtoCommerce.customerExportImportModule.import', '$translate', 'platformWebApp.settings', '$q',
-        function (FileUploader, $document, $scope, $timeout, bladeNavigationService, assetsApi, importResources, $translate, settings, $q) {
+    ['FileUploader', '$document', '$scope', '$timeout', 'platformWebApp.bladeNavigationService', 'platformWebApp.assets.api', 'virtoCommerce.customerExportImportModule.import', '$translate', 'platformWebApp.settings', '$q', 'platformWebApp.dialogService',
+        function (FileUploader, $document, $scope, $timeout, bladeNavigationService, assetsApi, importResources, $translate, settings, $q, dialogService) {
         const blade = $scope.blade;
         const oneKb = 1024;
         const oneMb = 1024 * oneKb;
         $scope.maxCsvSize = oneMb;
         blade.headIcon = 'fas fa-file-alt';
         blade.isLoading = false;
-        $scope.uploadedFile = {};
+        $scope.newUploadedFile = {};
+        $scope.previousUploadedFile = {};
 
         blade.toolbarCommands = [{
             name: "platform.commands.cancel",
@@ -46,23 +47,33 @@ angular.module('virtoCommerce.customerExportImportModule')
                     {
                         name: 'onlyCsv',
                         fn: (item) => {
-                            $scope.uploadedFile.name = item.name;
+                            $scope.newUploadedFile.name = item.name;
                             if (!uploader.isHTML5) {
                                 return true;
                             } else {
                                 let result = /^.*\.(csv)$/.test(item.name);
                                 $scope.fileTypeError = !result;
+                                if ($scope.fileTypeError) {
+                                    if (blade.childrenBlades && blade.childrenBlades.length) {
+                                        bladeNavigationService.closeChildrenBlades(blade, () => {});
+                                    }
+                                }
                                 return result;
                             }
                         }
                     }, {
                         name: 'csvMaxSize',
                         fn: (item) => {
-                            $scope.uploadedFile.name = item.name;
+                            $scope.newUploadedFile.name = item.name;
                             let result = item.size <= $scope.maxCsvSize;
                             $scope.csvMaxSizeError = !result;
                             if (result) {
-                                $scope.uploadedFile.size = formatFileSize(item.size);
+                                $scope.newUploadedFile.size = formatFileSize(item.size);
+                            }
+                            if ($scope.csvMaxSizeError) {
+                                if (blade.childrenBlades && blade.childrenBlades.length) {
+                                    bladeNavigationService.closeChildrenBlades(blade, () => {});
+                                }
                             }
                             return result;
                         }
@@ -90,9 +101,17 @@ angular.module('virtoCommerce.customerExportImportModule')
 
                 if (blade.csvFilePath) {
                     $scope.tmpCsvInfo = {};
-                    $scope.tmpCsvInfo.name = $scope.uploadedFile.name;
-                    $scope.tmpCsvInfo.size = $scope.uploadedFile.size;
-                    removeCsv().then(() => file.upload());
+                    $scope.tmpCsvInfo.name = $scope.newUploadedFile.name;
+                    $scope.tmpCsvInfo.size = $scope.newUploadedFile.size;
+                    if (blade.childrenBlades && blade.childrenBlades.length) {
+                        $scope.showUploadResult = false;
+                        $scope.deleteAndCloseBlades(file);
+                    } else {
+                        removeCsv().then(() => {
+                            resetState();
+                            file.upload();
+                        });
+                    }
                 } else {
                     file.upload();
                 }
@@ -100,6 +119,8 @@ angular.module('virtoCommerce.customerExportImportModule')
 
             uploader.onSuccessItem = (__, asset) => {
                 uploadNewCsv(asset);
+                $scope.previousUploadedFile.name = $scope.newUploadedFile.name
+                $scope.previousUploadedFile.size = $scope.newUploadedFile.size
             };
 
             uploader.onErrorItem = (element, response, status) => {
@@ -130,6 +151,36 @@ angular.module('virtoCommerce.customerExportImportModule')
             }); }, () => {}, "customerExportImport.dialogs.csv-file-delete.title", "customerExportImport.dialogs.csv-file-delete.subtitle");
         }
 
+        $scope.deleteAndCloseBlades = (file) => {
+            const dialog = {
+                id: "deleteAndCloseConfirmationDialog",
+                deletedFileName: $scope.previousUploadedFile.name,
+                callback: function (confirm) {
+                    if (confirm) {
+                        bladeNavigationService.closeChildrenBlades(blade, () => {
+                            removeCsv().then(() => {
+                                resetState();
+                                file.upload();
+                                $scope.showUploadResult = true;
+                            });
+                        });
+                    } else {
+                        $scope.newUploadedFile.name = $scope.previousUploadedFile.name;
+                        $scope.newUploadedFile.size = $scope.previousUploadedFile.size;
+                        $scope.showUploadResult = true;
+                    }
+                }
+            };
+            dialogService.showDialog(
+                dialog,
+                "Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/dialogs/customerDeleteAndClose-dialog.tpl.html",
+                "platformWebApp.confirmDialogController",
+                null,
+                false,
+                false
+            );
+        };
+
         $scope.showPreview = () => {
             var newBlade = {
                 id: 'customerImportPreview',
@@ -157,8 +208,8 @@ angular.module('virtoCommerce.customerExportImportModule')
             blade.csvFilePath = asset[0].relativeUrl;
 
             if (!_.isEmpty($scope.tmpCsvInfo)) {
-                $scope.uploadedFile.name = $scope.tmpCsvInfo.name;
-                $scope.uploadedFile.size = $scope.tmpCsvInfo.size;
+                $scope.newUploadedFile.name = $scope.tmpCsvInfo.name;
+                $scope.newUploadedFile.size = $scope.tmpCsvInfo.size;
                 $scope.tmpCsvInfo = {};
             }
 
@@ -184,7 +235,8 @@ angular.module('virtoCommerce.customerExportImportModule')
         }
 
         function resetState() {
-            $scope.uploadedFile = {};
+            $scope.newUploadedFile = {};
+            $scope.previousUploadedFile = {};
             blade.csvFilePath = null;
 
             $scope.showUploadResult = false;

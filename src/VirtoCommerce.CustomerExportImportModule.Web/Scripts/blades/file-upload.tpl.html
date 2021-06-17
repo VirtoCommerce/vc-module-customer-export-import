@@ -6,7 +6,7 @@
                     <div class="form-group __info list mb-40">
                         <label class="form-label font-weight-500">{{ 'customerExportImport.blades.file-upload.labels.data-type' | translate }}</label>
                         <div class="form-input" data-role="input-control">
-                            <ui-select ng-model="blade.dataType" ng-disabled="!blade.importFromRoot">
+                            <ui-select ng-model="blade.dataType" ng-disabled="!blade.importFromRoot || blade.csvFilePath">
                                 <ui-select-match allow-clear="true" placeholder="{{ 'customerExportImport.blades.file-upload.data-type-placeholder' | translate }}">{{$select.selected.key}}</ui-select-match>
                                 <ui-select-choices repeat="x in blade.availableDataTypes | filter: { key: $select.search }">
                                     <span ng-bind-html="x.key | highlight: $select.search"></span>

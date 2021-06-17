@@ -100,20 +100,20 @@ angular.module('virtoCommerce.customerExportImportModule')
                     });
 
                     if (blade.dataType.value === 'Contact') {
-                        $scope.fullNameColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'contactFullName'});
+                        $scope.nameColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'contactFullName'});
                         $scope.idColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'contactId'});
                         const birthdayColumn = _.findWhere(gridApi.grid.options.columnDefs, { name: "birthday" });
                         if (birthdayColumn) {
                             birthdayColumn.cellTemplate = "birthday.col.html";
                         }
                     } else {
-                        $scope.fullNameColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'organizationName'});
+                        $scope.nameColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'organizationName'});
                         $scope.idColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'organizationId'});
                     }
 
-                    $scope.fullNameColumn.pinnedLeft = true;
-                    $scope.fullNameColumn.cellClass = "pl-7 bl-0 font-weight-500 fs-12";
-                    $scope.fullNameColumn.headerCellClass = "pl-7 font-weight-500 fs-13";
+                    $scope.nameColumn.pinnedLeft = true;
+                    $scope.nameColumn.cellClass = "pl-7 bl-0 font-weight-500 fs-12";
+                    $scope.nameColumn.headerCellClass = "pl-7 font-weight-500 fs-13";
                     if ($scope.idColumn) {
                         $scope.idColumn.enablePinning = true;
                         $scope.idColumn.hidePinLeft = false;

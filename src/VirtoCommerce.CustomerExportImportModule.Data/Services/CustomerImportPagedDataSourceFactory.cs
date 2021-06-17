@@ -37,8 +37,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async Task<ICustomerImportPagedDataSource> CreateAsync<TCsvCustomer, TCustomer>(string filePath, int pageSize, Configuration configuration = null) where TCsvCustomer : CsvMember
         {
-
-
             var dynamicPropertiesSearchResult = await _dynamicPropertySearchService.SearchDynamicPropertiesAsync(new DynamicPropertySearchCriteria()
             {
                 ObjectTypes = new List<string> { typeof(TCustomer).FullName },

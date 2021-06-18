@@ -14,7 +14,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
     public sealed class CsvPagedContactDataImporter : CsvPagedDataImporter<CsvContact, Contact>
     {
-
         private readonly IValidator<ImportRecord<CsvContact>[]> _importContactValidator;
 
         public CsvPagedContactDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<CsvContact>[]> importContactValidator

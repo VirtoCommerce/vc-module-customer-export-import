@@ -19,7 +19,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         protected readonly IMemberService _memberService;
         protected readonly IMemberSearchService _memberSearchService;
         protected readonly ICsvCustomerDataValidator _dataValidator;
-
         protected readonly ICsvCustomerImportReporterFactory _importReporterFactory;
         protected readonly ICustomerImportPagedDataSourceFactory _dataSourceFactory;
         protected readonly IBlobUrlResolver _blobUrlResolver;

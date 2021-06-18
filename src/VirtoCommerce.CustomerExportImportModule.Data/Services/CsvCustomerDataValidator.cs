@@ -8,6 +8,7 @@ using CsvHelper.Configuration;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
+using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Settings;
 
@@ -24,7 +25,17 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             _settingsManager = settingsManager;
         }
 
-        public async Task<ImportDataValidationResult> ValidateAsync(string filePath)
+        public async Task<ImportDataValidationResult> ValidateAsync(string dataType, string filePath)
+        {
+            return dataType switch
+            {
+                nameof(Contact) => await ValidateAsync<CsvContact>(filePath),
+                nameof(Organization) => await ValidateAsync<CsvOrganization>(filePath),
+                _ => throw new ArgumentException("Not allowed argument value", nameof(dataType)),
+            };
+        }
+
+        public async Task<ImportDataValidationResult> ValidateAsync<T>(string filePath)
         {
             var errorsList = new List<ImportDataValidationError>();
 
@@ -52,7 +63,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 await ValidateDelimiterAndDataExists(stream, csvConfiguration, errorsList);
 
-                ValidateRequiredColumns(stream, csvConfiguration, errorsList);
+                ValidateRequiredColumns<T>(stream, csvConfiguration, errorsList);
 
                 ValidateLineLimit(stream, csvConfiguration, errorsList);
 
@@ -105,7 +116,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-        private static void ValidateRequiredColumns(Stream stream, Configuration csvConfiguration, List<ImportDataValidationError> errorsList)
+        private static void ValidateRequiredColumns<T>(Stream stream, Configuration csvConfiguration, List<ImportDataValidationError> errorsList)
         {
             var notCompatibleErrors = new[]
             {
@@ -129,7 +140,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var existedColumns = csvReader.Context.HeaderRecord;
 
-            var requiredColumns = CsvCustomerImportHelper.GetImportCustomerRequiredColumns();
+            var requiredColumns = CsvCustomerImportHelper.GetImportCustomerRequiredColumns<T>();
 
             var missedColumns = requiredColumns.Except(existedColumns, StringComparer.InvariantCultureIgnoreCase).ToArray();
 

@@ -44,7 +44,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var errorsContext = new ImportErrorsContext();
 
-            var csvPriceDataValidationResult = await _dataValidator.ValidateAsync(request.FilePath);
+            var csvPriceDataValidationResult = await _dataValidator.ValidateAsync<CsvContact>(request.FilePath);
 
             if (csvPriceDataValidationResult.Errors.Any())
             {
@@ -61,7 +61,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var importProgress = new ImportProgressInfo { Description = "Import has started" };
 
-            using var dataSource = await _dataSourceFactory.CreateAsync(request.FilePath, ModuleConstants.Settings.PageSize, configuration);
+            using var dataSource = await _dataSourceFactory.CreateAsync<CsvContact, Contact>(request.FilePath, ModuleConstants.Settings.PageSize, configuration);
 
             var headerRaw = dataSource.GetHeaderRaw();
 
@@ -351,7 +351,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private static void HandleRequiredValueError(Action<ImportProgressInfo> progressCallback, ImportProgressInfo importProgress, ICsvCustomerImportReporter reporter, ReadingContext context, ImportErrorsContext errorsContext)
         {
             var fieldName = context.HeaderRecord[context.CurrentIndex];
-            var requiredFields = CsvCustomerImportHelper.GetImportCustomerRequiredColumns();
+            var requiredFields = CsvCustomerImportHelper.GetImportCustomerRequiredColumns<CsvContact>();
             var missedValueColumns = new List<string>();
 
             for (var i = 0; i < context.HeaderRecord.Length; i++)

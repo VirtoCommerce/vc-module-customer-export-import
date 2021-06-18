@@ -37,11 +37,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             serviceCollection.AddTransient<IExportWriterFactory, ExportWriterFactory>();
             serviceCollection.AddTransient<ICustomerDataExporter, CustomerDataExporter>();
             serviceCollection.AddTransient<IMemberSearchService, ExportImportMemberSearchService>();
-
-            serviceCollection.AddTransient<ICustomerImportPagedDataSourceFactory, CustomerImportPagedDataSourceFactory>();
+            serviceCollection.AddSingleton<ICustomerImportPagedDataSourceFactory, CustomerImportPagedDataSourceFactory>();
             serviceCollection.AddTransient<ICsvCustomerDataValidator, CsvCustomerDataValidator>();
             serviceCollection.AddTransient<IValidator<ImportRecord<CsvContact>[]>, ImportContactsValidator>();
-            serviceCollection.AddTransient<ICsvCustomerImportReporterFactory, CsvCustomerImportReporterFactory>();
+            serviceCollection.AddSingleton<ICsvCustomerImportReporterFactory, CsvCustomerImportReporterFactory>();
             serviceCollection.AddTransient<ICsvPagedCustomerDataImporter, CsvPagedCustomerDataImporter>();
 
             serviceCollection.AddOptions<ExportOptions>().Bind(Configuration.GetSection("CustomerExportImport:Export")).ValidateDataAnnotations();

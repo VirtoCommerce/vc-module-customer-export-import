@@ -10,7 +10,7 @@ angular.module('virtoCommerce.customerExportImportModule')
             blade.isLoading = true;
             $scope.showUnparsedRowsWarning = false;
 
-            importResources.preview({ filePath: blade.csvFilePath }, (response) => {
+            importResources.preview({ filePath: blade.csvFilePath, dataType: blade.dataType.value }, (response) => {
                 const records = response.results;
 
                 _.each(records, record => {
@@ -98,19 +98,27 @@ angular.module('virtoCommerce.customerExportImportModule')
                         column.cellTooltip = getCellTooltip;
                         column.headerCellClass = 'br-0 font-weight-500 fs-13';
                     });
-                    const fullNameColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'contactFullName'});
-                    const idColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'contactId'});
-                    const birthdayColumn = _.findWhere(gridApi.grid.options.columnDefs, { name: "birthday" });
-                    fullNameColumn.pinnedLeft = true;
-                    fullNameColumn.cellClass = "pl-7 bl-0 font-weight-500 fs-12";
-                    fullNameColumn.headerCellClass = "pl-7 font-weight-500 fs-13";
-                    if (idColumn) {
-                        idColumn.enablePinning = true;
-                        idColumn.hidePinLeft = false;
+
+                    if (blade.dataType.value === 'Contact') {
+                        $scope.nameColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'contactFullName'});
+                        $scope.idColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'contactId'});
+                        const birthdayColumn = _.findWhere(gridApi.grid.options.columnDefs, { name: "birthday" });
+                        if (birthdayColumn) {
+                            birthdayColumn.cellTemplate = "birthday.col.html";
+                        }
+                    } else {
+                        $scope.nameColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'organizationName'});
+                        $scope.idColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'organizationId'});
                     }
-                    if (birthdayColumn) {
-                        birthdayColumn.cellTemplate = "birthday.col.html";
+
+                    $scope.nameColumn.pinnedLeft = true;
+                    $scope.nameColumn.cellClass = "pl-7 bl-0 font-weight-500 fs-12";
+                    $scope.nameColumn.headerCellClass = "pl-7 font-weight-500 fs-13";
+                    if ($scope.idColumn) {
+                        $scope.idColumn.enablePinning = true;
+                        $scope.idColumn.hidePinLeft = false;
                     }
+
                     grid.api.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
                 },[uiGridConstants.dataChange.ROW])
             };

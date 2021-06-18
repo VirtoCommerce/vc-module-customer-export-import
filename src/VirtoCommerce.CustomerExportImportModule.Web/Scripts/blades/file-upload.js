@@ -20,9 +20,9 @@ angular.module('virtoCommerce.customerExportImportModule')
         }];
 
         if (!blade.importFromRoot) {
-            blade.dataType = 'Contacts';
+            blade.dataType = { key: 'Contacts', value: 'Contact' };
         } else {
-            blade.availableDataTypes = ['Contacts', 'Organizations'];
+            blade.availableDataTypes = [{ key: 'Contacts', value: 'Contact' }, { key: 'Organizations', value: 'Organization'}];
         }
 
         function initialize () {
@@ -136,6 +136,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                 organizationId: blade.organizationId,
                 organizationName: blade.organizationName,
                 csvFilePath: blade.csvFilePath,
+                dataType: blade.dataType,
                 headIcon: "fas fa-file-csv",
                 title: 'customerExportImport.blades.import-preview.title',
                 subtitle: 'customerExportImport.blades.import-preview.subtitle',
@@ -161,7 +162,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                 $scope.tmpCsvInfo = {};
             }
 
-            importResources.validate({ filePath: blade.csvFilePath }, (data) => {
+            importResources.validate({ dataType: blade.dataType.value, filePath: blade.csvFilePath }, (data) => {
                 $scope.csvValidationErrors = data.errors;
                 $scope.internalCsvError = !!$scope.csvValidationErrors.length;
                 $scope.showUploadResult = true;

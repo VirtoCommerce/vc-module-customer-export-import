@@ -7,6 +7,7 @@ using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs;
+using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.PushNotifications;
@@ -45,7 +46,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
                 return BadRequest($"{nameof(request.FilePath)} can not be null or empty.");
             }
 
-            var result = await _csvCustomerDataValidator.ValidateAsync(request.FilePath);
+            var result = await _csvCustomerDataValidator.ValidateAsync(request.DataType, request.FilePath);
 
             return Ok(result);
         }
@@ -66,16 +67,29 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
                 return BadRequest("Blob with the such url does not exist.");
             }
 
-            using var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync(request.FilePath, 10);
+            var result = new ImportDataPreview();
 
-            var result = new ImportDataPreview
+            switch (request.DataType)
             {
-                TotalCount = csvDataSource.GetTotalCount()
-            };
-
-            await csvDataSource.FetchAsync();
-
-            result.Results = csvDataSource.Items.Select(item => item.Record).ToArray();
+                case nameof(Contact):
+                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<CsvContact, Contact>(request.FilePath,
+                            10, null))
+                    {
+                        result.TotalCount = csvDataSource.GetTotalCount();
+                        await csvDataSource.FetchAsync();
+                        result.Results = csvDataSource.Items.Select(item => item.Record).ToArray();
+                    }
+                    break;
+                case nameof(Organization):
+                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<CsvOrganization, Organization>(request.FilePath,
+                        10, null))
+                    {
+                        result.TotalCount = csvDataSource.GetTotalCount();
+                        await csvDataSource.FetchAsync();
+                        result.Results = csvDataSource.Items.Select(item => item.Record).ToArray();
+                    }
+                    break;
+            }
 
             return Ok(result);
         }

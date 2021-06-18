@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Moq;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
@@ -92,7 +91,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var propertiesAndValues = GetProperties(obj).Select(property =>
             {
                 var value = property.GetValue(obj);
-                return $"{property.Name}: {(value is IEnumerable<object> enumerable ? $"[{string.Join(", ", enumerable.Select(x => x.ToString()))}]" : value )}";
+                return $"{property.Name}: {(value is IEnumerable<object> enumerable ? $"[{string.Join(", ", enumerable.Select(x => x.ToString()))}]" : value)}";
             });
             return $"{{{string.Join(", ", propertiesAndValues)}}}";
         }

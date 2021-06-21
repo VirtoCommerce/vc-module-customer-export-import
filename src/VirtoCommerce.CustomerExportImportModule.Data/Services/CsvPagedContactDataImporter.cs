@@ -111,20 +111,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         }
 
 
-        private static void SetIdToNullForNotExisted(ImportRecord<CsvContact>[] importContacts, Contact[] existedContacts)
-        {
-            foreach (var importContact in importContacts)
-            {
-                var existedContact =
-                    existedContacts.FirstOrDefault(x => x.Id.EqualsInvariant(importContact.Record.Id));
-
-                if (existedContact == null)
-                {
-                    importContact.Record.Id = null;
-                }
-            }
-        }
-
         private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<CsvContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
         {
             foreach (var existedContact in existedContacts)

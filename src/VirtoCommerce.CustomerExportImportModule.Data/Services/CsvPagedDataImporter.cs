@@ -23,6 +23,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         protected readonly ICustomerImportPagedDataSourceFactory _dataSourceFactory;
         protected readonly IBlobUrlResolver _blobUrlResolver;
 
+        public abstract string MemberType { get; }
+
         protected CsvPagedDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
         {

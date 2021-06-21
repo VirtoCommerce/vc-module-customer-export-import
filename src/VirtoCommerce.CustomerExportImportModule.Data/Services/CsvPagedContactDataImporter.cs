@@ -16,13 +16,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     {
         private readonly IValidator<ImportRecord<CsvContact>[]> _importContactValidator;
 
+        public override string MemberType => nameof(Contact);
+
         public CsvPagedContactDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<CsvContact>[]> importContactValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
         : base(memberService, memberSearchService, dataValidator, dataSourceFactory, importReporterFactory, blobUrlResolver)
         {
             _importContactValidator = importContactValidator;
         }
-
 
         protected override async Task HandleChunk(ImportDataRequest request, Action<ImportProgressInfo> progressCallback,
             ICustomerImportPagedDataSource<CsvContact> dataSource, ImportErrorsContext errorsContext, ImportProgressInfo importProgress,

@@ -21,6 +21,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly ICustomerExportPagedDataSourceFactory _customerExportPagedDataSourceFactory;
         private readonly IExportWriterFactory _exportWriterFactory;
         private readonly PlatformOptions _platformOptions;
+        private readonly IBlobUrlResolver _blobUrlResolver;
         private readonly IBlobStorageProvider _blobStorageProvider;
         private readonly IDynamicPropertySearchService _dynamicPropertySearchService;
 
@@ -28,13 +29,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
 
         public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IExportWriterFactory exportWriterFactory, IOptions<PlatformOptions> platformOptions,
-            IDynamicPropertySearchService dynamicPropertySearchService, IBlobStorageProvider blobStorageProvider)
+            IDynamicPropertySearchService dynamicPropertySearchService, IBlobStorageProvider blobStorageProvider, IBlobUrlResolver blobUrlResolver)
         {
             _customerExportPagedDataSourceFactory = customerExportPagedDataSourceFactory;
             _exportWriterFactory = exportWriterFactory;
             _platformOptions = platformOptions.Value;
             _blobStorageProvider = blobStorageProvider;
             _dynamicPropertySearchService = dynamicPropertySearchService;
+            _blobUrlResolver = blobUrlResolver;
         }
 
         public async Task ExportAsync(ExportDataRequest request, Action<ExportProgressInfo> progressCallback, ICancellationToken cancellationToken)
@@ -114,7 +116,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 if (contactsFileInfo.Size > 0)
                 {
-                    exportProgress.ContactsFileUrl = contactsFilePath;
+                    exportProgress.ContactsFileUrl = _blobUrlResolver.GetAbsoluteUrl(contactsFilePath);
                 } else
                 {
                     await _blobStorageProvider.RemoveAsync(new string[] { contactsFilePath });
@@ -122,7 +124,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 if (organizationsFileInfo.Size > 0)
                 {
-                    exportProgress.OrganizationsFileUrl = organizationFilePath;
+                    exportProgress.OrganizationsFileUrl = _blobUrlResolver.GetAbsoluteUrl(organizationFilePath);
                 } else
                 {
                     await _blobStorageProvider.RemoveAsync(new string[] { organizationFilePath });

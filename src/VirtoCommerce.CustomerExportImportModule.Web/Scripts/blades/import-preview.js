@@ -53,6 +53,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                             if (confirm) {
                                 const importDataRequest = {
                                     filePath: blade.csvFilePath,
+                                    memberType: blade.dataType.value,
                                     organizationId: blade.organizationId
                                 };
 
@@ -60,6 +61,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                                     var newBlade = {
                                         id: "customerImportProcessing",
                                         notification: data,
+                                        dataType: blade.dataType,
                                         headIcon: "fa fa-download",
                                         title: "customerExportImport.blades.import-processing.title",
                                         controller: "virtoCommerce.customerExportImportModule.importProcessingController",

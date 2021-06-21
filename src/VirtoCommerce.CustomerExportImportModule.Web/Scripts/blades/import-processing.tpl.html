@@ -23,7 +23,7 @@
                 <div class="block" ng-if="blade.notification.contactsCreated || blade.notification.contactsUpdated || blade.notification.errorCount || blade.notification.totalCount">
                     <ul class="list __info list-main">
                         <li class="list-item" id="contacts">
-                            <p class="list-item-title">{{ 'customerExportImport.blades.import-processing.subtitles.contacts' | translate }}</p>
+                            <p class="list-item-title">{{ blade.dataType.key }}</p>
                             <ul class="list __info list-sub">
                                 <li class="list-item mr-30">
                                     <div class="list-t">{{ 'customerExportImport.blades.import-processing.labels.lines-created' | translate }}</div>

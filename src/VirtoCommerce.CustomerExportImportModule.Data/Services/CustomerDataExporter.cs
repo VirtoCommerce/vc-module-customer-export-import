@@ -115,11 +115,17 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 if (contactsFileInfo.Size > 0)
                 {
                     exportProgress.ContactsFileUrl = contactsFilePath;
+                } else
+                {
+                    await _blobStorageProvider.RemoveAsync(new string[] { contactsFilePath });
                 }
 
                 if (organizationsFileInfo.Size > 0)
                 {
                     exportProgress.OrganizationsFileUrl = organizationFilePath;
+                } else
+                {
+                    await _blobStorageProvider.RemoveAsync(new string[] { organizationFilePath });
                 }
             }
             finally

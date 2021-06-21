@@ -24,13 +24,13 @@
                             <div class="list-t">{{ 'customerExportImport.blades.export-processing.labels.errors' | translate }}</div>
                             <div class="list-descr">{{blade.notification.errors.length | number:0}}</div>
                         </li>
-                        <li class="list-item" ng-if="blade.notification.fileUrls && blade.notification.fileUrls.length === 2">
+                        <li class="list-item" ng-if="blade.notification.contactsFileUrl">
                             <div class="list-t">{{ 'customerExportImport.blades.export-processing.labels.contacts-url' | translate }}</div>
-                            <div class="list-descr"><a href="{{blade.notification.fileUrls[0]}}" target="_blank">{{extractFileName(blade.notification.fileUrls[0])}}</a></div>
+                            <div class="list-descr"><a href="{{blade.notification.contactsFileUrl}}" target="_blank">{{extractFileName(blade.notification.contactsFileUrl)}}</a></div>
                         </li>
-                        <li class="list-item" ng-if="blade.notification.fileUrls && blade.notification.fileUrls.length === 2">
+                        <li class="list-item" ng-if="blade.notification.organizationsFileUrl">
                             <div class="list-t">{{ 'customerExportImport.blades.export-processing.labels.organizations-url' | translate }}</div>
-                            <div class="list-descr"><a href="{{blade.notification.fileUrls[1]}}" target="_blank">{{extractFileName(blade.notification.fileUrls[1])}}</a></div>
+                            <div class="list-descr"><a href="{{blade.notification.organizationsFileUrl}}" target="_blank">{{extractFileName(blade.notification.organizationsFileUrl)}}</a></div>
                         </li>
                     </ul>
                 </div>

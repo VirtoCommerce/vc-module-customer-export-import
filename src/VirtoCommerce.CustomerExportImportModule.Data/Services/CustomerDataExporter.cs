@@ -22,19 +22,21 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly IExportWriterFactory _exportWriterFactory;
         private readonly PlatformOptions _platformOptions;
         private readonly IBlobUrlResolver _blobUrlResolver;
+        private readonly IBlobStorageProvider _blobStorageProvider;
         private readonly IDynamicPropertySearchService _dynamicPropertySearchService;
 
 
 
 
-        public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IExportWriterFactory exportWriterFactory, IOptions<PlatformOptions> platformOptions, IBlobUrlResolver blobUrlResolver
-            , IDynamicPropertySearchService dynamicPropertySearchService)
+        public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IExportWriterFactory exportWriterFactory, IOptions<PlatformOptions> platformOptions,
+            IDynamicPropertySearchService dynamicPropertySearchService, IBlobStorageProvider blobStorageProvider, IBlobUrlResolver blobUrlResolver)
         {
             _customerExportPagedDataSourceFactory = customerExportPagedDataSourceFactory;
             _exportWriterFactory = exportWriterFactory;
             _platformOptions = platformOptions.Value;
-            _blobUrlResolver = blobUrlResolver;
+            _blobStorageProvider = blobStorageProvider;
             _dynamicPropertySearchService = dynamicPropertySearchService;
+            _blobUrlResolver = blobUrlResolver;
         }
 
         public async Task ExportAsync(ExportDataRequest request, Action<ExportProgressInfo> progressCallback, ICancellationToken cancellationToken)
@@ -80,11 +82,17 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                     var contacts = dataSource.Items.OfType<CsvContact>().ToArray();
 
-                    contactExportWriter.WriteRecords(contacts);
+                    if (!contacts.IsNullOrEmpty())
+                    {
+                        contactExportWriter.WriteRecords(contacts);
+                    }                    
 
                     var organizations = dataSource.Items.OfType<CsvOrganization>().ToArray();
 
-                    organizationExportWriter.WriteRecords(organizations);
+                    if (!organizations.IsNullOrEmpty())
+                    {
+                        organizationExportWriter.WriteRecords(organizations);
+                    }
 
                     exportProgress.ProcessedCount += dataSource.Items.Length;
                     exportProgress.Description = string.Format(exportDescription, exportProgress.ProcessedCount,
@@ -93,17 +101,38 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 }
 
                 exportProgress.Description = "Export completed";
-                exportProgress.FileUrls = new[]
-                {
-                    _blobUrlResolver.GetAbsoluteUrl(contactsFilePath),
-                    _blobUrlResolver.GetAbsoluteUrl(organizationFilePath)
-                };
-                progressCallback(exportProgress);
+
             }
             finally
             {
                 contactExportWriter.Dispose();
                 organizationExportWriter.Dispose();
+            }
+
+            try
+            {
+                var contactsFileInfo = await _blobStorageProvider.GetBlobInfoAsync(contactsFilePath);
+                var organizationsFileInfo = await _blobStorageProvider.GetBlobInfoAsync(organizationFilePath);
+
+                if (contactsFileInfo.Size > 0)
+                {
+                    exportProgress.ContactsFileUrl = _blobUrlResolver.GetAbsoluteUrl(contactsFilePath);
+                } else
+                {
+                    await _blobStorageProvider.RemoveAsync(new string[] { contactsFilePath });
+                }
+
+                if (organizationsFileInfo.Size > 0)
+                {
+                    exportProgress.OrganizationsFileUrl = _blobUrlResolver.GetAbsoluteUrl(organizationFilePath);
+                } else
+                {
+                    await _blobStorageProvider.RemoveAsync(new string[] { organizationFilePath });
+                }
+            }
+            finally
+            {
+                progressCallback(exportProgress);
             }
         }
 

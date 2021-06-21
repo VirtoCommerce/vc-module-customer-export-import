@@ -22,6 +22,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         public DateTime? Finished { get; set; }
 
-        public string[] FileUrls { get; set; }
+        public string ContactsFileUrl { get; set; }
+
+        public string OrganizationsFileUrl { get; set; }
     }
 }

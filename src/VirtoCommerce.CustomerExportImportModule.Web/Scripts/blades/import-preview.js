@@ -111,6 +111,18 @@ angular.module('virtoCommerce.customerExportImportModule')
                     } else {
                         $scope.nameColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'organizationName'});
                         $scope.idColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'organizationId'});
+                        const parentOrganizationName = _.findWhere(gridApi.grid.options.columnDefs, {name: 'parentOrganizationName'});
+                        const parentOrganizationId = _.findWhere(gridApi.grid.options.columnDefs, {name: 'parentOrganizationId'});
+                        const parentOrganizationOuterId = _.findWhere(gridApi.grid.options.columnDefs, {name: 'parentOrganizationOuterId'});
+                        if (parentOrganizationName) {
+                            parentOrganizationName.visible = false;
+                        }
+                        if (parentOrganizationId) {
+                            parentOrganizationId.visible = false;
+                        }
+                        if (parentOrganizationOuterId) {
+                            parentOrganizationOuterId.visible = false;
+                        }
                     }
 
                     $scope.nameColumn.pinnedLeft = true;

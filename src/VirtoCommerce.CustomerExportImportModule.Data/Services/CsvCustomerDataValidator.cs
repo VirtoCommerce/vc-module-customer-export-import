@@ -61,9 +61,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 var stream = _blobStorageProvider.OpenRead(filePath);
                 var csvConfiguration = new ImportConfiguration();
 
-                await ValidateDelimiterAndDataExists(stream, csvConfiguration, errorsList);
+                var requiredColumns = CsvCustomerImportHelper.GetImportCustomerRequiredColumns<T>();
 
-                ValidateRequiredColumns<T>(stream, csvConfiguration, errorsList);
+                await ValidateDelimiterAndDataExists(stream, csvConfiguration, requiredColumns, errorsList);
+
+                ValidateRequiredColumns(stream, csvConfiguration, requiredColumns, errorsList);
 
                 ValidateLineLimit(stream, csvConfiguration, errorsList);
 
@@ -116,7 +118,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-        private static void ValidateRequiredColumns<T>(Stream stream, Configuration csvConfiguration, List<ImportDataValidationError> errorsList)
+        private static void ValidateRequiredColumns(Stream stream, Configuration csvConfiguration, string[] requiredColumns, List<ImportDataValidationError> errorsList)
         {
             var notCompatibleErrors = new[]
             {
@@ -140,8 +142,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var existedColumns = csvReader.Context.HeaderRecord;
 
-            var requiredColumns = CsvCustomerImportHelper.GetImportCustomerRequiredColumns<T>();
-
             var missedColumns = requiredColumns.Except(existedColumns, StringComparer.InvariantCultureIgnoreCase).ToArray();
 
             if (missedColumns.Length > 0)
@@ -152,7 +152,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-        private static async Task ValidateDelimiterAndDataExists(Stream stream, Configuration csvConfiguration, List<ImportDataValidationError> errorsList)
+        private static async Task ValidateDelimiterAndDataExists(Stream stream, Configuration csvConfiguration, string[] requiredColumns, List<ImportDataValidationError> errorsList)
         {
 
             var notCompatibleErrors = new[]
@@ -177,7 +177,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
             else
             {
-                if (!headerLine.Contains(csvConfiguration.Delimiter))
+                if (!(requiredColumns.Length == 1 && headerLine == requiredColumns.First()) && !headerLine.Contains(csvConfiguration.Delimiter))
                 {
                     errorsList.Add(new ImportDataValidationError { ErrorCode = ModuleConstants.ValidationErrors.WrongDelimiter });
                 }

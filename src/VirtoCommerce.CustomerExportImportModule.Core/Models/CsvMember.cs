@@ -12,6 +12,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public abstract string OuterId { get; set; }
 
         [Optional]
+        [Name("Phones")]
+        public string Phones { get; set; }
+
+        [Optional]
         [Name("Address Type")]
         public string AddressType { get; set; }
 

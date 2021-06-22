@@ -25,10 +25,18 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
 
             public const string MissingRequiredColumns = "missing-required-columns";
 
+            public const string MissingRequiredValues = "missing-required-values";
+
             public const string ExceedingMaxLength = "exceeding-max-length";
 
             public const string InvalidValue = "invalid-value";
         }
+
+        public static Dictionary<string, string> ValidationMessages = new Dictionary<string, string>
+        {
+            { ValidationErrors.InvalidValue, "Value in column {0} may have maximum {1} characters." },
+            { ValidationErrors.InvalidValue, "This row has invalid value in the column '{0}'." }
+        };
 
         public static class Features
         {

@@ -24,8 +24,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                     return !duplicates.Contains(importRecord);
                 })
                 .WithErrorCode(ModuleConstants.ValidationErrors.DuplicateError)
-                .WithImportState()
-                .WithMessage("This customer is a duplicate.");
+                .WithMessage("This customer is a duplicate.")
+                .WithImportState();
         }
     }
 }

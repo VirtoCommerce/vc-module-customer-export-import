@@ -23,8 +23,41 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         {
             new DynamicObjectProperty
             {
+                Id = "SexId",
                 Name = "Sex",
-                Values = new[] { new DynamicPropertyObjectValue { PropertyName = "Sex", Value = "Male" } }
+                ValueType = DynamicPropertyValueType.ShortText,
+                Values = new[] { new DynamicPropertyObjectValue { PropertyId = "SexId", PropertyName = "Sex", ValueType = DynamicPropertyValueType.ShortText, Value = "Male" } }
+            },
+            new DynamicObjectProperty
+            {
+                Id = "JobId",
+                Name = "Job",
+                IsDictionary = true,
+                ValueType = DynamicPropertyValueType.ShortText,
+                Values = new[]
+                {
+                    new DynamicPropertyObjectValue
+                    {
+                        PropertyId = "JobId",
+                        PropertyName = "Job",
+                        ValueId = "DeveloperId",
+                        ValueType = DynamicPropertyValueType.ShortText,
+                        Value = "Developer"
+                    }
+                }
+            }
+        };
+
+        private static readonly Dictionary<string, IList<DynamicPropertyDictionaryItem>> ContactDynamicPropertyDictionaryItems = new Dictionary<string, IList<DynamicPropertyDictionaryItem>>
+        {
+            {
+                "JobId",
+                new List<DynamicPropertyDictionaryItem>
+                {
+                    new DynamicPropertyDictionaryItem { Id = "DeveloperId", PropertyId = "JobId", Name = "Developer" },
+                    new DynamicPropertyDictionaryItem { Id = "QAId", PropertyId = "JobId", Name = "QA" },
+                    new DynamicPropertyDictionaryItem { Id = "BAId", PropertyId = "JobId", Name = "BA" }
+                }
             }
         };
 
@@ -206,7 +239,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             using var stream = TestHelper.GetStream(csv);
             using var streamReader = new StreamReader(stream);
             using var csvReader = new CsvReader(streamReader, new ImportConfiguration());
-            csvReader.Configuration.RegisterClassMap(new GenericClassMap<CsvContact>(ContactDynamicProperties));
+            csvReader.Configuration.RegisterClassMap(new GenericClassMap<CsvContact>(ContactDynamicProperties, ContactDynamicPropertyDictionaryItems));
 
             // Act
             csvReader.Read();

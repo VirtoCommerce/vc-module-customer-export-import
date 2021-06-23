@@ -113,7 +113,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .DependentRules(() =>
                         {
                             RuleFor(x => x.Record.AccountLogin)
-                                .MustAsync(async (_, userName, z) => await _userManager?.FindByNameAsync(userName) != null)
+                                .MustAsync(async (_, userName, __) => await _userManager.FindByNameAsync(userName) == null)
                                 .WithNotUniqueValueCodeAndMessage("Account Login")
                                 .WithImportState();
                         });
@@ -124,7 +124,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .DependentRules(() =>
                         {
                             RuleFor(x => x.Record.AccountEmail)
-                                .MustAsync(async (_, email, z) => await _userManager?.FindByEmailAsync(email) != null)
+                                .MustAsync(async (_, email, __) => await _userManager.FindByEmailAsync(email) == null)
                                 .WithNotUniqueValueCodeAndMessage("Account Login")
                                 .WithImportState();
                         });

@@ -23,7 +23,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         {
             RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAreNotDuplicatesValidator<CsvContact>());
             RuleForEach(importRecords => importRecords).SetValidator(new ImportMemberValidator<CsvContact>(_countriesService));
-            RuleForEach(importRecords => importRecords).SetValidator(new ImportContactValidator(_signInManager?.UserManager));
+            RuleForEach(importRecords => importRecords).SetValidator(new ImportContactValidator(_signInManager.UserManager));
         }
     }
 }

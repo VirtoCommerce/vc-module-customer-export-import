@@ -27,7 +27,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 {
                     RuleFor(dynamicProperty => dynamicProperty.Values)
                         .Must(dynamicPropertyValues => dynamicPropertyValues.Count == 1)
-                        .When(dynamicProperty => !dynamicProperty.IsDictionary)
+                        .When(dynamicProperty => !dynamicProperty.IsArray)
                         .WithInvalidValueCodeAndMessage()
                         .WithImportState(_importRecord)
                         .DependentRules(() =>
@@ -51,6 +51,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                                     .WithImportState(_importRecord);
                                             });
                                     });
+                                    childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
+                                        .Must(value => value is string)
+                                        .When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.LongText)
+                                        .WithInvalidValueCodeAndMessage()
+                                        .WithImportState(_importRecord);
                                     childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
                                         .Must(value => decimal.TryParse(value as string, out _))
                                         .When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.Decimal)

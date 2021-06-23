@@ -30,7 +30,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                     return phones == null || phones.All(phone => phone.Length <= 64);
                 })
                 .WithErrorCode(ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength)
-                .WithMessage(string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength], "PHones", 64))
+                .WithMessage(string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength], "Phones", 64))
                 .WithImportState();
 
             RuleFor(x => x).CustomAsync(LoadCountriesAsync).SetValidator(_ => new ImportAddressValidator<T>());

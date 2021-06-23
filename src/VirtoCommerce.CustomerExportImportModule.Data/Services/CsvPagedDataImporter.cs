@@ -249,6 +249,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             HandleError(progressCallback, importProgress);
         }
 
+        private static async Task HandleMissedColumnError(Action<ImportProgressInfo> progressCallback, ImportProgressInfo importProgress, ICsvCustomerImportReporter reporter, ReadingContext context, ImportErrorsContext errorsContext)
+        {
+            if (errorsContext.ErrorsRows.Any(x => x == context.Row))
+            {
+                return;
+            }
+
+            var headerColumns = context.HeaderRecord;
+            var recordFields = context.Record;
+            var missedColumns = headerColumns.Skip(recordFields.Length).ToArray();
+            var error = $"This row has next missing columns: {string.Join(", ", missedColumns)}.";
+            var importError = new ImportError { Error = error, RawRow = context.RawRecord };
+
+            await reporter.WriteAsync(importError);
+
+            errorsContext.ErrorsRows.Add(context.Row);
+            HandleError(progressCallback, importProgress);
+        }
+
         private static void SetupErrorHandlers(Action<ImportProgressInfo> progressCallback, ImportConfiguration configuration,
             ImportErrorsContext errorsContext, ImportProgressInfo importProgress, ICsvCustomerImportReporter importReporter)
         {
@@ -282,7 +301,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 await HandleBadDataErrorAsync(progressCallback, importProgress, importReporter, context, errorsContext);
             };
 
-            configuration.MissingFieldFound = null;
+            configuration.MissingFieldFound = async (headerNames, index, context) =>
+                await HandleMissedColumnError(progressCallback, importProgress, importReporter, context, errorsContext);
         }
 
         private static string GetReportFilePath(string filePath)

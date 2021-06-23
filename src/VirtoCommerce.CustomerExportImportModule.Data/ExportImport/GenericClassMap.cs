@@ -85,7 +85,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                 (Expression<Func<IReaderRow, object>>)(row => dynamicProperties.Select(dynamicProperty =>
                    new DynamicObjectProperty
                     {
-                        Id = dynamicProperty.Id,
                         Name = dynamicProperty.Name,
                         DisplayNames = dynamicProperty.DisplayNames,
                         DisplayOrder = dynamicProperty.DisplayOrder,

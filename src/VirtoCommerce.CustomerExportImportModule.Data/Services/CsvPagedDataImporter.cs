@@ -14,7 +14,7 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
-    public abstract class CsvPagedDataImporter<T, T2> : ICsvPagedCustomerDataImporter where T : CsvMember
+    public abstract class CsvPagedDataImporter<TCsvMember, TMember> : ICsvPagedCustomerDataImporter where TCsvMember : CsvMember where TMember : Member
     {
         protected readonly IMemberService _memberService;
         protected readonly IMemberSearchService _memberSearchService;
@@ -22,6 +22,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         protected readonly ICsvCustomerImportReporterFactory _importReporterFactory;
         protected readonly ICustomerImportPagedDataSourceFactory _dataSourceFactory;
         protected readonly IBlobUrlResolver _blobUrlResolver;
+
+        public abstract string MemberType { get; }
 
         protected CsvPagedDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
@@ -41,7 +43,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var errorsContext = new ImportErrorsContext();
 
-            var csvPriceDataValidationResult = await _dataValidator.ValidateAsync<T>(request.FilePath);
+            var csvPriceDataValidationResult = await _dataValidator.ValidateAsync<TCsvMember>(request.FilePath);
 
             if (csvPriceDataValidationResult.Errors.Any())
             {
@@ -58,7 +60,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var importProgress = new ImportProgressInfo { Description = "Import has started" };
 
-            using var dataSource = await _dataSourceFactory.CreateAsync<T, T2>(request.FilePath, ModuleConstants.Settings.PageSize, configuration);
+            using var dataSource = await _dataSourceFactory.CreateAsync<TCsvMember, TMember>(request.FilePath, ModuleConstants.Settings.PageSize, configuration);
 
             var headerRaw = dataSource.GetHeaderRaw();
 
@@ -104,7 +106,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
 
         protected abstract Task HandleChunk(ImportDataRequest request, Action<ImportProgressInfo> progressCallback,
-            ICustomerImportPagedDataSource<T> dataSource, ImportErrorsContext errorsContext,
+            ICustomerImportPagedDataSource<TCsvMember> dataSource, ImportErrorsContext errorsContext,
             ImportProgressInfo importProgress,
             string importDescription);
 
@@ -269,6 +271,20 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             var result = filePath.Replace(fileName, reportFileName);
 
             return result;
+        }
+
+        protected static void SetIdToNullForNotExisted(ImportRecord<TCsvMember>[] importContacts, TMember[] existedContacts)
+        {
+            foreach (var importContact in importContacts)
+            {
+                var existedContact =
+                    existedContacts.FirstOrDefault(x => x.Id.EqualsInvariant(importContact.Record.Id));
+
+                if (existedContact == null)
+                {
+                    importContact.Record.Id = null;
+                }
+            }
         }
     }
 }

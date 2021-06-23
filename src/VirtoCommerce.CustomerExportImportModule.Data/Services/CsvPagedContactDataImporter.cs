@@ -16,13 +16,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     {
         private readonly IValidator<ImportRecord<CsvContact>[]> _importContactValidator;
 
+        public override string MemberType => nameof(Contact);
+
         public CsvPagedContactDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<CsvContact>[]> importContactValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
         : base(memberService, memberSearchService, dataValidator, dataSourceFactory, importReporterFactory, blobUrlResolver)
         {
             _importContactValidator = importContactValidator;
         }
-
 
         protected override async Task HandleChunk(ImportDataRequest request, Action<ImportProgressInfo> progressCallback,
             ICustomerImportPagedDataSource<CsvContact> dataSource, ImportErrorsContext errorsContext, ImportProgressInfo importProgress,
@@ -110,20 +111,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-
-        private static void SetIdToNullForNotExisted(ImportRecord<CsvContact>[] importContacts, Contact[] existedContacts)
-        {
-            foreach (var importContact in importContacts)
-            {
-                var existedContact =
-                    existedContacts.FirstOrDefault(x => x.Id.EqualsInvariant(importContact.Record.Id));
-
-                if (existedContact == null)
-                {
-                    importContact.Record.Id = null;
-                }
-            }
-        }
 
         private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<CsvContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
         {

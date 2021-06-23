@@ -1,10 +1,14 @@
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using Newtonsoft.Json;
+using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using Address = VirtoCommerce.CustomerModule.Core.Model.Address;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
@@ -89,6 +93,39 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 .ToArray();
 
             return this;
+        }
+
+        public void PatchOrganization(Organization target)
+        {
+            target.OuterId = OuterId;
+            target.Name = OrganizationName;
+            target.Phones = string.IsNullOrEmpty(Phones) ? null : Phones.Split(", ");
+            target.BusinessCategory = BusinessCategory;
+            target.Description = Description;
+            target.Groups = string.IsNullOrEmpty(OrganizationGroups) ? null : OrganizationGroups.Split(", ");
+            target.DynamicProperties = DynamicProperties;
+
+            target.Addresses ??= new List<Address>();
+            var isAddressSpecified = new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => !string.IsNullOrEmpty(addressField));
+
+            if (isAddressSpecified)
+            {
+                target.Addresses.Add(new Address
+                {
+                    AddressType = !string.IsNullOrEmpty(AddressType) ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
+                    FirstName = AddressFirstName,
+                    LastName = AddressLastName,
+                    CountryName = AddressCountry,
+                    CountryCode = AddressCountryCode,
+                    RegionName = AddressRegion,
+                    City = AddressCity,
+                    Line1 = AddressLine1,
+                    Line2 = AddressLine2,
+                    PostalCode = AddressZipCode,
+                    Email = AddressEmail,
+                    Phone = AddressPhone,
+                });
+            }
         }
     }
 }

@@ -53,6 +53,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                             if (confirm) {
                                 const importDataRequest = {
                                     filePath: blade.csvFilePath,
+                                    memberType: blade.dataType.value,
                                     organizationId: blade.organizationId
                                 };
 
@@ -60,6 +61,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                                     var newBlade = {
                                         id: "customerImportProcessing",
                                         notification: data,
+                                        dataType: blade.dataType,
                                         headIcon: "fa fa-download",
                                         title: "customerExportImport.blades.import-processing.title",
                                         controller: "virtoCommerce.customerExportImportModule.importProcessingController",
@@ -109,6 +111,18 @@ angular.module('virtoCommerce.customerExportImportModule')
                     } else {
                         $scope.nameColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'organizationName'});
                         $scope.idColumn = _.findWhere(gridApi.grid.options.columnDefs, {name: 'organizationId'});
+                        const parentOrganizationName = _.findWhere(gridApi.grid.options.columnDefs, {name: 'parentOrganizationName'});
+                        const parentOrganizationId = _.findWhere(gridApi.grid.options.columnDefs, {name: 'parentOrganizationId'});
+                        const parentOrganizationOuterId = _.findWhere(gridApi.grid.options.columnDefs, {name: 'parentOrganizationOuterId'});
+                        if (parentOrganizationName) {
+                            parentOrganizationName.visible = false;
+                        }
+                        if (parentOrganizationId) {
+                            parentOrganizationId.visible = false;
+                        }
+                        if (parentOrganizationOuterId) {
+                            parentOrganizationOuterId.visible = false;
+                        }
                     }
 
                     $scope.nameColumn.pinnedLeft = true;

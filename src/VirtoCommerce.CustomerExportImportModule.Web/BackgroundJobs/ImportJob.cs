@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.Server;
@@ -11,24 +13,26 @@ using VirtoCommerce.Platform.Hangfire;
 
 namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
 {
-    public sealed class ImportContactsJob
+    public sealed class ImportJob
     {
         private readonly IPushNotificationManager _pushNotificationManager;
-        private readonly ICsvPagedCustomerDataImporter _customerDataImporter;
+        private readonly IEnumerable<ICsvPagedCustomerDataImporter> _customerDataImporters;
 
-        public ImportContactsJob(IPushNotificationManager pushNotificationManager, ICsvPagedCustomerDataImporter customerDataImporter)
+        public ImportJob(IPushNotificationManager pushNotificationManager, IEnumerable<ICsvPagedCustomerDataImporter> customerDataImporters)
         {
             _pushNotificationManager = pushNotificationManager;
-            _customerDataImporter = customerDataImporter;
+            _customerDataImporters = customerDataImporters;
         }
 
         public async Task ImportBackgroundAsync(ImportDataRequest request, ImportPushNotification pushNotification, IJobCancellationToken jobCancellationToken, PerformContext context)
         {
-            ValidateParameters(pushNotification);
+            ValidateParameters(request, pushNotification);
 
             try
             {
-                await _customerDataImporter.ImportAsync(request,
+                var importer = _customerDataImporters.First(x => x.MemberType == request.MemberType);
+
+                await importer.ImportAsync(request,
                     progressInfo => ProgressCallback(progressInfo, pushNotification, context),
                     new JobCancellationTokenWrapper(jobCancellationToken));
             }
@@ -57,11 +61,18 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
             _pushNotificationManager.Send(pushNotification);
         }
 
-        private static void ValidateParameters(ImportPushNotification pushNotification)
+        private void ValidateParameters(ImportDataRequest request, ImportPushNotification pushNotification)
         {
             if (pushNotification == null)
             {
                 throw new ArgumentNullException(nameof(pushNotification));
+            }
+
+            var importer = _customerDataImporters.FirstOrDefault(x => x.MemberType == request.MemberType);
+
+            if (importer == null)
+            {
+                throw new ArgumentException($"Not allowed argument value in field {nameof(request.MemberType)}", nameof(request));
             }
         }
     }

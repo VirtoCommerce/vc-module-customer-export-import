@@ -21,16 +21,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(x => x.Record.OrganizationName)
                 .NotEmpty()
                 .WithMissingRequiredValueCodeAndMessage("Organization Name")
-                .WithImportState();
-            RuleFor(x => x.Record.OrganizationName)
-                .MaximumLength(128)
-                .WithExceededMaxLengthCodeAndMessage("Organization Name", 128)
-                .WithImportState();
-
-            RuleFor(x => x.Record.BusinessCategory)
-                .NotEmpty()
-                .WithMissingRequiredValueCodeAndMessage("Business Category")
-                .WithImportState();
+                .WithImportState()
+                .DependentRules(() =>
+                {
+                    RuleFor(x => x.Record.OrganizationName)
+                        .MaximumLength(128)
+                        .WithExceededMaxLengthCodeAndMessage("Organization Name", 128)
+                        .WithImportState();
+                });
+            
             RuleFor(x => x.Record.BusinessCategory)
                 .MaximumLength(128)
                 .WithExceededMaxLengthCodeAndMessage("Business Category", 128)

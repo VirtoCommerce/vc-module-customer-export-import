@@ -27,29 +27,38 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(x => x.Record.ContactFirstName)
                 .NotEmpty()
                 .WithMissingRequiredValueCodeAndMessage("Contact First Name")
-                .WithImportState();
-            RuleFor(x => x.Record.ContactFirstName)
-                .MaximumLength(128)
-                .WithExceededMaxLengthCodeAndMessage("Contact First Name", 128)
-                .WithImportState();
+                .WithImportState()
+                .DependentRules(() =>
+                {
+                    RuleFor(x => x.Record.ContactFirstName)
+                        .MaximumLength(128)
+                        .WithExceededMaxLengthCodeAndMessage("Contact First Name", 128)
+                        .WithImportState();
+                });
 
             RuleFor(x => x.Record.ContactLastName)
                 .NotEmpty()
                 .WithMissingRequiredValueCodeAndMessage("Contact Last Name")
-                .WithImportState();
-            RuleFor(x => x.Record.ContactLastName)
-                .MaximumLength(128)
-                .WithExceededMaxLengthCodeAndMessage("Contact Last Name", 128)
-                .WithImportState();
+                .WithImportState()
+                .DependentRules(() =>
+                {
+                    RuleFor(x => x.Record.ContactLastName)
+                        .MaximumLength(128)
+                        .WithExceededMaxLengthCodeAndMessage("Contact Last Name", 128)
+                        .WithImportState();
+                });
 
             RuleFor(x => x.Record.ContactFullName)
                 .NotEmpty()
                 .WithMissingRequiredValueCodeAndMessage("Contact Full Name")
-                .WithImportState();
-            RuleFor(x => x.Record.ContactFullName)
-                .MaximumLength(254)
-                .WithExceededMaxLengthCodeAndMessage("Contact Full Name", 254)
-                .WithImportState();
+                .WithImportState()
+                .DependentRules(() =>
+                {
+                    RuleFor(x => x.Record.ContactFullName)
+                        .MaximumLength(254)
+                        .WithExceededMaxLengthCodeAndMessage("Contact Full Name", 254)
+                        .WithImportState();
+                });
 
             RuleFor(x => x.Record.OrganizationOuterId)
                 .MaximumLength(128)
@@ -100,17 +109,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                     RuleFor(x => x.Record.AccountLogin)
                         .NotEmpty()
                         .WithMissingRequiredValueCodeAndMessage("Account Login")
-                        .WithImportState();
-                    RuleFor(x => x.Record.AccountLogin)
-                        .MustAsync(async (_, userName, z) => await _userManager?.FindByNameAsync(userName) != null)
-                        .WithNotUniqueValueCodeAndMessage("Account Login")
-                        .WithImportState();
+                        .WithImportState()
+                        .DependentRules(() =>
+                        {
+                            RuleFor(x => x.Record.AccountLogin)
+                                .MustAsync(async (_, userName, z) => await _userManager?.FindByNameAsync(userName) != null)
+                                .WithNotUniqueValueCodeAndMessage("Account Login")
+                                .WithImportState();
+                        });
                     RuleFor(x => x.Record.AccountEmail)
                         .NotEmpty()
                         .WithMissingRequiredValueCodeAndMessage("Account Email")
-                        .MustAsync(async (_, email, z) => await _userManager?.FindByEmailAsync(email) != null)
-                        .WithNotUniqueValueCodeAndMessage("Account Login")
-                        .WithImportState();
+                        .WithImportState()
+                        .DependentRules(() =>
+                        {
+                            RuleFor(x => x.Record.AccountEmail)
+                                .MustAsync(async (_, email, z) => await _userManager?.FindByEmailAsync(email) != null)
+                                .WithNotUniqueValueCodeAndMessage("Account Login")
+                                .WithImportState();
+                        });
                     RuleFor(x => x.Record.StoreId)
                         .NotEmpty()
                         .WithMissingRequiredValueCodeAndMessage("Store Id")

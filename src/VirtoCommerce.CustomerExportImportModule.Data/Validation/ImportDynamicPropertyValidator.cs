@@ -22,50 +22,59 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(dynamicProperty => dynamicProperty.Values)
                 .NotEmpty()
                 .WithInvalidValueCodeAndMessage()
-                .WithImportState(_importRecord);
-            RuleFor(dynamicProperty => dynamicProperty.Values)
-                .Must(dynamicPropertyValues => dynamicPropertyValues.Count == 1)
-                .When(dynamicProperty => !dynamicProperty.IsDictionary)
-                .WithInvalidValueCodeAndMessage()
-                .WithImportState(_importRecord);
-            RuleForEach(dynamicProperty => dynamicProperty.Values).ChildRules(childRules =>
-            {
-                childRules.When(dynamicPropertyValue => dynamicPropertyValue.Value != null, () =>
+                .WithImportState(_importRecord)
+                .DependentRules(() =>
                 {
-                    When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.ShortText, () =>
-                    {
-                        childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
-                            .Must(value => value is string)
-                            .WithInvalidValueCodeAndMessage()
-                            .WithImportState(_importRecord);
-                        childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value as string)
-                            .MaximumLength(512)
-                            .When(x => x.ValueType == DynamicPropertyValueType.ShortText)
-                            .WithExceededMaxLengthCodeAndMessage(512)
-                            .WithImportState(_importRecord);
-                    });
-                    childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
-                        .Must(value => decimal.TryParse(value as string, out _))
-                        .When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.Decimal)
+                    RuleFor(dynamicProperty => dynamicProperty.Values)
+                        .Must(dynamicPropertyValues => dynamicPropertyValues.Count == 1)
+                        .When(dynamicProperty => !dynamicProperty.IsDictionary)
                         .WithInvalidValueCodeAndMessage()
-                        .WithImportState(_importRecord);
-                    childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
-                        .Must(value => int.TryParse(value as string, out _))
-                        .When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.Integer)
-                        .WithInvalidValueCodeAndMessage()
-                        .WithImportState(_importRecord);
-                    childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
-                        .Must(value => bool.TryParse(value as string, out _))
-                        .When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.Boolean)
-                        .WithInvalidValueCodeAndMessage()
-                        .WithImportState(_importRecord);
-                    childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
-                        .Must(value => DateTime.TryParse(value as string, out _))
-                        .When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.DateTime)
-                        .WithInvalidValueCodeAndMessage()
-                        .WithImportState(_importRecord);
+                        .WithImportState(_importRecord)
+                        .DependentRules(() =>
+                        {
+                            RuleForEach(dynamicProperty => dynamicProperty.Values).ChildRules(childRules =>
+                            {
+                                childRules.When(dynamicPropertyValue => dynamicPropertyValue.Value != null, () =>
+                                {
+                                    When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.ShortText, () =>
+                                    {
+                                        childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
+                                            .Must(value => value is string)
+                                            .WithInvalidValueCodeAndMessage()
+                                            .WithImportState(_importRecord)
+                                            .DependentRules(() =>
+                                            {
+                                                childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value as string)
+                                                    .MaximumLength(512)
+                                                    .When(x => x.ValueType == DynamicPropertyValueType.ShortText)
+                                                    .WithExceededMaxLengthCodeAndMessage(512)
+                                                    .WithImportState(_importRecord);
+                                            });
+                                    });
+                                    childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
+                                        .Must(value => decimal.TryParse(value as string, out _))
+                                        .When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.Decimal)
+                                        .WithInvalidValueCodeAndMessage()
+                                        .WithImportState(_importRecord);
+                                    childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
+                                        .Must(value => int.TryParse(value as string, out _))
+                                        .When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.Integer)
+                                        .WithInvalidValueCodeAndMessage()
+                                        .WithImportState(_importRecord);
+                                    childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
+                                        .Must(value => bool.TryParse(value as string, out _))
+                                        .When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.Boolean)
+                                        .WithInvalidValueCodeAndMessage()
+                                        .WithImportState(_importRecord);
+                                    childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)
+                                        .Must(value => DateTime.TryParse(value as string, out _))
+                                        .When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.DateTime)
+                                        .WithInvalidValueCodeAndMessage()
+                                        .WithImportState(_importRecord);
+                                });
+                            });
+                        });
                 });
-            });
         }
     }
 }

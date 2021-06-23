@@ -35,7 +35,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
             RuleFor(x => x).CustomAsync(LoadCountriesAsync).SetValidator(_ => new ImportAddressValidator<T>());
 
-            RuleFor(x => x.Record.DynamicProperties).SetValidator(new ImportDynamicPropertiesValidator()).WithImportState();
+            RuleFor(x => x.Record.DynamicProperties).SetValidator(record => new ImportDynamicPropertiesValidator<T>(record));
         }
 
         private async Task LoadCountriesAsync(ImportRecord<T> importRecord, CustomContext context, CancellationToken cancellationToken)

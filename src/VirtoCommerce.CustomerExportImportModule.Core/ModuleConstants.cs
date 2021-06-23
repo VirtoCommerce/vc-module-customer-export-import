@@ -29,7 +29,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
 
             public const string ExceedingMaxLength = "exceeding-max-length";
 
-            public const string ArrayValuesExceedingMaxLength = "exceeding-max-length";
+            public const string ArrayValuesExceedingMaxLength = "array-values-exceeding-max-length";
 
             public const string InvalidValue = "invalid-value";
 

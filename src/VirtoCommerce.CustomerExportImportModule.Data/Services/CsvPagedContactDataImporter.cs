@@ -14,20 +14,19 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
     public sealed class CsvPagedContactDataImporter : CsvPagedDataImporter<CsvContact, Contact>
     {
-        private readonly IValidator<ImportRecord<CsvContact>[]> _importContactValidator;
+        private readonly IMemberService _memberService;
 
         public override string MemberType => nameof(Contact);
 
         public CsvPagedContactDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<CsvContact>[]> importContactValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
-        : base(memberService, memberSearchService, dataValidator, dataSourceFactory, importReporterFactory, blobUrlResolver)
+        : base(memberSearchService, dataValidator, dataSourceFactory, importContactValidator, importReporterFactory, blobUrlResolver)
         {
-            _importContactValidator = importContactValidator;
+            _memberService = memberService;
         }
 
-        protected override async Task HandleChunk(ImportDataRequest request, Action<ImportProgressInfo> progressCallback,
-            ICustomerImportPagedDataSource<CsvContact> dataSource, ImportErrorsContext errorsContext, ImportProgressInfo importProgress,
-            string importDescription)
+        protected override async Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICustomerImportPagedDataSource<CsvContact> dataSource,
+            ImportErrorsContext errorsContext, ImportProgressInfo importProgress, ICsvCustomerImportReporter importReporter)
         {
             var importContacts = dataSource.Items
                 // expect records that was parsed with errors
@@ -45,12 +44,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     .ToArray();
 
                 var existedContacts =
-                    (await SearchMembersByIdAndOuterId(internalIds, outerIds, new[] { nameof(Contact) }, true))
+                    (await SearchMembersByIdAndOuterIdAsync(internalIds, outerIds, new[] { nameof(Contact) }, true))
                     .OfType<Contact>().ToArray();
 
                 SetIdToNullForNotExisted(importContacts, existedContacts);
 
-                var validationResult = await _importContactValidator.ValidateAsync(importContacts);
+                var validationResult = await ValidateAsync(importContacts, importReporter);
 
                 var invalidImportContacts = validationResult.Errors
                     .Select(x => (x.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord).Distinct().ToArray();
@@ -77,7 +76,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     .Where(x => !x.IsNullOrEmpty()).ToArray();
 
                 var existedOrganizations =
-                    (await SearchMembersByIdAndOuterId(internalOrgIds, outerOrgIds,
+                    (await SearchMembersByIdAndOuterIdAsync(internalOrgIds, outerOrgIds,
                         new[] { nameof(Organization) })).OfType<Organization>().ToArray();
 
                 var newContacts = CreateNewContacts(createImportContacts, existedOrganizations, request);
@@ -97,17 +96,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
             finally
             {
-                importProgress.ProcessedCount =
-                    Math.Min(dataSource.CurrentPageNumber * dataSource.PageSize, importProgress.TotalCount);
-                importProgress.ErrorCount = importProgress.ProcessedCount - importProgress.ContactsCreated -
-                                            importProgress.ContactsUpdated;
-            }
-
-            if (importProgress.ProcessedCount != importProgress.TotalCount)
-            {
-                importProgress.Description =
-                    string.Format(importDescription, importProgress.ProcessedCount, importProgress.TotalCount);
-                progressCallback(importProgress);
+                importProgress.ProcessedCount = Math.Min(dataSource.CurrentPageNumber * dataSource.PageSize, importProgress.TotalCount);
+                importProgress.ErrorCount = importProgress.ProcessedCount - importProgress.ContactsCreated - importProgress.ContactsUpdated;
             }
         }
 

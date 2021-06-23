@@ -33,20 +33,20 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
                     RuleFor(x => x.Record.AddressFirstName)
                         .MaximumLength(128)
-                        .WithExceededMaxLengthCodeAndMessage("Address First Name")
+                        .WithExceededMaxLengthCodeAndMessage("Address First Name", 128)
                         .WithImportState();
                     RuleFor(x => x.Record.AddressLastName)
                         .MaximumLength(128)
-                        .WithExceededMaxLengthCodeAndMessage("Address Last Name")
+                        .WithExceededMaxLengthCodeAndMessage("Address Last Name", 128)
                         .WithImportState();
 
                     RuleFor(x => x.Record.AddressEmail)
                         .MaximumLength(64)
-                        .WithExceededMaxLengthCodeAndMessage("Address Email")
+                        .WithExceededMaxLengthCodeAndMessage("Address Email", 64)
                         .WithImportState();
                     RuleFor(x => x.Record.AddressPhone)
                         .MaximumLength(256)
-                        .WithExceededMaxLengthCodeAndMessage("Address Phone")
+                        .WithExceededMaxLengthCodeAndMessage("Address Phone", 256)
                         .WithImportState();
 
                     RuleFor(x => x.Record.AddressLine1)
@@ -55,11 +55,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithImportState();
                     RuleFor(x => x.Record.AddressLine1)
                         .MaximumLength(128)
-                        .WithExceededMaxLengthCodeAndMessage("Address Line1")
+                        .WithExceededMaxLengthCodeAndMessage("Address Line1", 128)
                         .WithImportState();
                     RuleFor(x => x.Record.AddressLine2)
                         .MaximumLength(128)
-                        .WithExceededMaxLengthCodeAndMessage("Address Line2")
+                        .WithExceededMaxLengthCodeAndMessage("Address Line2", 128)
                         .WithImportState();
 
                     RuleFor(x => x.Record.AddressCity)
@@ -68,12 +68,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithImportState();
                     RuleFor(x => x.Record.AddressCity)
                         .MaximumLength(128)
-                        .WithExceededMaxLengthCodeAndMessage("Address City")
+                        .WithExceededMaxLengthCodeAndMessage("Address City", 128)
                         .WithImportState();
 
                     RuleFor(x => x.Record.AddressRegion)
                         .MaximumLength(128)
-                        .WithExceededMaxLengthCodeAndMessage("Address Region")
+                        .WithExceededMaxLengthCodeAndMessage("Address Region", 128)
                         .WithImportState();
 
                     RuleFor(x => x.Record.AddressCountryCode)
@@ -82,7 +82,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithImportState();
                     RuleFor(x => x.Record.AddressCountryCode)
                         .MaximumLength(64)
-                        .WithExceededMaxLengthCodeAndMessage("Address Country Code")
+                        .WithExceededMaxLengthCodeAndMessage("Address Country Code", 64)
                         .WithImportState();
                     RuleFor(x => x.Record.AddressCountryCode)
                         .Must((importRecord, countryCode, context) =>
@@ -99,7 +99,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithImportState();
                     RuleFor(x => x.Record.AddressCountry)
                         .MaximumLength(128)
-                        .WithExceededMaxLengthCodeAndMessage("Address Country")
+                        .WithExceededMaxLengthCodeAndMessage("Address Country", 128)
                         .WithImportState();
                     RuleFor(x => x.Record.AddressCountry)
                         .Must((importRecord, countryName, context) =>
@@ -116,7 +116,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithImportState();
                     RuleFor(x => x.Record.AddressZipCode)
                         .MaximumLength(32)
-                        .WithExceededMaxLengthCodeAndMessage("Address Zip Code")
+                        .WithExceededMaxLengthCodeAndMessage("Address Zip Code", 32)
                         .WithImportState();
                 });
         }

@@ -15,7 +15,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         {
             RuleFor(x => x.Record.OuterId)
                 .MaximumLength(128)
-                .WithExceededMaxLengthCodeAndMessage("Organization Outer Id")
+                .WithExceededMaxLengthCodeAndMessage("Organization Outer Id", 128)
                 .WithImportState();
 
             RuleFor(x => x.Record.OrganizationName)
@@ -24,7 +24,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .WithImportState();
             RuleFor(x => x.Record.OrganizationName)
                 .MaximumLength(128)
-                .WithExceededMaxLengthCodeAndMessage("Organization Name")
+                .WithExceededMaxLengthCodeAndMessage("Organization Name", 128)
                 .WithImportState();
 
             RuleFor(x => x.Record.BusinessCategory)
@@ -33,7 +33,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .WithImportState();
             RuleFor(x => x.Record.BusinessCategory)
                 .MaximumLength(128)
-                .WithExceededMaxLengthCodeAndMessage("Business Category")
+                .WithExceededMaxLengthCodeAndMessage("Business Category", 128)
                 .WithImportState();
         }
     }

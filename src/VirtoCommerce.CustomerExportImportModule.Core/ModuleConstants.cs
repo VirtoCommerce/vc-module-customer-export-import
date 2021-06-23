@@ -29,13 +29,20 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
 
             public const string ExceedingMaxLength = "exceeding-max-length";
 
+            public const string ArrayValuesExceedingMaxLength = "exceeding-max-length";
+
             public const string InvalidValue = "invalid-value";
+
+            public const string NotUniqueValue = "not-unique-value";
         }
 
-        public static Dictionary<string, string> ValidationMessages = new Dictionary<string, string>
+        public static readonly Dictionary<string, string> ValidationMessages = new Dictionary<string, string>
         {
-            { ValidationErrors.InvalidValue, "Value in column {0} may have maximum {1} characters." },
-            { ValidationErrors.InvalidValue, "This row has invalid value in the column '{0}'." }
+            { ValidationErrors.MissingRequiredValues, "The required value in column '{0}' is missing." },
+            { ValidationErrors.ExceedingMaxLength, "Value in column '{0}' may have maximum {1} characters." },
+            { ValidationErrors.ArrayValuesExceedingMaxLength, "Every value in column '{0}' may have maximum {1} characters; The number of values is unlimited." },
+            { ValidationErrors.InvalidValue, "This row has invalid value in the column '{0}'." },
+            { ValidationErrors.NotUniqueValue, "Value in column '{0}' should be unique." }
         };
 
         public static class Features

@@ -53,5 +53,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Helpers
                 .WithErrorCode(ModuleConstants.ValidationErrors.InvalidValue)
                 .WithMessage(dynamicPropertyValue => string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.InvalidValue], dynamicPropertyValue.PropertyName));
         }
+
+        public static IRuleBuilderOptions<ImportRecord<T>, TProperty> WithNotUniqueValueCodeAndMessage<T, TProperty>(this IRuleBuilderOptions<ImportRecord<T>, TProperty> rule, string columnName)
+        {
+            return rule
+                .WithErrorCode(ModuleConstants.ValidationErrors.NotUniqueValue)
+                .WithMessage(string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.NotUniqueValue], columnName));
+        }
     }
 }

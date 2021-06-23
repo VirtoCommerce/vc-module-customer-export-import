@@ -1,14 +1,19 @@
 using System.Linq;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
+using VirtoCommerce.Platform.Core.Security;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
     public class ImportContactValidator: AbstractValidator<ImportRecord<CsvContact>>
     {
-        public ImportContactValidator()
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public ImportContactValidator(UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             AttachValidators();
         }
 
@@ -96,9 +101,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .NotEmpty()
                         .WithMissingRequiredValueCodeAndMessage("Account Login")
                         .WithImportState();
+                    RuleFor(x => x.Record.AccountLogin)
+                        .MustAsync(async (_, userName, z) => await _userManager?.FindByNameAsync(userName) != null)
+                        .WithNotUniqueValueCodeAndMessage("Account Login")
+                        .WithImportState();
                     RuleFor(x => x.Record.AccountEmail)
                         .NotEmpty()
                         .WithMissingRequiredValueCodeAndMessage("Account Email")
+                        .MustAsync(async (_, email, z) => await _userManager?.FindByEmailAsync(email) != null)
+                        .WithNotUniqueValueCodeAndMessage("Account Login")
                         .WithImportState();
                     RuleFor(x => x.Record.StoreId)
                         .NotEmpty()

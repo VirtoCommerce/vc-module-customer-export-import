@@ -252,27 +252,30 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         private static async Task HandleMissedColumnError(Action<ImportProgressInfo> progressCallback, ImportProgressInfo importProgress, ICsvCustomerImportReporter reporter, ReadingContext context, ImportErrorsContext errorsContext)
         {
-            if (errorsContext.ErrorsRows.Any(x => x == context.Row))
+            using (await AsyncLock.GetLockByKey(reporter.FilePath).LockAsync())
             {
-                return;
+                if (errorsContext.ErrorsRows.Any(x => x == context.Row))
+                {
+                    return;
+                }
+
+                var importError = new ImportError();
+
+                if (!WasHandledAsNotClosedQuote(context, importError))
+                {
+                    var headerColumns = context.HeaderRecord;
+                    var recordFields = context.Record;
+                    var missedColumns = headerColumns.Skip(recordFields.Length).ToArray();
+                    var error = $"This row has next missing columns: {string.Join(", ", missedColumns)}.";
+                    importError.Error = error;
+                    importError.RawRow = EscapeAloneQuotes(context.RawRecord);
+                }
+
+                await reporter.WriteAsync(importError);
+
+                errorsContext.ErrorsRows.Add(context.Row);
+                HandleError(progressCallback, importProgress);
             }
-
-            var importError = new ImportError();
-
-            if (!WasHandledAsNotClosedQuote(context, importError))
-            {
-                var headerColumns = context.HeaderRecord;
-                var recordFields = context.Record;
-                var missedColumns = headerColumns.Skip(recordFields.Length).ToArray();
-                var error = $"This row has next missing columns: {string.Join(", ", missedColumns)}.";
-                importError.Error = error;
-                importError.RawRow = EscapeAloneQuotes(context.RawRecord);
-            }
-
-            await reporter.WriteAsync(importError);
-
-            errorsContext.ErrorsRows.Add(context.Row);
-            HandleError(progressCallback, importProgress);
         }
 
         private static string EscapeAloneQuotes(string input)

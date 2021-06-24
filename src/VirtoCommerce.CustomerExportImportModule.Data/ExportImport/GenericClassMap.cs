@@ -97,9 +97,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                                 IsMultilingual = dynamicProperty.IsMultilingual,
                                 IsRequired = dynamicProperty.IsRequired,
                                 ValueType = dynamicProperty.ValueType,
-                                Values = dynamicProperty.IsArray
-                                    ? ToDynamicPropertyMultiValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name))
-                                    : new List<DynamicPropertyObjectValue> { ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name)) }
+                                Values = ToDynamicPropertyValues(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name))
                             }
                             : null)
                     .Where(x => x != null)
@@ -111,11 +109,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
             MemberMaps.Add(dynamicPropertyReadingMap);
         }
 
-        private IList<DynamicPropertyObjectValue> ToDynamicPropertyMultiValue(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string values)
+        private IList<DynamicPropertyObjectValue> ToDynamicPropertyValues(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string values)
         {
-            var parsedValues = values.Split(',');
-            var convertedValues = parsedValues.Select(value => ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, value));
-            return convertedValues.ToList();
+            return dynamicProperty.IsArray
+                ? ToDynamicPropertyMultiValue(dynamicProperty, dynamicPropertyDictionaryItems, values)
+                : new List<DynamicPropertyObjectValue> { ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, values) };
         }
 
         private DynamicPropertyObjectValue ToDynamicPropertyValue(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string value)
@@ -131,6 +129,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                     ? dynamicPropertyDictionaryItems[dynamicProperty.Id].FirstOrDefault(dictionaryItem => dictionaryItem.Name == value)?.Id
                     : null
             };
+        }
+
+        private IList<DynamicPropertyObjectValue> ToDynamicPropertyMultiValue(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string values)
+        {
+            var parsedValues = values.Split(',');
+            var convertedValues = parsedValues.Select(value => ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, value));
+            return convertedValues.ToList();
         }
     }
 }

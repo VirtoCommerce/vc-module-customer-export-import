@@ -295,7 +295,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             if (prevFieldInTheEndOfRaw)
             {
-
                 var symbolBeforePrevFieldValue = rawRecord.Substring(rawRecord.Length - prevFieldValue.Length - 1, 1);
 
                 if (symbolBeforePrevFieldValue == context.ParserConfiguration.Quote.ToString())

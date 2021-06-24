@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CsvHelper;
 using FluentValidation;
@@ -249,6 +250,78 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             HandleError(progressCallback, importProgress);
         }
 
+        private static async Task HandleMissedColumnError(Action<ImportProgressInfo> progressCallback, ImportProgressInfo importProgress, ICsvCustomerImportReporter reporter, ReadingContext context, ImportErrorsContext errorsContext)
+        {
+            if (errorsContext.ErrorsRows.Any(x => x == context.Row))
+            {
+                return;
+            }
+
+            var importError = new ImportError();
+
+            if (!WasHandledAsNotClosedQuote(context, importError))
+            {
+                var headerColumns = context.HeaderRecord;
+                var recordFields = context.Record;
+                var missedColumns = headerColumns.Skip(recordFields.Length).ToArray();
+                var error = $"This row has next missing columns: {string.Join(", ", missedColumns)}.";
+                importError.Error = error;
+                importError.RawRow = EscapeAloneQuotes(context.RawRecord);
+            }
+
+            await reporter.WriteAsync(importError);
+
+            errorsContext.ErrorsRows.Add(context.Row);
+            HandleError(progressCallback, importProgress);
+        }
+
+        private static string EscapeAloneQuotes(string input)
+        {
+            return Regex.Replace(input, "([^\"])(\")([^\"])", "$1\\\"$3");
+        }
+
+        private static bool WasHandledAsNotClosedQuote(ReadingContext context, ImportError importError)
+        {
+            if (context.CurrentIndex == 0)
+            {
+                return false;
+            }
+
+            var prevFieldValue = context.Record[context.CurrentIndex - 1];
+            var rawRecord = context.RawRecord;
+
+            var prevFieldInTheEndOfRaw = rawRecord.EndsWith(prevFieldValue);
+
+            if (prevFieldInTheEndOfRaw)
+            {
+                var symbolBeforePrevFieldValue = rawRecord.Substring(rawRecord.Length - prevFieldValue.Length - 1, 1);
+
+                if (symbolBeforePrevFieldValue.EqualsInvariant(context.ParserConfiguration.Quote.ToString()))
+                {
+                    importError.Error = "Quotes should be closed. Datà after this row is lost.";
+
+                    var indexOfSemicolon = prevFieldValue.IndexOf(";");
+                    var indexOfNewLine = prevFieldValue.IndexOf("\r\n");
+                    var indexOfNextSeparator = Math.Min(indexOfSemicolon, indexOfNewLine);
+
+                    var errorRawLostDataMarker = "\"...";
+
+                    if (indexOfNextSeparator > -1)
+                    {
+
+                        errorRawLostDataMarker = $"<quote was here>{prevFieldValue.Substring(0, indexOfNextSeparator)}<next data was lost>";
+                    }
+
+                    // -1 to remove quote
+                    importError.RawRow = rawRecord.Substring(0, rawRecord.Length - prevFieldValue.Length - 1) + errorRawLostDataMarker;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private static void SetupErrorHandlers(Action<ImportProgressInfo> progressCallback, ImportConfiguration configuration,
             ImportErrorsContext errorsContext, ImportProgressInfo importProgress, ICsvCustomerImportReporter importReporter)
         {
@@ -282,7 +355,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 await HandleBadDataErrorAsync(progressCallback, importProgress, importReporter, context, errorsContext);
             };
 
-            configuration.MissingFieldFound = null;
+            configuration.MissingFieldFound = async (headerNames, index, context) =>
+                await HandleMissedColumnError(progressCallback, importProgress, importReporter, context, errorsContext);
         }
 
         private static string GetReportFilePath(string filePath)

@@ -304,12 +304,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     importError.Error = "Quotes should be closed. Data after this row is lost.";
 
                     var indexOfSemicolon = prevFieldValue.IndexOf(";");
+                    indexOfSemicolon = indexOfSemicolon == -1 ? int.MaxValue : indexOfSemicolon;
                     var indexOfNewLine = prevFieldValue.IndexOf("\r\n");
+                    indexOfNewLine = indexOfNewLine == -1 ? int.MaxValue : indexOfNewLine;
+
                     var indexOfNextSeparator = Math.Min(indexOfSemicolon, indexOfNewLine);
 
                     var errorRawLostDataMarker = "<quote was here> <next data was lost>";
 
-                    if (indexOfNextSeparator > -1)
+                    if (indexOfNextSeparator != int.MaxValue)
                     {
 
                         errorRawLostDataMarker = $"<quote was here>{prevFieldValue.Substring(0, indexOfNextSeparator)}<next data was lost>";

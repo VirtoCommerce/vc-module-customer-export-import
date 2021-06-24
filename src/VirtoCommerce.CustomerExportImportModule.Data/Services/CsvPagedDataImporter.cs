@@ -252,7 +252,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         private static async Task HandleMissedColumnError(Action<ImportProgressInfo> progressCallback, ImportProgressInfo importProgress, ICsvCustomerImportReporter reporter, ReadingContext context, ImportErrorsContext errorsContext)
         {
-            using (await AsyncLock.GetLockByKey(reporter.FilePath).LockAsync())
+            using (await AsyncLock.GetLockByKey(nameof(HandleMissedColumnError) + reporter.FilePath).LockAsync())
             {
                 if (errorsContext.ErrorsRows.Any(x => x == context.Row))
                 {

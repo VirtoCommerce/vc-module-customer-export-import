@@ -307,7 +307,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     var indexOfNewLine = prevFieldValue.IndexOf("\r\n");
                     var indexOfNextSeparator = Math.Min(indexOfSemicolon, indexOfNewLine);
 
-                    var errorRawLostDataMarker = "\"...";
+                    var errorRawLostDataMarker = "<quote was here> <next data was lost>";
 
                     if (indexOfNextSeparator > -1)
                     {

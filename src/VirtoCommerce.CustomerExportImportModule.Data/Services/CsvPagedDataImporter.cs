@@ -298,7 +298,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 if (symbolBeforePrevFieldValue.EqualsInvariant(context.ParserConfiguration.Quote.ToString()))
                 {
-                    importError.Error = "This row has invalid data. Quotes should be closed.";
+                    importError.Error = "Quotes should be closed. Datà after this row is lost.";
 
                     var indexOfSemicolon = prevFieldValue.IndexOf(";");
                     var indexOfNewLine = prevFieldValue.IndexOf("\r\n");

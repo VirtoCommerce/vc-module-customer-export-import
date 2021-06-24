@@ -95,9 +95,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                         IsMultilingual = dynamicProperty.IsMultilingual,
                         IsRequired = dynamicProperty.IsRequired,
                         ValueType = dynamicProperty.ValueType,
-                        Values = dynamicProperty.IsArray
-                            ? ToDynamicPropertyMultiValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name))
-                            : new List<DynamicPropertyObjectValue> { ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name)) }
+                        Values = //dynamicProperty.IsArray
+                            //? ToDynamicPropertyMultiValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name))
+                            new List<DynamicPropertyObjectValue> { ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name)) }
                     }).Where(x => x.Values.First().Value != null).ToList());
             dynamicPropertyReadingMap.UsingExpression<ICollection<DynamicObjectProperty>>(null, null);
             dynamicPropertyReadingMap.Ignore(true);
@@ -108,10 +108,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
 
         private IList<DynamicPropertyObjectValue> ToDynamicPropertyMultiValue(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string values)
         {
-            return values?
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(value => ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, value))
-                .ToList();
+            return !string.IsNullOrEmpty(values)
+                ? values
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Where(value => value != null)
+                    .Select(value => ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, value))
+                    .ToList()
+                : null;
         }
 
         private DynamicPropertyObjectValue ToDynamicPropertyValue(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string value)
@@ -122,8 +125,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                 PropertyId = dynamicProperty.Id,
                 Value = value,
                 ValueType = dynamicProperty.ValueType,
-                ValueId = dynamicProperty.IsDictionary && dynamicPropertyDictionaryItems[dynamicProperty.Id].Any(dictionaryItem => dictionaryItem.Name == value)
-                    ? dynamicPropertyDictionaryItems[dynamicProperty.Id].First(dictionaryItem => dictionaryItem.Name == value).Id
+                ValueId = dynamicProperty.IsDictionary && dynamicPropertyDictionaryItems[dynamicProperty.Id]
+                    .Any(dictionaryItem => dictionaryItem.Name == value)
+                    ? dynamicPropertyDictionaryItems[dynamicProperty.Id].FirstOrDefault(dictionaryItem => dictionaryItem.Name == value)?.Id
                     : null
             };
         }

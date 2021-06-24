@@ -10,25 +10,27 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     public sealed class CsvCustomerImportReporter : ICsvCustomerImportReporter
     {
         private readonly IBlobStorageProvider _blobStorageProvider;
-        private readonly string _reportFilePath;
+        private readonly string _filePath;
         private readonly string _delimiter;
         private readonly StreamWriter _streamWriter;
         private const string ErrorsColumnName = "Error description";
 
         public bool ReportIsNotEmpty { get; private set; } = false;
 
-        public CsvCustomerImportReporter(string reportFilePath, IBlobStorageProvider blobStorageProvider, string delimiter)
+        public string FilePath => _filePath;
+
+        public CsvCustomerImportReporter(string filePath, IBlobStorageProvider blobStorageProvider, string delimiter)
         {
-            _reportFilePath = reportFilePath;
+            _filePath = filePath;
             _delimiter = delimiter;
             _blobStorageProvider = blobStorageProvider;
-            var stream = _blobStorageProvider.OpenWrite(reportFilePath);
+            var stream = _blobStorageProvider.OpenWrite(filePath);
             _streamWriter = new StreamWriter(stream);
         }
 
         public async Task WriteAsync(ImportError error)
         {
-            using (await AsyncLock.GetLockByKey(_reportFilePath).LockAsync())
+            using (await AsyncLock.GetLockByKey(_filePath).LockAsync())
             {
                 ReportIsNotEmpty = true;
                 await _streamWriter.WriteLineAsync(GetLine(error));
@@ -37,7 +39,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async Task WriteHeaderAsync(string header)
         {
-            using (await AsyncLock.GetLockByKey(_reportFilePath).LockAsync())
+            using (await AsyncLock.GetLockByKey(_filePath).LockAsync())
             {
                 await _streamWriter.WriteLineAsync($"{ErrorsColumnName}{_delimiter}{header}");
             }
@@ -45,14 +47,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async ValueTask DisposeAsync()
         {
-            using (await AsyncLock.GetLockByKey(_reportFilePath).LockAsync())
+            using (await AsyncLock.GetLockByKey(_filePath).LockAsync())
             {
                 await _streamWriter.FlushAsync();
                 _streamWriter.Close();
 
                 if (!ReportIsNotEmpty)
                 {
-                    await _blobStorageProvider.RemoveAsync(new[] { _reportFilePath });
+                    await _blobStorageProvider.RemoveAsync(new[] { _filePath });
                 }
             }
         }

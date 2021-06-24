@@ -95,9 +95,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                         IsMultilingual = dynamicProperty.IsMultilingual,
                         IsRequired = dynamicProperty.IsRequired,
                         ValueType = dynamicProperty.ValueType,
-                        Values = dynamicProperty.IsArray
-                            ? ToDynamicPropertyMultiValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name))
-                            : new List<DynamicPropertyObjectValue> { ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name)) }
+                        Values = //dynamicProperty.IsArray
+                            //? ToDynamicPropertyMultiValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name))
+                            new List<DynamicPropertyObjectValue> { ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name)) }
                     }).Where(x => x.Values.First().Value != null).ToList());
             dynamicPropertyReadingMap.UsingExpression<ICollection<DynamicObjectProperty>>(null, null);
             dynamicPropertyReadingMap.Ignore(true);
@@ -111,9 +111,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
             return !string.IsNullOrEmpty(values)
                 ? values
                     .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Where(value => value != null)
                     .Select(value => ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, value))
                     .ToList()
-                : new List<DynamicPropertyObjectValue>();
+                : null;
         }
 
         private DynamicPropertyObjectValue ToDynamicPropertyValue(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string value)
@@ -132,5 +133,3 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
         }
     }
 }
-
-

@@ -82,23 +82,28 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
 
             var dynamicPropertyReadingMap = MemberMap.CreateGeneric(ClassType, dynamicPropertiesPropertyInfo);
             dynamicPropertyReadingMap.Data.ReadingConvertExpression =
-                (Expression<Func<IReaderRow, object>>) (row => dynamicProperties.Select(dynamicProperty =>
-                    new DynamicObjectProperty
-                    {
-                        Id = dynamicProperty.Id,
-                        Name = dynamicProperty.Name,
-                        DisplayNames = dynamicProperty.DisplayNames,
-                        DisplayOrder = dynamicProperty.DisplayOrder,
-                        Description = dynamicProperty.Description,
-                        IsArray = dynamicProperty.IsArray,
-                        IsDictionary = dynamicProperty.IsDictionary,
-                        IsMultilingual = dynamicProperty.IsMultilingual,
-                        IsRequired = dynamicProperty.IsRequired,
-                        ValueType = dynamicProperty.ValueType,
-                        Values = dynamicProperty.IsArray
-                            ? ToDynamicPropertyMultiValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name))
-                            : new List<DynamicPropertyObjectValue> { ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name)) }
-                    }).Where(x => x.Values.First().Value != null).ToList());
+                (Expression<Func<IReaderRow, object>>) (row => dynamicProperties
+                    .Select(dynamicProperty =>
+                        !string.IsNullOrEmpty(row.GetField<string>(dynamicProperty.Name))
+                            ? new DynamicObjectProperty
+                            {
+                                Id = dynamicProperty.Id,
+                                Name = dynamicProperty.Name,
+                                DisplayNames = dynamicProperty.DisplayNames,
+                                DisplayOrder = dynamicProperty.DisplayOrder,
+                                Description = dynamicProperty.Description,
+                                IsArray = dynamicProperty.IsArray,
+                                IsDictionary = dynamicProperty.IsDictionary,
+                                IsMultilingual = dynamicProperty.IsMultilingual,
+                                IsRequired = dynamicProperty.IsRequired,
+                                ValueType = dynamicProperty.ValueType,
+                                Values = dynamicProperty.IsArray
+                                    ? ToDynamicPropertyMultiValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name))
+                                    : new List<DynamicPropertyObjectValue> { ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name)) }
+                            }
+                            : null)
+                    .Where(x => x != null)
+                    .ToList());
             dynamicPropertyReadingMap.UsingExpression<ICollection<DynamicObjectProperty>>(null, null);
             dynamicPropertyReadingMap.Ignore(true);
             dynamicPropertyReadingMap.Data.IsOptional = true;
@@ -108,12 +113,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
 
         private IList<DynamicPropertyObjectValue> ToDynamicPropertyMultiValue(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string values)
         {
-            return !string.IsNullOrEmpty(values)
-                ? values
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(value => ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, value))
-                    .ToList()
-                : new List<DynamicPropertyObjectValue>();
+            var parsedValues = values.Split(',');
+            var convertedValues = parsedValues.Select(value => ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, value));
+            return convertedValues.ToList();
         }
 
         private DynamicPropertyObjectValue ToDynamicPropertyValue(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string value)

@@ -171,8 +171,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 AddressType = "Invalid",
                                 AddressLine1 = "Line1",
                                 AddressCity = "City",
-                                AddressCountryCode = "USA",
-                                AddressCountry = "United States",
+                                AddressCountryCode = "RU",
+                                AddressCountry = "Great Britain",
                                 AddressZipCode = "123456"
                             }
                         },
@@ -194,6 +194,45 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                         }
                     },
                     ModuleConstants.ValidationErrors.InvalidValue, "Test1"
+                };
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<CsvContact>
+                        {
+                            Record = new CsvContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                AddressType = "BillingOrShipping",
+                                AddressLine1 = "Line1",
+                                AddressCity = "City",
+                                AddressCountryCode = "RUS",
+                                AddressCountry = "United States",
+                                AddressZipCode = "123456"
+                            }
+                        },
+                        new ImportRecord<CsvContact>
+                        {
+                            Record = new CsvContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                AddressType = "BillingAndShipping",
+                                AddressLine1 = "Line1",
+                                AddressCity = "City",
+                                AddressCountryCode = "USA",
+                                AddressCountry = "United States",
+                                AddressZipCode = "123456"
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.CountryNameAndCodeDoesntMatch, "Test1"
                 };
                 yield return new object[]
                 {

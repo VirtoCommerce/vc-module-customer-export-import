@@ -31,8 +31,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 });
             
             RuleFor(x => x.Record.BusinessCategory)
-                .MaximumLength(128)
-                .WithExceededMaxLengthCodeAndMessage("Business Category", 128)
+                .MaximumLength(64)
+                .WithExceededMaxLengthCodeAndMessage("Business Category", 64)
                 .WithImportState();
         }
     }

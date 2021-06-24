@@ -125,7 +125,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         {
                             RuleFor(x => x.Record.AccountEmail)
                                 .MustAsync(async (_, email, __) => await _userManager.FindByEmailAsync(email) == null)
-                                .WithNotUniqueValueCodeAndMessage("Account Login")
+                                .WithNotUniqueValueCodeAndMessage("Account Email")
                                 .WithImportState();
                         });
                     RuleFor(x => x.Record.StoreId)

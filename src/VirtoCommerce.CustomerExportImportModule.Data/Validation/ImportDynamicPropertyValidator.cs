@@ -34,7 +34,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         {
                             RuleForEach(dynamicProperty => dynamicProperty.Values).ChildRules(childRules =>
                             {
-                                childRules.When(dynamicPropertyValue => dynamicPropertyValue.Value != null, () =>
+                                childRules.When(dynamicPropertyValue => !string.IsNullOrEmpty(dynamicPropertyValue.Value as string), () =>
                                 {
                                     When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.ShortText, () =>
                                     {

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
 using VirtoCommerce.CoreModule.Core.Common;
+using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.Platform.Core.Common;
@@ -96,7 +97,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                 .Must((importRecord, countryCode, context) =>
                                 {
                                     var countries = (IList<Country>) context.ParentContext.RootContextData[Countries];
-                                    return countries.Any(country => country.Id == countryCode && country.Name == importRecord.Record.AddressCountry);
+                                    return countries.Any(country => country.Id == countryCode);
                                 })
                                 .WithInvalidValueCodeAndMessage("Address Country Code")
                                 .WithImportState();
@@ -116,11 +117,24 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                 .Must((importRecord, countryName, context) =>
                                 {
                                     var countries = (IList<Country>) context.ParentContext.RootContextData[Countries];
-                                    return countries.Any(country => country.Id == importRecord.Record.AddressCountryCode && country.Name == countryName);
+                                    return countries.Any(country => country.Name == countryName);
                                 })
                                 .WithInvalidValueCodeAndMessage("Address Country")
                                 .WithImportState();
                         });
+
+                    RuleFor(x => x.Record)
+                        .Must((importRecord, member, context) =>
+                        {
+                            var countries = (IList<Country>) context.ParentContext.RootContextData[Countries];
+                            // Because where is no possibility to depend on multiple rules or .When() overload which pass context with countries data
+                            return countries.All(country => country.Id != member.AddressCountryCode) ||
+                                   countries.All(country => country.Name != member.AddressCountry) ||
+                                   countries.Any(country => country.Id == member.AddressCountryCode && country.Name == member.AddressCountry);
+                        })
+                        .WithErrorCode(ModuleConstants.ValidationErrors.CountryNameAndCodeDoesntMatch)
+                        .WithMessage(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.CountryNameAndCodeDoesntMatch])
+                        .WithImportState();
 
                     RuleFor(x => x.Record.AddressZipCode)
                         .NotEmpty()

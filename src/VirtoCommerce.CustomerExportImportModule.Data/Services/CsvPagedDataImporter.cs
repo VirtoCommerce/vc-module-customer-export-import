@@ -214,7 +214,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private static void HandleWrongValueError(Action<ImportProgressInfo> progressCallback, ImportProgressInfo importProgress, ICsvCustomerImportReporter reporter, ReadingContext context, ImportErrorsContext errorsContext)
         {
             var invalidFieldName = context.HeaderRecord[context.CurrentIndex];
-            var importError = new ImportError { Error = $"This row has invalid value in the column {invalidFieldName}.", RawRow = context.RawRecord };
+            var importError = new ImportError { Error = string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.InvalidValue], invalidFieldName), RawRow = context.RawRecord };
 
             reporter.WriteAsync(importError).GetAwaiter().GetResult();
 

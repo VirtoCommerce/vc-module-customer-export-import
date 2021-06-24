@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -249,6 +248,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 DynamicProperties = new List<DynamicObjectProperty>
                                 {
                                     new DynamicObjectProperty { Values = new List<DynamicPropertyObjectValue>() },
+                                    new DynamicObjectProperty { IsDictionary = true, Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue() } },
                                     new DynamicObjectProperty { IsArray = false, Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue(), new DynamicPropertyObjectValue() } },
                                     new DynamicObjectProperty
                                     {
@@ -295,12 +295,22 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 {
                                     new DynamicObjectProperty
                                     {
+                                        Id = "TestDictionary",
+                                        IsDictionary = true,
+                                        ValueType = DynamicPropertyValueType.ShortText,
+                                        Values = new List<DynamicPropertyObjectValue>
+                                        {
+                                            new DynamicPropertyObjectValue { PropertyId = "TestDictionary", ValueType = DynamicPropertyValueType.ShortText, Value = "Test1", ValueId = "Test1" }
+                                        }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
                                         IsArray = true,
                                         ValueType = DynamicPropertyValueType.ShortText,
                                         Values = new List<DynamicPropertyObjectValue>
                                         {
-                                            new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.ShortText, Value = "-" },
-                                            new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.ShortText, Value = "+" }
+                                            new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.ShortText, Value = "Test1" },
+                                            new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.ShortText, Value = "Test2" }
                                         }
                                     },
                                     new DynamicObjectProperty
@@ -523,6 +533,26 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             return countriesServiceMock.Object;
         }
 
+        private IDynamicPropertyDictionaryItemsSearchService GetDynamicPropertyDictionaryItemsSearchService()
+        {
+            var dynamicPropertyDictionaryItemsSearchService = new Mock<IDynamicPropertyDictionaryItemsSearchService>();
+            dynamicPropertyDictionaryItemsSearchService.Setup(x => x.SearchDictionaryItemsAsync(It.IsAny<DynamicPropertyDictionaryItemSearchCriteria>()))
+                .ReturnsAsync<DynamicPropertyDictionaryItemSearchCriteria, IDynamicPropertyDictionaryItemsSearchService, DynamicPropertyDictionaryItemSearchResult>(searchCriteria =>
+                {
+                    var dynamicPropertyDictionaryItems = new List<DynamicPropertyDictionaryItem>
+                    {
+                        new DynamicPropertyDictionaryItem { PropertyId = "TestDictionary", Id = "Value1", Name = "Value1" },
+                        new DynamicPropertyDictionaryItem { PropertyId = "TestDictionary", Id = "Value2", Name = "Value2" }
+                    };
+                    return new DynamicPropertyDictionaryItemSearchResult
+                    {
+                        Results = dynamicPropertyDictionaryItems.Where(dynamicPropertyDictionaryItem => dynamicPropertyDictionaryItem.PropertyId == searchCriteria.PropertyId).ToList(),
+                        TotalCount = dynamicPropertyDictionaryItems.Count
+                    };
+                });
+            return dynamicPropertyDictionaryItemsSearchService.Object;
+        }
+
         private SignInManager<ApplicationUser> GetSignInManager()
         {
             return new FakeSignInManager(new[] { new ApplicationUser { UserName = "Test1", Email = "test1@example.org" } });
@@ -530,12 +560,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
         private ImportContactsValidator GetContactsValidator()
         {
-            return new ImportContactsValidator(GetCountriesService(), GetSignInManager());
+            return new ImportContactsValidator(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager());
         }
 
         private ImportOrganizationsValidator GetOrganizationsValidator()
         {
-            return new ImportOrganizationsValidator(GetCountriesService());
+            return new ImportOrganizationsValidator(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService());
         }
     }
 }

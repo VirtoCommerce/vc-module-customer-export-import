@@ -79,7 +79,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .WithImportState();
             RuleFor(x => x.Record.Salutation)
                 .MaximumLength(256)
-                .WithExceededMaxLengthCodeAndMessage("Salutation", 236)
+                .WithExceededMaxLengthCodeAndMessage("Salutation", 256)
                 .WithImportState();
             RuleFor(x => x.Record.DefaultLanguage)
                 .MaximumLength(32)

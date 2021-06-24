@@ -52,16 +52,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                     {
                         if (dynamicObjectProperty.IsDictionary)
                         {
-                            dynamicObjectPropertyValues = dynamicObjectProperty.Values
-                                ?.Where(x => x.Value != null)
+                            dynamicObjectPropertyValues = dynamicObjectProperty.Values?
+                                .Where(x => x.Value != null)
                                 .Select(x => x.Value.ToString())
                                 .Distinct()
                                 .ToArray();
                         }
                         else
                         {
-                            dynamicObjectPropertyValues = dynamicObjectProperty.Values
-                                ?.Where(x => x.Value != null)
+                            dynamicObjectPropertyValues = dynamicObjectProperty.Values?
+                                .Where(x => x.Value != null)
                                 .Select(x => x.Value.ToString())
                                 .ToArray();
                         }
@@ -82,9 +82,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
 
             var dynamicPropertyReadingMap = MemberMap.CreateGeneric(ClassType, dynamicPropertiesPropertyInfo);
             dynamicPropertyReadingMap.Data.ReadingConvertExpression =
-                (Expression<Func<IReaderRow, object>>)(row => dynamicProperties.Select(dynamicProperty =>
-                   new DynamicObjectProperty
+                (Expression<Func<IReaderRow, object>>) (row => dynamicProperties.Select(dynamicProperty =>
+                    new DynamicObjectProperty
                     {
+                        Id = dynamicProperty.Id,
                         Name = dynamicProperty.Name,
                         DisplayNames = dynamicProperty.DisplayNames,
                         DisplayOrder = dynamicProperty.DisplayOrder,
@@ -94,28 +95,37 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                         IsMultilingual = dynamicProperty.IsMultilingual,
                         IsRequired = dynamicProperty.IsRequired,
                         ValueType = dynamicProperty.ValueType,
-                        Values = new List<DynamicPropertyObjectValue>
-                        {
-                                new DynamicPropertyObjectValue
-                                {
-                                    PropertyName = dynamicProperty.Name,
-                                    PropertyId = dynamicProperty.Id,
-                                    Value = row.GetField<string>(dynamicProperty.Name),
-                                    ValueType = dynamicProperty.ValueType,
-                                    ValueId =
-                                        dynamicProperty.IsDictionary && dynamicPropertyDictionaryItems[dynamicProperty.Id]
-                                            .Any(dictionaryItem => dictionaryItem.Name == row.GetField<string>(dynamicProperty.Name))
-                                            ? dynamicPropertyDictionaryItems[dynamicProperty.Id]
-                                                .FirstOrDefault(dictionaryItem => dictionaryItem.Name == row.GetField<string>(dynamicProperty.Name)).Id
-                                            : null
-                                }
-                        }
+                        Values = dynamicProperty.IsArray
+                            ? ToDynamicPropertyMultiValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name))
+                            : new List<DynamicPropertyObjectValue> { ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, row.GetField<string>(dynamicProperty.Name)) }
                     }).Where(x => x.Values.First().Value != null).ToList());
             dynamicPropertyReadingMap.UsingExpression<ICollection<DynamicObjectProperty>>(null, null);
             dynamicPropertyReadingMap.Ignore(true);
             dynamicPropertyReadingMap.Data.IsOptional = true;
             dynamicPropertyReadingMap.Data.Index = currentColumnIndex + 1;
             MemberMaps.Add(dynamicPropertyReadingMap);
+        }
+
+        private IList<DynamicPropertyObjectValue> ToDynamicPropertyMultiValue(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string values)
+        {
+            return values?
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(value => ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, value))
+                .ToList();
+        }
+
+        private DynamicPropertyObjectValue ToDynamicPropertyValue(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string value)
+        {
+            return new DynamicPropertyObjectValue
+            {
+                PropertyName = dynamicProperty.Name,
+                PropertyId = dynamicProperty.Id,
+                Value = value,
+                ValueType = dynamicProperty.ValueType,
+                ValueId = dynamicProperty.IsDictionary && dynamicPropertyDictionaryItems[dynamicProperty.Id].Any(dictionaryItem => dictionaryItem.Name == value)
+                    ? dynamicPropertyDictionaryItems[dynamicProperty.Id].First(dictionaryItem => dictionaryItem.Name == value).Id
+                    : null
+            };
         }
     }
 }

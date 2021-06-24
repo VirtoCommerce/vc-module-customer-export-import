@@ -259,9 +259,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var importError = new ImportError();
 
-            if (!HandleIfItNotClosedQuote(context, importError))
+            if (!WasHandledAsNotClosedQuote(context, importError))
             {
-
                 var headerColumns = context.HeaderRecord;
                 var recordFields = context.Record;
                 var missedColumns = headerColumns.Skip(recordFields.Length).ToArray();
@@ -281,7 +280,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             return Regex.Replace(input, "([^\"])(\")([^\"])", "$1\\\"$3");
         }
 
-        private static bool HandleIfItNotClosedQuote(ReadingContext context, ImportError importError)
+        private static bool WasHandledAsNotClosedQuote(ReadingContext context, ImportError importError)
         {
             if (context.CurrentIndex == 0)
             {
@@ -297,7 +296,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             {
                 var symbolBeforePrevFieldValue = rawRecord.Substring(rawRecord.Length - prevFieldValue.Length - 1, 1);
 
-                if (symbolBeforePrevFieldValue == context.ParserConfiguration.Quote.ToString())
+                if (symbolBeforePrevFieldValue.EqualsInvariant(context.ParserConfiguration.Quote.ToString()))
                 {
                     importError.Error = "This row has invalid data. Quotes should be closed.";
 

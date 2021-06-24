@@ -362,7 +362,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             };
 
             configuration.MissingFieldFound = async (headerNames, index, context) =>
+            {
+                if (index == -1 || index == 0)
+                {
+                    return;
+                }
+
                 await HandleMissedColumnError(progressCallback, importProgress, importReporter, context, errorsContext);
+            };
         }
 
         private static string GetReportFilePath(string filePath)

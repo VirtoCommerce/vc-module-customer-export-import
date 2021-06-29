@@ -373,6 +373,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
         
+        /// <summary>
+        /// Set id to null for records that's not existed in the system. It reduce count of wrong duplicates.
+        /// All such records will be created if they are valid. 
+        /// </summary>
+        /// <param name="importMembers"></param>
+        /// <param name="existedMembers"></param>
         protected static void SetIdToNullForNotExisted(ImportRecord<TCsvMember>[] importMembers, TMember[] existedMembers)
         {
             foreach (var importContact in importMembers)
@@ -387,6 +393,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
+        /// <summary>
+        /// Set id for import records to the real existed value when the system record was found by outer id.
+        /// It allow us to find duplicates not only by outer id but by id also for such records. 
+        /// </summary>
+        /// <param name="importMembers"></param>
+        /// <param name="existedMembers"></param>
         protected static void SetIdToRealForExistedOuterId(ImportRecord<TCsvMember>[] importMembers, TMember[] existedMembers)
         {
             foreach (var importContact in importMembers.Where(x => string.IsNullOrEmpty(x.Record.Id) && !string.IsNullOrEmpty(x.Record.OuterId)))

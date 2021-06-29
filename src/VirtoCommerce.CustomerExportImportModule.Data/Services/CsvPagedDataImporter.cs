@@ -285,7 +285,70 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             configuration.MissingFieldFound = null;
         }
 
-        private static string GetReportFilePath(string filePath)
+        /// <summary>
+        /// Search members by id list and outer id list and union them into one array. 
+        /// </summary>
+        /// <param name="internalIds"></param>
+        /// <param name="outerIds"></param>
+        /// <param name="memberTypes"></param>
+        /// <param name="deepSearch"></param>
+        /// <returns></returns>
+        protected async Task<Member[]> SearchMembersByIdAndOuterId(string[] internalIds, string[] outerIds, string[] memberTypes, bool deepSearch = false)
+        {
+            var criteriaById = new ExtendedMembersSearchCriteria()
+            {
+                ObjectIds = internalIds,
+                MemberTypes = memberTypes,
+                DeepSearch = deepSearch,
+                Skip = 0,
+                Take = ModuleConstants.Settings.PageSize
+            };
+
+            var membersById = internalIds.IsNullOrEmpty() ? Array.Empty<Member>() : (await _memberSearchService.SearchMembersAsync(criteriaById)).Results;
+
+            var criteriaByOuterId = new ExtendedMembersSearchCriteria()
+            {
+                OuterIds = outerIds,
+                MemberTypes = memberTypes,
+                DeepSearch = deepSearch,
+                Skip = 0,
+                Take = ModuleConstants.Settings.PageSize
+            };
+
+            var membersByOuterId = outerIds.IsNullOrEmpty() ? Array.Empty<Member>() : (await _memberSearchService.SearchMembersAsync(criteriaByOuterId)).Results;
+
+            var existedMembers = membersById.Union(membersByOuterId
+                , AnonymousComparer.Create<Member>((x, y) => x.Id == y.Id, x => x.Id.GetHashCode())).ToArray();
+
+            return existedMembers;
+        }
+
+        /// <summary>
+        /// Reduce existed members list. Some records may have been mistakenly selected for updating. When id and outer id from a file refs to different records in the system.
+        /// In that case record with outer id should be excepted from the list to updating. 
+        /// </summary>
+        /// <param name="updateImportRecords"></param>
+        /// <param name="existedMembers"></param>
+        /// <returns></returns>
+        protected Member[] GetReducedExistedByWrongOuterId(IImportRecord<CsvMember>[] updateImportRecords, Member[] existedMembers)
+        {
+            var result = existedMembers;
+
+            foreach (var importRecord in updateImportRecords.Where(x => !string.IsNullOrEmpty(x.Record.Id) && !string.IsNullOrEmpty(x.Record.OuterId)))
+            {
+                var otherExisted = existedMembers.FirstOrDefault(x => !x.Id.EqualsInvariant(importRecord.Record.Id) && x.OuterId.EqualsInvariant(importRecord.Record.OuterId));
+
+                if (otherExisted != null && !updateImportRecords.Any(x =>
+                    x.Record.OuterId.EqualsInvariant(otherExisted.OuterId) && (x.Record.Id.EqualsInvariant(otherExisted.Id) || string.IsNullOrEmpty(x.Record.Id))))
+                {
+                    result = result.Except(new[] { otherExisted }).ToArray();
+                }
+            }
+
+            return result;
+        }
+
+        protected static string GetReportFilePath(string filePath)
         {
             var fileName = Path.GetFileName(filePath);
             var fileExtension = Path.GetExtension(fileName);

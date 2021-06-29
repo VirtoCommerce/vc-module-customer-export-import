@@ -63,6 +63,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Address Phone")]
         public string AddressPhone { get; set; }
 
+        [Optional]
+        [Name("Emails")]
+        public string Emails { get; set; }
+
         [Ignore]
         public string ObjectType { get; set; }
 

@@ -13,6 +13,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         {
             target.OuterId = OuterId;
             target.Name = OrganizationName;
+            target.Emails = string.IsNullOrEmpty(Emails) ? null : Emails.Split(',').Select(email => email.Trim()).ToList();
             target.Phones = string.IsNullOrEmpty(Phones) ? null : Phones.Split(',').Select(phone => phone.Trim()).ToList();
             target.BusinessCategory = BusinessCategory;
             target.Description = Description;

@@ -306,6 +306,34 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             if (progressCallback == null)
             {
                 throw new ArgumentNullException(nameof(progressCallback));
+                }
+            }
+        }
+        
+        protected static void SetIdToNullForNotExisted(ImportRecord<TCsvMember>[] importMembers, TMember[] existedMembers)
+        {
+            foreach (var importContact in importMembers)
+            {
+                var existedMember =
+                    existedMembers.FirstOrDefault(x => x.Id.EqualsInvariant(importContact.Record.Id));
+
+                if (existedMember == null)
+                {
+                    importContact.Record.Id = null;
+                }
+            }
+        }
+
+        protected static void SetIdToRealForExistedOuterId(ImportRecord<TCsvMember>[] importMembers, TMember[] existedMembers)
+        {
+            foreach (var importContact in importMembers.Where(x => string.IsNullOrEmpty(x.Record.Id) && !string.IsNullOrEmpty(x.Record.OuterId)))
+            {
+                var existedMember =
+                    existedMembers.FirstOrDefault(x => !string.IsNullOrEmpty(x.OuterId) && x.OuterId.EqualsInvariant(importContact.Record.OuterId));
+
+                if (existedMember != null)
+                {
+                    importContact.Record.Id = existedMember.Id;
             }
 
             if (cancellationToken == null)

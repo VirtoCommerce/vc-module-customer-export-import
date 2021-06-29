@@ -49,6 +49,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 SetIdToNullForNotExisted(importContacts, existedContacts);
 
+                SetIdToRealForExistedOuterId(importContacts, existedContacts);
+
                 var validationResult = await ValidateAsync(importContacts, importReporter);
 
                 var invalidImportContacts = validationResult.Errors
@@ -101,8 +103,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-
         private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<ImportableContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
+
         {
             foreach (var existedContact in existedContacts)
             {

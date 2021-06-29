@@ -36,21 +36,29 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithImportState(_importRecord)
                         .DependentRules(() =>
                         {
+                            When(dynamicProperty => dynamicProperty.IsDictionary, () =>
+                            {
+                                RuleForEach(dynamicProperty => dynamicProperty.Values).ChildRules(childRules =>
+                                {
+                                    childRules.When(dynamicPropertyValue => !string.IsNullOrEmpty(dynamicPropertyValue.Value as string), () =>
+                                    {
+                                        childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.ValueId)
+                                            .Must((dynamicPropertyValue, valueId, context) =>
+                                            {
+                                                var dynamicPropertyDictionaryItems = (IList<DynamicPropertyDictionaryItem>) context.ParentContext.RootContextData[DynamicPropertyDictionaryItems];
+                                                return dynamicPropertyDictionaryItems.Any(dynamicPropertyDictionaryItem =>
+                                                    dynamicPropertyDictionaryItem.PropertyId == dynamicPropertyValue.PropertyId && dynamicPropertyDictionaryItem.Id == valueId);
+                                            })
+                                            .WithInvalidValueCodeAndMessage()
+                                            .WithImportState(_importRecord);
+                                    });
+                                });
+                            });
+
                             RuleForEach(dynamicProperty => dynamicProperty.Values).ChildRules(childRules =>
                             {
                                 childRules.When(dynamicPropertyValue => !string.IsNullOrEmpty(dynamicPropertyValue.Value as string), () =>
                                 {
-                                    childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.ValueId)
-                                        .Must((dynamicPropertyValue, valueId, context) =>
-                                        {
-                                            var dynamicPropertyDictionaryItems = (IList<DynamicPropertyDictionaryItem>) context.ParentContext.RootContextData[DynamicPropertyDictionaryItems];
-                                            return dynamicPropertyDictionaryItems.Any(dynamicPropertyDictionaryItem =>
-                                                dynamicPropertyDictionaryItem.PropertyId == dynamicPropertyValue.PropertyId && dynamicPropertyDictionaryItem.Id == valueId);
-                                        })
-                                        // There is no other way to check it's dictionary on this step
-                                        .When(dynamicPropertyValue => !string.IsNullOrEmpty(dynamicPropertyValue.ValueId))
-                                        .WithInvalidValueCodeAndMessage()
-                                        .WithImportState(_importRecord);
                                     When(dynamicProperty => dynamicProperty.ValueType == DynamicPropertyValueType.ShortText, () =>
                                     {
                                         childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.Value)

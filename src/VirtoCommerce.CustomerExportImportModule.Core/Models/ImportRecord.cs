@@ -1,6 +1,6 @@
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public class ImportRecord<TRecord> : IImportRecord<TRecord>
+    public class ImportRecord<TRecord>
     {
         public int Row { get; set; }
 

@@ -330,7 +330,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         /// <param name="updateImportRecords"></param>
         /// <param name="existedMembers"></param>
         /// <returns></returns>
-        protected Member[] GetReducedExistedByWrongOuterId(IImportRecord<CsvMember>[] updateImportRecords, Member[] existedMembers)
+        protected Member[] GetReducedExistedByWrongOuterId(ImportRecord<TCsvMember>[] updateImportRecords, TMember[] existedMembers)
         {
             var result = existedMembers;
 

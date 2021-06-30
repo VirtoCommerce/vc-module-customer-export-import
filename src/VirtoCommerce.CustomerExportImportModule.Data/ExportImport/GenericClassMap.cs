@@ -67,7 +67,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
                         }
                     }
 
-                    return string.Join(',', dynamicObjectPropertyValues);
+                    return string.Join(", ", dynamicObjectPropertyValues);
                 });
 
                 MemberMaps.Add(dynamicPropertyColumnDefinitionAndWriteMap);

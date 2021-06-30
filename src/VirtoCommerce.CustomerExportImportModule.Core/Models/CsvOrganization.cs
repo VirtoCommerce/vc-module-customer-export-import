@@ -80,7 +80,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressZipCode = address?.PostalCode;
             AddressEmail = address?.Email;
             AddressPhone = address?.Phone;
-            Phones = organization.Phones.IsNullOrEmpty() ? null : string.Join(",", organization.Phones);
+            Phones = organization.Phones.IsNullOrEmpty() ? null : string.Join(", ", organization.Phones);
             BusinessCategory = organization.BusinessCategory;
             Description = organization.Description;
             OrganizationGroups = organization.Groups.IsNullOrEmpty() ? null : string.Join(", ", organization.Groups);

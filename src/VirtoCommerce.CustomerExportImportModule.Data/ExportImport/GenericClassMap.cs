@@ -133,7 +133,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.ExportImport
 
         private IList<DynamicPropertyObjectValue> ToDynamicPropertyMultiValue(DynamicProperty dynamicProperty, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dynamicPropertyDictionaryItems, string values)
         {
-            var parsedValues = values.Split(',');
+            var parsedValues = values.Split(',').Select(value => value.Trim()).ToList();
             var convertedValues = parsedValues.Select(value => ToDynamicPropertyValue(dynamicProperty, dynamicPropertyDictionaryItems, value));
             return convertedValues.ToList();
         }

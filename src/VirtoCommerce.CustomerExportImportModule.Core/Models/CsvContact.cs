@@ -188,11 +188,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             target.LastName = ContactLastName;
             target.FullName = ContactFullName;
             target.Status = ContactStatus;
-            target.AssociatedOrganizations = (string.IsNullOrEmpty(AssociatedOrganizationIds) ? null : AssociatedOrganizationIds?.Split(", "))?.Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
+            target.AssociatedOrganizations = string.IsNullOrEmpty(AssociatedOrganizationIds) ? null : AssociatedOrganizationIds.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
             target.BirthDate = Birthday;
             target.TimeZone = TimeZone;
-            target.Phones = string.IsNullOrEmpty(Phones) ? null : Phones.Split(", ");
-            target.Groups = string.IsNullOrEmpty(UserGroups) ? null : UserGroups.Split(", ");
+            target.Phones = string.IsNullOrEmpty(Phones) ? null : Phones.Split(',').Select(phone => phone.Trim()).ToList();
+            target.Groups = string.IsNullOrEmpty(UserGroups) ? null : UserGroups.Split(',').Select(userGroups => userGroups.Trim()).ToList();
             target.Salutation = Salutation;
             target.DefaultLanguage = DefaultLanguage;
             target.TaxPayerId = TaxPayerId;

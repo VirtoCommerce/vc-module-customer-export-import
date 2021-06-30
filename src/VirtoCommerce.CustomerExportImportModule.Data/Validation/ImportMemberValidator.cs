@@ -30,7 +30,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(x => x.Record.Phones)
                 .Must(phonesColumnValue =>
                 {
-                    var phones = string.IsNullOrEmpty(phonesColumnValue) ? null : phonesColumnValue.Split(", ");
+                    var phones = string.IsNullOrEmpty(phonesColumnValue) ? null : phonesColumnValue.Split(',').Select(phone => phone.Trim()).ToList();
                     return phones == null || phones.All(phone => phone.Length <= 64);
                 })
                 .WithErrorCode(ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength)

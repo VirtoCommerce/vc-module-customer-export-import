@@ -42,6 +42,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithImportState();
 
                     RuleFor(x => x.Record.AddressEmail)
+                        .EmailAddress()
+                        .WithInvalidValueCodeAndMessage("Address Email")
+                        .WithImportState();
+                    RuleFor(x => x.Record.AddressEmail)
                         .MaximumLength(64)
                         .WithExceededMaxLengthCodeAndMessage("Address Email", 64)
                         .WithImportState();

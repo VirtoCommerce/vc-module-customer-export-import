@@ -98,11 +98,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                         var contactOrganizationId = contact.Organizations?.OrderBy(organizationId => organizationId).FirstOrDefault();
                         var account = contact.SecurityAccounts.OrderBy(securityAccount => securityAccount.Id).FirstOrDefault();
                         var accountStoreId = account?.StoreId;
-                        return new CsvContact().ToExportableImportableContact(contact, contactOrganizationId != null ? allOrganizations[contactOrganizationId] : null, accountStoreId != null ? stores[accountStoreId] : null);
+                        return new ExportableContact().FromModels(contact, contactOrganizationId != null ? allOrganizations[contactOrganizationId] : null, accountStoreId != null ? stores[accountStoreId] : null);
                     case nameof(Organization):
                         var organization = (Organization)member;
                         var parentOrganizationId = organization.ParentId;
-                        return new CsvOrganization().FromModel(organization, parentOrganizationId != null ? allOrganizations[parentOrganizationId] : null);
+                        return new ExportableOrganization().FromModels(organization, parentOrganizationId != null ? allOrganizations[parentOrganizationId] : null);
                     default:
                         throw new InvalidDataException();
                 }

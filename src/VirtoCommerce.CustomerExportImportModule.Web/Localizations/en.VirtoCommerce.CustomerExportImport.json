@@ -85,8 +85,10 @@
         "export": "Export"
       },
       "customer-import": {
-        "title": "Contacts import",
+        "title-contacts": "Contacts import",
+        "title-organizations": "Organizations import",
         "contacts": "contacts",
+        "organizations": "organizations",
         "main-text-middle": "will be imported into the",
         "root": "root",
         "current-organization": "current organization",

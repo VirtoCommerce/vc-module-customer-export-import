@@ -44,7 +44,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             // Act
             await customerExportPagedDataSource.FetchAsync();
-            var exportedContact = (CsvContact)customerExportPagedDataSource.Items.First();
+            var exportedContact = (ExportableContact)customerExportPagedDataSource.Items.First();
 
             // Assert
             Assert.Equal("Organization1", exportedContact.OrganizationId);
@@ -100,7 +100,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             // Act
             await customerExportPagedDataSource.FetchAsync();
-            var exportedOrganization = (CsvOrganization)customerExportPagedDataSource.Items.First();
+            var exportedOrganization = (ExportableOrganization)customerExportPagedDataSource.Items.First();
 
             // Assert
             Assert.Equal("Organization2", exportedOrganization.ParentOrganizationId);
@@ -157,7 +157,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             // Act
             await customerExportPagedDataSource.FetchAsync();
-            var exportedContact = (CsvContact)customerExportPagedDataSource.Items.First();
+            var exportedContact = (ExportableContact)customerExportPagedDataSource.Items.First();
 
             // Assert
             Assert.Equal("Store", exportedContact.StoreId);

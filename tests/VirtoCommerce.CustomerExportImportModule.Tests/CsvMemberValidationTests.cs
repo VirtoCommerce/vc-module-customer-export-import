@@ -1,9 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Moq;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Validation;
+using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Core.Security;
 using Xunit;
 
 namespace VirtoCommerce.CustomerExportImportModule.Tests
@@ -19,40 +24,548 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvContact> { Record = new CsvContact { Id = "TestId", ContactFullName = "Test1" } },
-                        new ImportRecord<CsvContact> { Record = new CsvContact { Id = "TestId", ContactFullName = "Test2" } }
-                    }
+                        new ImportRecord<ImportableContact> { Record = new ImportableContact { Id = "TestId", ContactFirstName = "Test", ContactLastName = "1", ContactFullName = "Test1" } },
+                        new ImportRecord<ImportableContact> { Record = new ImportableContact { Id = "TestId", ContactFirstName = "Test", ContactLastName = "2", ContactFullName = "Test2" } }
+                    },
+                    ModuleConstants.ValidationErrors.DuplicateError, "Test1"
                 };
                 yield return new object[]
                 {
                     new[]
                     {
-                        new ImportRecord<CsvContact> { Record = new CsvContact { OuterId = "TestId", ContactFullName = "Test1" } },
-                        new ImportRecord<CsvContact> { Record = new CsvContact { OuterId = "TestId", ContactFullName = "Test2" } }
-                    }
+                        new ImportRecord<ImportableContact> { Record = new ImportableContact { OuterId = "TestId", ContactFirstName = "Test", ContactLastName = "1", ContactFullName = "Test1" } },
+                        new ImportRecord<ImportableContact> { Record = new ImportableContact { OuterId = "TestId", ContactFirstName = "Test", ContactLastName = "2", ContactFullName = "Test2" } }
+                    },
+                    ModuleConstants.ValidationErrors.DuplicateError,
+                    "Test1"
+                };
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                AddressFirstName = "Test",
+                                AddressLastName = "1"
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                AddressLine1 = "Line1",
+                                AddressCity = "City",
+                                AddressCountryCode = "USA",
+                                AddressCountry = "United States",
+                                AddressZipCode = "123456"
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.MissingRequiredValues, "Test1"
+                };
+                var longString = new string('*', 1000);
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                OuterId = longString,
+                                AddressFirstName = longString,
+                                AddressLastName = longString,
+                                AddressEmail = longString,
+                                AddressPhone = longString,
+                                AddressLine1 = longString,
+                                AddressLine2 = longString,
+                                AddressCity = longString,
+                                AddressRegion = longString,
+                                AddressCountryCode = longString,
+                                AddressCountry = longString,
+                                AddressZipCode = longString
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                OuterId = new string('*', 128),
+                                AddressFirstName = new string('*', 128),
+                                AddressLastName = new string('*', 128),
+                                AddressEmail = new string('*', 64),
+                                AddressPhone = new string('*', 256),
+                                AddressLine1 = new string('*', 128),
+                                AddressLine2 = new string('*', 128),
+                                AddressCity = new string('*', 128),
+                                AddressRegion = new string('*', 128),
+                                AddressCountryCode = new string('*', 64),
+                                AddressCountry = new string('*', 128),
+                                AddressZipCode = new string('*', 32)
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.ExceedingMaxLength, "Test1"
+                };
+
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                Phones = string.Join(", ", new string('0', 65), new string('0', 65))
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                Phones = "01234567890,01234567890"
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength, "Test1"
+                };
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                AddressType = "Invalid",
+                                AddressLine1 = "Line1",
+                                AddressCity = "City",
+                                AddressCountryCode = "RU",
+                                AddressCountry = "Great Britain",
+                                AddressZipCode = "123456"
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                AddressType = "BillingAndShipping",
+                                AddressLine1 = "Line1",
+                                AddressCity = "City",
+                                AddressCountryCode = "USA",
+                                AddressCountry = "United States",
+                                AddressZipCode = "123456"
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.InvalidValue, "Test1"
+                };
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                AddressType = "BillingOrShipping",
+                                AddressLine1 = "Line1",
+                                AddressCity = "City",
+                                AddressCountryCode = "RUS",
+                                AddressCountry = "United States",
+                                AddressZipCode = "123456"
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                AddressType = "BillingAndShipping",
+                                AddressLine1 = "Line1",
+                                AddressCity = "City",
+                                AddressCountryCode = "USA",
+                                AddressCountry = "United States",
+                                AddressZipCode = "123456"
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.CountryNameAndCodeDoesntMatch, "Test1"
+                };
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                DynamicProperties = new List<DynamicObjectProperty>
+                                {
+                                    new DynamicObjectProperty { Values = new List<DynamicPropertyObjectValue>() },
+                                    new DynamicObjectProperty { IsDictionary = true, Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue() } },
+                                    new DynamicObjectProperty { IsArray = false, Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue(), new DynamicPropertyObjectValue() } },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.ShortText,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.ShortText, Value = 0 } }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.ShortText,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.LongText, Value = 0 } }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.Decimal,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.Decimal, Value = "test" } }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.Integer,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.Integer, Value = "test" } }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.Boolean,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.Boolean, Value = "test" } }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.DateTime,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.DateTime, Value = "test" } }
+                                    }
+                                }
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                DynamicProperties = new List<DynamicObjectProperty>
+                                {
+                                    new DynamicObjectProperty
+                                    {
+                                        Id = "TestDictionary",
+                                        IsDictionary = true,
+                                        ValueType = DynamicPropertyValueType.ShortText,
+                                        Values = new List<DynamicPropertyObjectValue>
+                                        {
+                                            new DynamicPropertyObjectValue { PropertyId = "TestDictionary", ValueType = DynamicPropertyValueType.ShortText, Value = "Test1", ValueId = "Test1" }
+                                        }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        IsArray = true,
+                                        ValueType = DynamicPropertyValueType.ShortText,
+                                        Values = new List<DynamicPropertyObjectValue>
+                                        {
+                                            new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.ShortText, Value = "Test1" },
+                                            new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.ShortText, Value = "Test2" }
+                                        }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.ShortText,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.ShortText, Value = "test" } }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.ShortText,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.LongText, Value = "test" } }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.Decimal,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.Decimal, Value = "3.1415" } }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.Integer,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.Integer, Value = "0" } }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.Boolean,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.Boolean, Value = "true" } }
+                                    },
+                                    new DynamicObjectProperty
+                                    {
+                                        ValueType = DynamicPropertyValueType.DateTime,
+                                        Values = new List<DynamicPropertyObjectValue> { new DynamicPropertyObjectValue { ValueType = DynamicPropertyValueType.DateTime, Value = "1/1/2000 00:00" } }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.InvalidValue, "Test1"
+                };
+
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                AccountLogin = "Test1",
+                                AccountEmail = "test1@example.org",
+                                StoreId = "Store"
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                AccountLogin = "Test2",
+                                AccountEmail = "test2@example.org",
+                                StoreId = "Store"
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.NotUniqueValue, "Test1"
+                };
+            }
+        }
+
+
+        public static IEnumerable<object[]> Organizations
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableOrganization> { Record = new ImportableOrganization { Id = "TestId", OrganizationName = "Test1" } },
+                        new ImportRecord<ImportableOrganization> { Record = new ImportableOrganization { Id = "TestId", OrganizationName = "Test2" } }
+                    },
+                    ModuleConstants.ValidationErrors.DuplicateError, "Test1"
+                };
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableOrganization> { Record = new ImportableOrganization { OuterId = "TestId", OrganizationName = "Test1" } },
+                        new ImportRecord<ImportableOrganization> { Record = new ImportableOrganization { OuterId = "TestId", OrganizationName = "Test2" } }
+                    },
+                    ModuleConstants.ValidationErrors.DuplicateError,
+                    "Test1"
+                };
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableOrganization>
+                        {
+                            Record = new ImportableOrganization
+                            {
+                                Id = "TestId1",
+                                OrganizationName = "Test1",
+                                AddressFirstName = "Test",
+                                AddressLastName = "1"
+                            }
+                        },
+                        new ImportRecord<ImportableOrganization>
+                        {
+                            Record = new ImportableOrganization
+                            {
+                                Id = "TestId2",
+                                OrganizationName = "Test2",
+                                AddressLine1 = "Line1",
+                                AddressCity = "City",
+                                AddressCountryCode = "USA",
+                                AddressCountry = "United States",
+                                AddressZipCode = "123456"
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.MissingRequiredValues, "Test1"
+                };
+                var longString = new string('*', 1000);
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableOrganization>
+                        {
+                            Record = new ImportableOrganization
+                            {
+                                Id = "TestId1",
+                                OrganizationName = "Test1",
+                                OuterId = longString,
+                                AddressFirstName = longString,
+                                AddressLastName = longString,
+                                AddressEmail = longString,
+                                AddressPhone = longString,
+                                AddressLine1 = longString,
+                                AddressLine2 = longString,
+                                AddressCity = longString,
+                                AddressRegion = longString,
+                                AddressCountryCode = longString,
+                                AddressCountry = longString,
+                                AddressZipCode = longString
+                            }
+                        },
+                        new ImportRecord<ImportableOrganization>
+                        {
+                            Record = new ImportableOrganization
+                            {
+                                Id = "TestId2",
+                                OrganizationName = "Test2",
+                                OuterId = new string('*', 128),
+                                AddressFirstName = new string('*', 128),
+                                AddressLastName = new string('*', 128),
+                                AddressEmail = new string('*', 64),
+                                AddressPhone = new string('*', 256),
+                                AddressLine1 = new string('*', 128),
+                                AddressLine2 = new string('*', 128),
+                                AddressCity = new string('*', 128),
+                                AddressRegion = new string('*', 128),
+                                AddressCountryCode = new string('*', 64),
+                                AddressCountry = new string('*', 128),
+                                AddressZipCode = new string('*', 32)
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.ExceedingMaxLength, "Test1"
                 };
             }
         }
 
         [Theory]
         [MemberData(nameof(Contacts))]
-        public async Task ValidateAsync_Duplicates_WillFailAndReportFirst(ImportRecord<CsvContact>[] importRecords)
+        public async Task ValidateAsync_InvalidContact_WillFailAndReportFirst(ImportRecord<ImportableContact>[] importRecords, string errorCode, string failedEntityFullName)
         {
             // Arrange
-            var validator = GetValidator();
+            var validator = GetContactsValidator();
 
             // Act
             var validationResult = await validator.ValidateAsync(importRecords);
 
             // Assert
-            var error = validationResult.Errors.FirstOrDefault(validationError => validationError.ErrorCode == ModuleConstants.ValidationErrors.DuplicateError);
+            var error = validationResult.Errors.First(validationError => validationError.ErrorCode == errorCode);
             Assert.NotNull(error);
-            Assert.Equal("Test1", (error.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord.Record.ContactFullName);
+            Assert.Equal(failedEntityFullName, (error.CustomState as ImportValidationState<ImportableContact>)?.InvalidRecord.Record.ContactFullName);
         }
 
-        private ImportContactsValidator GetValidator()
+        [Theory]
+        [MemberData(nameof(Organizations))]
+        public async Task ValidateAsync_InvalidOrganization_WillFailAndReportFirst(ImportRecord<ImportableOrganization>[] importRecords, string errorCode, string failedEntityName)
         {
-            return new ImportContactsValidator();
+            // Arrange
+            var validator = GetOrganizationsValidator();
+
+            // Act
+            var validationResult = await validator.ValidateAsync(importRecords);
+
+            // Assert
+            var error = validationResult.Errors.First(validationError => validationError.ErrorCode == errorCode);
+            Assert.NotNull(error);
+            Assert.Equal(failedEntityName, (error.CustomState as ImportValidationState<ImportableOrganization>)?.InvalidRecord.Record.OrganizationName);
+        }
+
+        private ICountriesService GetCountriesService()
+        {
+            var countriesServiceMock = new Mock<ICountriesService>();
+            countriesServiceMock.Setup(x => x.GetCountriesAsync()).ReturnsAsync(() => new List<Country>
+            {
+                new Country { Id = "RUS", Name = "Russia" }, new Country { Id = "USA", Name = "United States" }
+            });
+            return countriesServiceMock.Object;
+        }
+
+        private IDynamicPropertyDictionaryItemsSearchService GetDynamicPropertyDictionaryItemsSearchService()
+        {
+            var dynamicPropertyDictionaryItemsSearchService = new Mock<IDynamicPropertyDictionaryItemsSearchService>();
+            dynamicPropertyDictionaryItemsSearchService.Setup(x => x.SearchDictionaryItemsAsync(It.IsAny<DynamicPropertyDictionaryItemSearchCriteria>()))
+                .ReturnsAsync<DynamicPropertyDictionaryItemSearchCriteria, IDynamicPropertyDictionaryItemsSearchService, DynamicPropertyDictionaryItemSearchResult>(searchCriteria =>
+                {
+                    var dynamicPropertyDictionaryItems = new List<DynamicPropertyDictionaryItem>
+                    {
+                        new DynamicPropertyDictionaryItem { PropertyId = "TestDictionary", Id = "Value1", Name = "Value1" },
+                        new DynamicPropertyDictionaryItem { PropertyId = "TestDictionary", Id = "Value2", Name = "Value2" }
+                    };
+                    return new DynamicPropertyDictionaryItemSearchResult
+                    {
+                        Results = dynamicPropertyDictionaryItems.Where(dynamicPropertyDictionaryItem => dynamicPropertyDictionaryItem.PropertyId == searchCriteria.PropertyId).ToList(),
+                        TotalCount = dynamicPropertyDictionaryItems.Count
+                    };
+                });
+            return dynamicPropertyDictionaryItemsSearchService.Object;
+        }
+
+        private SignInManager<ApplicationUser> GetSignInManager()
+        {
+            return new FakeSignInManager(new[] { new ApplicationUser { UserName = "Test1", Email = "test1@example.org" } });
+        }
+
+        private ImportContactsValidator GetContactsValidator()
+        {
+            return new ImportContactsValidator(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager());
+        }
+
+        private ImportOrganizationsValidator GetOrganizationsValidator()
+        {
+            return new ImportOrganizationsValidator(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService());
         }
     }
 }

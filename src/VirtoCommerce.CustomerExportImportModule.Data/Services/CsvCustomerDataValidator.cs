@@ -29,8 +29,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             return dataType switch
             {
-                nameof(Contact) => await ValidateAsync<CsvContact>(filePath),
-                nameof(Organization) => await ValidateAsync<CsvOrganization>(filePath),
+                nameof(Contact) => await ValidateAsync<ImportableContact>(filePath),
+                nameof(Organization) => await ValidateAsync<ImportableOrganization>(filePath),
                 _ => throw new ArgumentException("Not allowed argument value", nameof(dataType)),
             };
         }

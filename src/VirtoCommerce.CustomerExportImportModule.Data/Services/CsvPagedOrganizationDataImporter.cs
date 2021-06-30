@@ -12,22 +12,21 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
-    public sealed class CsvPagedOrganizationDataImporter : CsvPagedDataImporter<CsvOrganization, Organization>
+    public sealed class CsvPagedOrganizationDataImporter : CsvPagedDataImporter<ImportableOrganization, Organization>
     {
-        private readonly IValidator<ImportRecord<CsvOrganization>[]> _importContactValidator;
+        private readonly IMemberService _memberService;
 
         public override string MemberType => nameof(Organization);
 
-        public CsvPagedOrganizationDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<CsvOrganization>[]> importContactValidator
+        public CsvPagedOrganizationDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<ImportableOrganization>[]> importOrganizationValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
-        : base(memberService, memberSearchService, dataValidator, dataSourceFactory, importReporterFactory, blobUrlResolver)
+        : base(memberSearchService, dataValidator, dataSourceFactory, importOrganizationValidator, importReporterFactory, blobUrlResolver)
         {
-            _importContactValidator = importContactValidator;
+            _memberService = memberService;
         }
 
-        protected override async Task HandleChunk(ImportDataRequest request, Action<ImportProgressInfo> progressCallback,
-            ICustomerImportPagedDataSource<CsvOrganization> dataSource, ImportErrorsContext errorsContext, ImportProgressInfo importProgress,
-            string importDescription)
+        protected override async Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICustomerImportPagedDataSource<ImportableOrganization> dataSource,
+            ImportErrorsContext errorsContext, ImportProgressInfo importProgress, ICsvCustomerImportReporter importReporter)
         {
             var importOrganizations = dataSource.Items
                 // expect records that was parsed with errors
@@ -45,15 +44,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     .ToArray();
 
                 var existedOrganizations =
-                    (await SearchMembersByIdAndOuterId(internalIds, outerIds, new[] { nameof(Organization) }, true))
+                    (await SearchMembersByIdAndOuterIdAsync(internalIds, outerIds, new[] { nameof(Organization) }, true))
                     .OfType<Organization>().ToArray();
 
                 SetIdToNullForNotExisted(importOrganizations, existedOrganizations);
 
-                var validationResult = await _importContactValidator.ValidateAsync(importOrganizations);
+                var validationResult = await ValidateAsync(importOrganizations, importReporter);
 
                 var invalidImportOrganizations = validationResult.Errors
-                    .Select(x => (x.CustomState as ImportValidationState<CsvOrganization>)?.InvalidRecord).Distinct().ToArray();
+                    .Select(x => (x.CustomState as ImportValidationState<ImportableOrganization>)?.InvalidRecord).Distinct().ToArray();
 
                 importOrganizations = importOrganizations.Except(invalidImportOrganizations).ToArray();
 
@@ -87,39 +86,30 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
             finally
             {
-                importProgress.ProcessedCount =
-                    Math.Min(dataSource.CurrentPageNumber * dataSource.PageSize, importProgress.TotalCount);
-                importProgress.ErrorCount = importProgress.ProcessedCount - importProgress.ContactsCreated -
-                                            importProgress.ContactsUpdated;
-            }
-
-            if (importProgress.ProcessedCount != importProgress.TotalCount)
-            {
-                importProgress.Description =
-                    string.Format(importDescription, importProgress.ProcessedCount, importProgress.TotalCount);
-                progressCallback(importProgress);
+                importProgress.ProcessedCount = Math.Min(dataSource.CurrentPageNumber * dataSource.PageSize, importProgress.TotalCount);
+                importProgress.ErrorCount = importProgress.ProcessedCount - importProgress.ContactsCreated - importProgress.ContactsUpdated;
             }
         }
 
 
-        private static void PatchExistedOrganizations(IEnumerable<Organization> existedOrganizations, ImportRecord<CsvOrganization>[] updateImportOrganizations)
+        private static void PatchExistedOrganizations(IEnumerable<Organization> existedOrganizations, ImportRecord<ImportableOrganization>[] updateImportOrganizations)
         {
             foreach (var existedOrganization in existedOrganizations)
             {
                 var importOrganization = updateImportOrganizations.LastOrDefault(x => existedOrganization.Id.EqualsInvariant(x.Record.Id)
                                                                             || (!existedOrganization.OuterId.IsNullOrEmpty() && existedOrganization.OuterId.EqualsInvariant(x.Record.OuterId)));
 
-                importOrganization?.Record.PatchOrganization(existedOrganization);
+                importOrganization?.Record.PatchModel(existedOrganization);
             }
         }
 
-        private static Organization[] CreateNewOrganizations(ImportRecord<CsvOrganization>[] createImportOrganizations)
+        private static Organization[] CreateNewOrganizations(ImportRecord<ImportableOrganization>[] createImportOrganizations)
         {
             var newOrganizations = createImportOrganizations.Select(x =>
             {
                 var organization = AbstractTypeFactory<Organization>.TryCreateInstance();
 
-                x.Record.PatchOrganization(organization);
+                x.Record.PatchModel(organization);
 
                 return organization;
             }).ToArray();

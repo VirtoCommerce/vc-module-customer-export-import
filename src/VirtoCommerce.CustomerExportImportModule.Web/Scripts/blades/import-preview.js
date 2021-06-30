@@ -48,6 +48,7 @@ angular.module('virtoCommerce.customerExportImportModule')
                     const dialog = {
                         id: "customerImportDialog",
                         membersQty: blade.totalCount,
+                        dataType: blade.dataType,
                         organizationName: blade.organizationName,
                         callback: (confirm) => {
                             if (confirm) {

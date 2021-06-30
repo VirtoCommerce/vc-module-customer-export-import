@@ -30,9 +30,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(x => x.Record.Emails)
                 .Must(emailsColumnValue =>
                 {
-                    var emails = string.IsNullOrEmpty(emailsColumnValue) ? null : emailsColumnValue.Split(",");
+                    var emails = string.IsNullOrEmpty(emailsColumnValue) ? null : emailsColumnValue.Split(',').Select(email => email.Trim()).ToList();
                     var emailValidator = new EmailValidator();
-                    return emails == null || emails.All(email => emailValidator.Validate(email.Trim()).IsValid);
+                    return emails == null || emails.All(email => emailValidator.Validate(email).IsValid);
                 })
                 .WithInvalidValueCodeAndMessage("Emails")
                 .WithImportState()
@@ -40,7 +40,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                     RuleFor(x => x.Record.Emails)
                         .Must(emailsColumnValue =>
                         {
-                            var emails = string.IsNullOrEmpty(emailsColumnValue) ? null : emailsColumnValue.Split(",");
+                            var emails = string.IsNullOrEmpty(emailsColumnValue) ? null : emailsColumnValue.Split(',').Select(email => email.Trim()).ToList();
                             return emails == null || emails.All(email => email.Length <= 254);
                         })
                         .WithErrorCode(ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength)

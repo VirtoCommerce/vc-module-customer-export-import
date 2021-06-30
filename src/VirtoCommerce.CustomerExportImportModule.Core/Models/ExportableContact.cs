@@ -9,6 +9,30 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
     public sealed class ExportableContact: CsvContact
     {
+        [Index(0)]
+        public override string Id { get; set; }
+
+        [Index(1)]
+        public override string ContactFirstName { get; set; }
+
+        [Index(2)]
+        public override string ContactLastName { get; set; }
+
+        [Index(3)]
+        public override string ContactFullName { get; set; }
+
+        [Index(4)]
+        public override string OuterId { get; set; }
+
+        [Index(5)]
+        public override string OrganizationId { get; set; }
+
+        [Index(6)]
+        public override string OrganizationOuterId { get; set; }
+
+        [Index(7)]
+        public override string OrganizationName { get; set; }
+
         [Index(8)]
         [Optional]
         [Name("Associated Organization Ids")]

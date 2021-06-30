@@ -10,7 +10,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         private string _id;
 
         [Optional]
-        [Index(0)]
         [JsonProperty("contactId")]
         [Name("Contact Id")]
         public override string Id
@@ -19,41 +18,34 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             set => _id = value?.Trim();
         }
 
-        [Index(1)]
         [Name("Contact First Name")]
         [Required]
-        public string ContactFirstName { get; set; }
+        public virtual string ContactFirstName { get; set; }
 
-        [Index(2)]
         [Name("Contact Last Name")]
         [Required]
-        public string ContactLastName { get; set; }
+        public virtual string ContactLastName { get; set; }
 
-        [Index(3)]
         [Name("Contact Full Name")]
         [Required]
-        public string ContactFullName { get; set; }
-
-        [Index(4)]
+        public virtual string ContactFullName { get; set; }
+        
         [Optional]
         [JsonProperty("contactOuterId")]
         [Name("Contact Outer Id")]
         public override string OuterId { get; set; }
-
-        [Index(5)]
+        
         [Optional]
         [Name("Organization Id")]
-        public string OrganizationId { get; set; }
-
-        [Index(6)]
+        public virtual string OrganizationId { get; set; }
+        
         [Optional]
         [Name("Organization Outer Id")]
-        public string OrganizationOuterId { get; set; }
+        public virtual string OrganizationOuterId { get; set; }
         
-        [Index(7)]
         [Optional]
         [Name("Organization Name")]
-        public string OrganizationName { get; set; }
+        public virtual string OrganizationName { get; set; }
 
         [Optional]
         [Name("Account Id")]

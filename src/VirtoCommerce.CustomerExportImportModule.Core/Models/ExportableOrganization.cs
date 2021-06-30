@@ -33,7 +33,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public override string Description { get; set; }
 
         [Index(8)]
-        public override string OrganizationGroups { get; set; }
+        [Optional]
+        [Name("Organization Groups")]
+        public string OrganizationGroups { get; set; }
 
         public CsvOrganization FromModels(Organization organization, Organization parentOrganization)
         {

@@ -21,7 +21,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             target.TimeZone = TimeZone;
             target.Emails = string.IsNullOrEmpty(Emails) ? null : Emails.Split(',').Select(email => email.Trim()).ToList();
             target.Phones = string.IsNullOrEmpty(Phones) ? null : Phones.Split(',').Select(phone => phone.Trim()).ToList();
-            target.Groups = string.IsNullOrEmpty(UserGroups) ? null : UserGroups.Split(',').Select(userGroups => userGroups.Trim()).ToList();
             target.Salutation = Salutation;
             target.DefaultLanguage = DefaultLanguage;
             target.TaxPayerId = TaxPayerId;

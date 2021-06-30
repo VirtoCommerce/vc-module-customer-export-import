@@ -46,8 +46,5 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Description")]
         public virtual string Description { get; set; }
 
-        [Optional]
-        [Name("Organization Groups")]
-        public virtual string OrganizationGroups { get; set; }
     }
 }

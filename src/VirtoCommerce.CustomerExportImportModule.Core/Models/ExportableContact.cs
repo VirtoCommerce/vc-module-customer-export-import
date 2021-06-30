@@ -38,6 +38,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Associated Organization Ids")]
         public string AssociatedOrganizationIds { get; set; }
 
+        [Index(9)]
+        [Optional]
+        [Name("User groups")]
+        public string UserGroups { get; set; }
+
         public ExportableContact FromModels(Contact contact, Organization organization, Store store)
         {
             var account = contact.SecurityAccounts?.FirstOrDefault();

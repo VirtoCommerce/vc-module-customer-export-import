@@ -12,20 +12,20 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
-    public sealed class CsvPagedContactDataImporter : CsvPagedDataImporter<CsvContact, Contact>
+    public sealed class CsvPagedContactDataImporter : CsvPagedDataImporter<ImportableContact, Contact>
     {
         private readonly IMemberService _memberService;
 
         public override string MemberType => nameof(Contact);
 
-        public CsvPagedContactDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<CsvContact>[]> importContactValidator
+        public CsvPagedContactDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<ImportableContact>[]> importContactValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
         : base(memberSearchService, dataValidator, dataSourceFactory, importContactValidator, importReporterFactory, blobUrlResolver)
         {
             _memberService = memberService;
         }
 
-        protected override async Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICustomerImportPagedDataSource<CsvContact> dataSource,
+        protected override async Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICustomerImportPagedDataSource<ImportableContact> dataSource,
             ImportErrorsContext errorsContext, ImportProgressInfo importProgress, ICsvCustomerImportReporter importReporter)
         {
             var importContacts = dataSource.Items
@@ -52,7 +52,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 var validationResult = await ValidateAsync(importContacts, importReporter);
 
                 var invalidImportContacts = validationResult.Errors
-                    .Select(x => (x.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord).Distinct().ToArray();
+                    .Select(x => (x.CustomState as ImportValidationState<ImportableContact>)?.InvalidRecord).Distinct().ToArray();
 
                 importContacts = importContacts.Except(invalidImportContacts).ToArray();
 
@@ -102,7 +102,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         }
 
 
-        private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<CsvContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
+        private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<ImportableContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
         {
             foreach (var existedContact in existedContacts)
             {
@@ -115,7 +115,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 var orgIdForNewContact = existedOrg?.Id ?? request.OrganizationId;
 
-                importContact?.Record.PatchContact(existedContact);
+                importContact?.Record.PatchModel(existedContact);
 
                 if (!orgIdForNewContact.IsNullOrEmpty() && !existedContact.Organizations.Contains(orgIdForNewContact))
                 {
@@ -125,13 +125,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-        private static Contact[] CreateNewContacts(ImportRecord<CsvContact>[] createImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
+        private static Contact[] CreateNewContacts(ImportRecord<ImportableContact>[] createImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
         {
             var newContacts = createImportContacts.Select(x =>
             {
                 var contact = AbstractTypeFactory<Contact>.TryCreateInstance<Contact>();
 
-                x.Record.PatchContact(contact);
+                x.Record.PatchModel(contact);
 
                 var existedOrg = existedOrganizations.FirstOrDefault(o => o.Id == x.Record.OrganizationId)
                                  ?? existedOrganizations.FirstOrDefault(o =>

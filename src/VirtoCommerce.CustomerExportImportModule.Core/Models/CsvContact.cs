@@ -1,24 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using Newtonsoft.Json;
-using VirtoCommerce.CoreModule.Core.Common;
-using VirtoCommerce.CustomerModule.Core.Model;
-using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.DynamicProperties;
-using VirtoCommerce.Platform.Core.Security;
-using VirtoCommerce.StoreModule.Core.Model;
-using Address = VirtoCommerce.CustomerModule.Core.Model.Address;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class CsvContact : CsvMember
+    public abstract class CsvContact : CsvMember
     {
         private string _id;
 
         [Optional]
+        [Index(0)]
         [JsonProperty("contactId")]
         [Name("Contact Id")]
         public override string Id
@@ -27,31 +19,38 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             set => _id = value?.Trim();
         }
 
+        [Index(1)]
         [Name("Contact First Name")]
         [Required]
         public string ContactFirstName { get; set; }
 
+        [Index(2)]
         [Name("Contact Last Name")]
         [Required]
         public string ContactLastName { get; set; }
 
+        [Index(3)]
         [Name("Contact Full Name")]
         [Required]
         public string ContactFullName { get; set; }
 
+        [Index(4)]
         [Optional]
         [JsonProperty("contactOuterId")]
         [Name("Contact Outer Id")]
         public override string OuterId { get; set; }
 
+        [Index(5)]
         [Optional]
         [Name("Organization Id")]
         public string OrganizationId { get; set; }
 
+        [Index(6)]
         [Optional]
         [Name("Organization Outer Id")]
         public string OrganizationOuterId { get; set; }
-
+        
+        [Index(7)]
         [Optional]
         [Name("Organization Name")]
         public string OrganizationName { get; set; }
@@ -95,10 +94,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string ContactStatus { get; set; }
 
         [Optional]
-        [Name("Associated Organization Ids")]
-        public string AssociatedOrganizationIds { get; set; }
-
-        [Optional]
         [Name("Birthday")]
         public DateTime? Birthday { get; set; }
 
@@ -129,124 +124,5 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Optional]
         [Name("Preferred delivery")]
         public string PreferredDelivery { get; set; }
-
-        public CsvContact ToExportableImportableContact(Contact contact, Organization organization, Store store)
-        {
-            var account = contact.SecurityAccounts?.FirstOrDefault();
-            var address = contact.Addresses?.FirstOrDefault();
-
-            Id = contact.Id;
-            OuterId = contact.OuterId;
-            ContactFirstName = contact.FirstName;
-            ContactLastName = contact.LastName;
-            ContactFullName = contact.FullName;
-            OrganizationId = organization?.Id;
-            OrganizationOuterId = organization?.OuterId;
-            OrganizationName = organization?.Name;
-            AccountId = account?.Id;
-            StoreId = account?.StoreId;
-            StoreName = store?.Name;
-            AccountLogin = account?.UserName;
-            AccountEmail = account?.Email;
-            AccountType = account?.UserType;
-            AccountStatus = account?.Status;
-            EmailVerified = account?.EmailConfirmed;
-            ContactStatus = contact.Status;
-            AssociatedOrganizationIds = contact.AssociatedOrganizations.IsNullOrEmpty() ? null : string.Join(", ", contact.AssociatedOrganizations);
-            Birthday = contact.BirthDate;
-            TimeZone = contact.TimeZone;
-            Phones = contact.Phones.IsNullOrEmpty() ? null : string.Join(", ", contact.Phones);
-            UserGroups = contact.Groups.IsNullOrEmpty() ? null : string.Join(", ", contact.Groups);
-            Salutation = contact.Salutation;
-            DefaultLanguage = contact.DefaultLanguage;
-            TaxPayerId = contact.TaxPayerId;
-            PreferredCommunication = contact.PreferredCommunication;
-            PreferredDelivery = contact.PreferredDelivery;
-            AddressType = address?.AddressType.ToString();
-            AddressFirstName = address?.FirstName;
-            AddressLastName = address?.LastName;
-            AddressCountry = address?.CountryName;
-            AddressCountryCode = address?.CountryCode;
-            AddressRegion = address?.RegionName;
-            AddressCity = address?.City;
-            AddressLine1 = address?.Line1;
-            AddressLine2 = address?.Line2;
-            AddressZipCode = address?.PostalCode;
-            AddressEmail = address?.Email;
-            AddressPhone = address?.Phone;
-
-            DynamicProperties = contact.DynamicProperties?.Select(x => x.Clone() as DynamicObjectProperty)
-                .ToArray();
-
-            return this;
-        }
-
-        public void PatchContact(Contact target)
-        {
-            target.OuterId = OuterId;
-            target.FirstName = ContactFirstName;
-            target.LastName = ContactLastName;
-            target.FullName = ContactFullName;
-            target.Status = ContactStatus;
-            target.AssociatedOrganizations = string.IsNullOrEmpty(AssociatedOrganizationIds) ? null : AssociatedOrganizationIds.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrEmpty(x)).ToList();
-            target.BirthDate = Birthday;
-            target.TimeZone = TimeZone;
-            target.Phones = string.IsNullOrEmpty(Phones) ? null : Phones.Split(',').Select(phone => phone.Trim()).ToList();
-            target.Groups = string.IsNullOrEmpty(UserGroups) ? null : UserGroups.Split(',').Select(userGroups => userGroups.Trim()).ToList();
-            target.Salutation = Salutation;
-            target.DefaultLanguage = DefaultLanguage;
-            target.TaxPayerId = TaxPayerId;
-            target.PreferredCommunication = PreferredCommunication;
-            target.PreferredDelivery = PreferredDelivery;
-            target.DynamicProperties = DynamicProperties;
-
-            target.Addresses ??= new List<Address>();
-            var isAddressSpecified = new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => !string.IsNullOrEmpty(addressField));
-
-            if (isAddressSpecified)
-            {
-                target.Addresses.Add(new Address
-                {
-                    AddressType = !string.IsNullOrEmpty(AddressType) ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
-                    FirstName = AddressFirstName,
-                    LastName = AddressLastName,
-                    CountryName = AddressCountry,
-                    CountryCode = AddressCountryCode,
-                    RegionName = AddressRegion,
-                    City = AddressCity,
-                    Line1 = AddressLine1,
-                    Line2 = AddressLine2,
-                    PostalCode = AddressZipCode,
-                    Email = AddressEmail,
-                    Phone = AddressPhone,
-                });
-            }
-
-            target.SecurityAccounts ??= new List<ApplicationUser>();
-            var accountSpecified = new[] { AccountId, AccountLogin, AccountEmail }.Any(accountField => !string.IsNullOrEmpty(accountField));
-
-            if (accountSpecified)
-            {
-                target.SecurityAccounts.Add(
-                    new ApplicationUser
-                    {
-                        Id = AccountId,
-                        StoreId = StoreId,
-                        UserName = AccountLogin,
-                        Email = AccountEmail,
-                        UserType = AccountType,
-                        Status = AccountStatus,
-                        EmailConfirmed = EmailVerified ?? false
-                    }
-                );
-            }
-        }
-
-        public Organization ToOrganization()
-        {
-            var result = new Organization { Id = OrganizationId, OuterId = OrganizationOuterId, Name = OrganizationName, };
-
-            return result;
-        }
     }
 }

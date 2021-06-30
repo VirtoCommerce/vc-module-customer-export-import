@@ -225,7 +225,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private static void HandleRequiredValueError(Action<ImportProgressInfo> progressCallback, ImportProgressInfo importProgress, ICsvCustomerImportReporter reporter, ReadingContext context, ImportErrorsContext errorsContext)
         {
             var fieldName = context.HeaderRecord[context.CurrentIndex];
-            var requiredFields = CsvCustomerImportHelper.GetImportCustomerRequiredColumns<CsvContact>();
+            var requiredFields = CsvCustomerImportHelper.GetImportCustomerRequiredColumns<ImportableContact>();
             var missedValueColumns = new List<string>();
 
             for (var i = 0; i < context.HeaderRecord.Length; i++)

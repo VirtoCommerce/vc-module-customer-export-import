@@ -7,7 +7,7 @@ using VirtoCommerce.Platform.Core.Security;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
-    public class ImportContactValidator: AbstractValidator<ImportRecord<CsvContact>>
+    public class ImportContactValidator: AbstractValidator<ImportRecord<ImportableContact>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
 

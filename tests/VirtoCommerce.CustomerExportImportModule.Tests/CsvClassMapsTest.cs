@@ -118,21 +118,21 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         private static readonly Store Store = new Store { Id = "b2b-store", Name = "b2b-store" };
 
         private static readonly string ContactCsvHeader =
-            "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Associated Organization Ids;Birthday;TimeZone;User groups;Salutation;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Sex;Job";
+            "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Associated Organization Ids;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Birthday;TimeZone;User groups;Salutation;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Sex;Job";
         private static readonly string ContactCsvRecord =
-            "contact_id;Anton;Boroda;Anton Boroda;outer_id;org_id;org_outer_id;Boroda ltd;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;new;org_id1, org_id2;04/14/1986 00:00:00;MSK;tag1, tag2;mr;en_US;TaxId;email;pickup;777, 555;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Male;Developer";
+            "contact_id;Anton;Boroda;Anton Boroda;outer_id;org_id;org_outer_id;Boroda ltd;org_id1, org_id2;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;new;04/14/1986 00:00:00;MSK;tag1, tag2;mr;en_US;TaxId;email;pickup;777, 555;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Male;Developer";
 
         [Fact]
         public void Export_ContactWithDynamicProperty_HeaderAndValuesAreCorrect()
         {
             // Arrange
-            var exportableContact = new CsvContact();
-            exportableContact.ToExportableImportableContact(Contact, ContactOrganization, Store);
+            var exportableContact = new ExportableContact();
+            exportableContact.FromModels(Contact, ContactOrganization, Store);
 
             var stream = new MemoryStream();
             var streamWriter = new StreamWriter(stream, leaveOpen: true);
             var csvWriter = new CsvWriter(streamWriter, new ExportConfiguration());
-            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<CsvContact>(ContactDynamicProperties));
+            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<ExportableContact>(ContactDynamicProperties));
 
             // Act
             csvWriter.WriteRecords(new[] { exportableContact });
@@ -203,15 +203,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             var parent = new Organization { Id = "parent_org_id", OuterId = "parent_outer_id", Name = "parent_outer_id" };
 
-            var exportableOrganization = new CsvOrganization();
-            exportableOrganization.FromModel(organization, parent);
+            var exportableOrganization = new ExportableOrganization();
+            exportableOrganization.FromModels(organization, parent);
 
             var stream = new MemoryStream();
             var sw = new StreamWriter(stream, leaveOpen: true);
             var csvWriter = new CsvWriter(sw, new ExportConfiguration());
 
             //Act
-            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<CsvOrganization>(dynamicProperties));
+            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<ExportableOrganization>(dynamicProperties));
 
             csvWriter.WriteRecords(new[] { exportableOrganization });
 
@@ -222,7 +222,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             //Assert
             var expected = "Organization Id;Organization Outer Id;Organization Name;Parent Organization Name;Parent Organization Id;Parent Organization Outer Id;Business category;Description;Organization Groups;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Size\r\n"
-                           + "org_id1;OuterId1;Boroda ltd;parent_outer_id;parent_otg_id;parent_outer_id;Market Place;org desc;tag1, tag2;777,555;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Huge\r\n";
+                           + "org_id1;OuterId1;Boroda ltd;parent_outer_id;parent_otg_id;parent_outer_id;Market Place;org desc;tag1, tag2;777, 555;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Huge\r\n";
 
             var sr = new StreamReader(stream);
             var csv = sr.ReadToEnd();
@@ -239,20 +239,19 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             using var stream = TestHelper.GetStream(csv);
             using var streamReader = new StreamReader(stream);
             using var csvReader = new CsvReader(streamReader, new ImportConfiguration());
-            csvReader.Configuration.RegisterClassMap(new GenericClassMap<CsvContact>(ContactDynamicProperties, ContactDynamicPropertyDictionaryItems));
+            csvReader.Configuration.RegisterClassMap(new GenericClassMap<ImportableContact>(ContactDynamicProperties, ContactDynamicPropertyDictionaryItems));
 
             // Act
             csvReader.Read();
             csvReader.ReadHeader();
-            csvReader.ValidateHeader<CsvContact>();
+            csvReader.ValidateHeader<ImportableContact>();
             csvReader.Read();
-            var csvContact = csvReader.GetRecord<CsvContact>();
+            var csvContact = csvReader.GetRecord<ImportableContact>();
 
             // Assert
             var contact = new Contact();
-            csvContact.PatchContact(contact);
+            csvContact.PatchModel(contact);
             var organization = csvContact.ToOrganization();
-            contact.Id = expectedContact.Id; // id is not patching
             Assert.Equal(expectedContact, contact, new ByFieldValuesEqualityComparer<Contact>());
             Assert.Equal(expectedOrganization, organization, new ByFieldValuesEqualityComparer<Organization>());
         }
@@ -261,7 +260,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         {
             get
             {
-                yield return new object[] { ContactCsvHeader, ContactCsvRecord, Contact, ContactOrganization };
+                var expectedContact = (Contact)Contact.Clone();
+                expectedContact.Id = null; // not patched
+                expectedContact.AssociatedOrganizations = null; // not imported
+                yield return new object[] { ContactCsvHeader, ContactCsvRecord, expectedContact, ContactOrganization };
                 yield return new object[]
                 {
                     "Contact First Name;Contact Last Name;Contact Full Name", "FirstName;LastName;FullName",

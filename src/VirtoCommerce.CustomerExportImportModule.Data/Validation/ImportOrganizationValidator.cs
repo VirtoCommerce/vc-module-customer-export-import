@@ -4,7 +4,7 @@ using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
-    public class ImportOrganizationValidator: AbstractValidator<ImportRecord<CsvOrganization>>
+    public class ImportOrganizationValidator: AbstractValidator<ImportRecord<ImportableOrganization>>
     {
         public ImportOrganizationValidator()
         {

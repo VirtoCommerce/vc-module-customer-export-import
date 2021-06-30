@@ -69,10 +69,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 dynamicProperties.Results.Where(x => x.ObjectType == typeof(Organization).FullName).ToArray();
 
             var contactsFilePath = GetExportFilePath("Contacts");
-            var contactExportWriter = _exportWriterFactory.Create<CsvContact>(contactsFilePath, new ExportConfiguration(), contactsDynamicProperties);
+            var contactExportWriter = _exportWriterFactory.Create<ExportableContact>(contactsFilePath, new ExportConfiguration(), contactsDynamicProperties);
 
             var organizationFilePath = GetExportFilePath("Organizations");
-            var organizationExportWriter = _exportWriterFactory.Create<CsvOrganization>(organizationFilePath, new ExportConfiguration(), organizationsDynamicProperties);
+            var organizationExportWriter = _exportWriterFactory.Create<ExportableOrganization>(organizationFilePath, new ExportConfiguration(), organizationsDynamicProperties);
 
             try
             {
@@ -80,14 +80,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 {
                     cancellationToken.ThrowIfCancellationRequested();
 
-                    var contacts = dataSource.Items.OfType<CsvContact>().ToArray();
+                    var contacts = dataSource.Items.OfType<ExportableContact>().ToArray();
 
                     if (!contacts.IsNullOrEmpty())
                     {
                         contactExportWriter.WriteRecords(contacts);
                     }                    
 
-                    var organizations = dataSource.Items.OfType<CsvOrganization>().ToArray();
+                    var organizations = dataSource.Items.OfType<ExportableOrganization>().ToArray();
 
                     if (!organizations.IsNullOrEmpty())
                     {

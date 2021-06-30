@@ -24,8 +24,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvContact> { Record = new CsvContact { Id = "TestId", ContactFirstName = "Test", ContactLastName = "1", ContactFullName = "Test1" } },
-                        new ImportRecord<CsvContact> { Record = new CsvContact { Id = "TestId", ContactFirstName = "Test", ContactLastName = "2", ContactFullName = "Test2" } }
+                        new ImportRecord<ImportableContact> { Record = new ImportableContact { Id = "TestId", ContactFirstName = "Test", ContactLastName = "1", ContactFullName = "Test1" } },
+                        new ImportRecord<ImportableContact> { Record = new ImportableContact { Id = "TestId", ContactFirstName = "Test", ContactLastName = "2", ContactFullName = "Test2" } }
                     },
                     ModuleConstants.ValidationErrors.DuplicateError, "Test1"
                 };
@@ -33,8 +33,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvContact> { Record = new CsvContact { OuterId = "TestId", ContactFirstName = "Test", ContactLastName = "1", ContactFullName = "Test1" } },
-                        new ImportRecord<CsvContact> { Record = new CsvContact { OuterId = "TestId", ContactFirstName = "Test", ContactLastName = "2", ContactFullName = "Test2" } }
+                        new ImportRecord<ImportableContact> { Record = new ImportableContact { OuterId = "TestId", ContactFirstName = "Test", ContactLastName = "1", ContactFullName = "Test1" } },
+                        new ImportRecord<ImportableContact> { Record = new ImportableContact { OuterId = "TestId", ContactFirstName = "Test", ContactLastName = "2", ContactFullName = "Test2" } }
                     },
                     ModuleConstants.ValidationErrors.DuplicateError,
                     "Test1"
@@ -43,9 +43,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId1",
                                 ContactFirstName = "Test",
@@ -55,9 +55,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 AddressLastName = "1"
                             }
                         },
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId2",
                                 ContactFirstName = "Test",
@@ -78,9 +78,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId1",
                                 ContactFirstName = "Test",
@@ -100,9 +100,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 AddressZipCode = longString
                             }
                         },
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId2",
                                 ContactFirstName = "Test",
@@ -130,9 +130,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId1",
                                 ContactFirstName = "Test",
@@ -141,9 +141,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 Phones = string.Join(", ", new string('0', 65), new string('0', 65))
                             }
                         },
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId2",
                                 ContactFirstName = "Test",
@@ -159,9 +159,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId1",
                                 ContactFirstName = "Test",
@@ -175,9 +175,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 AddressZipCode = "123456"
                             }
                         },
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId2",
                                 ContactFirstName = "Test",
@@ -198,9 +198,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId1",
                                 ContactFirstName = "Test",
@@ -214,9 +214,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 AddressZipCode = "123456"
                             }
                         },
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId2",
                                 ContactFirstName = "Test",
@@ -237,9 +237,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId1",
                                 ContactFirstName = "Test",
@@ -283,9 +283,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 }
                             }
                         },
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId2",
                                 ContactFirstName = "Test",
@@ -354,9 +354,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId1",
                                 ContactFirstName = "Test",
@@ -367,9 +367,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 StoreId = "Store"
                             }
                         },
-                        new ImportRecord<CsvContact>
+                        new ImportRecord<ImportableContact>
                         {
-                            Record = new CsvContact
+                            Record = new ImportableContact
                             {
                                 Id = "TestId2",
                                 ContactFirstName = "Test",
@@ -395,8 +395,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvOrganization> { Record = new CsvOrganization { Id = "TestId", OrganizationName = "Test1" } },
-                        new ImportRecord<CsvOrganization> { Record = new CsvOrganization { Id = "TestId", OrganizationName = "Test2" } }
+                        new ImportRecord<ImportableOrganization> { Record = new ImportableOrganization { Id = "TestId", OrganizationName = "Test1" } },
+                        new ImportRecord<ImportableOrganization> { Record = new ImportableOrganization { Id = "TestId", OrganizationName = "Test2" } }
                     },
                     ModuleConstants.ValidationErrors.DuplicateError, "Test1"
                 };
@@ -404,8 +404,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvOrganization> { Record = new CsvOrganization { OuterId = "TestId", OrganizationName = "Test1" } },
-                        new ImportRecord<CsvOrganization> { Record = new CsvOrganization { OuterId = "TestId", OrganizationName = "Test2" } }
+                        new ImportRecord<ImportableOrganization> { Record = new ImportableOrganization { OuterId = "TestId", OrganizationName = "Test1" } },
+                        new ImportRecord<ImportableOrganization> { Record = new ImportableOrganization { OuterId = "TestId", OrganizationName = "Test2" } }
                     },
                     ModuleConstants.ValidationErrors.DuplicateError,
                     "Test1"
@@ -414,9 +414,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvOrganization>
+                        new ImportRecord<ImportableOrganization>
                         {
-                            Record = new CsvOrganization
+                            Record = new ImportableOrganization
                             {
                                 Id = "TestId1",
                                 OrganizationName = "Test1",
@@ -424,9 +424,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 AddressLastName = "1"
                             }
                         },
-                        new ImportRecord<CsvOrganization>
+                        new ImportRecord<ImportableOrganization>
                         {
-                            Record = new CsvOrganization
+                            Record = new ImportableOrganization
                             {
                                 Id = "TestId2",
                                 OrganizationName = "Test2",
@@ -445,9 +445,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     new[]
                     {
-                        new ImportRecord<CsvOrganization>
+                        new ImportRecord<ImportableOrganization>
                         {
-                            Record = new CsvOrganization
+                            Record = new ImportableOrganization
                             {
                                 Id = "TestId1",
                                 OrganizationName = "Test1",
@@ -465,9 +465,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 AddressZipCode = longString
                             }
                         },
-                        new ImportRecord<CsvOrganization>
+                        new ImportRecord<ImportableOrganization>
                         {
-                            Record = new CsvOrganization
+                            Record = new ImportableOrganization
                             {
                                 Id = "TestId2",
                                 OrganizationName = "Test2",
@@ -493,7 +493,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
         [Theory]
         [MemberData(nameof(Contacts))]
-        public async Task ValidateAsync_InvalidContact_WillFailAndReportFirst(ImportRecord<CsvContact>[] importRecords, string errorCode, string failedEntityFullName)
+        public async Task ValidateAsync_InvalidContact_WillFailAndReportFirst(ImportRecord<ImportableContact>[] importRecords, string errorCode, string failedEntityFullName)
         {
             // Arrange
             var validator = GetContactsValidator();
@@ -504,12 +504,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             // Assert
             var error = validationResult.Errors.First(validationError => validationError.ErrorCode == errorCode);
             Assert.NotNull(error);
-            Assert.Equal(failedEntityFullName, (error.CustomState as ImportValidationState<CsvContact>)?.InvalidRecord.Record.ContactFullName);
+            Assert.Equal(failedEntityFullName, (error.CustomState as ImportValidationState<ImportableContact>)?.InvalidRecord.Record.ContactFullName);
         }
 
         [Theory]
         [MemberData(nameof(Organizations))]
-        public async Task ValidateAsync_InvalidOrganization_WillFailAndReportFirst(ImportRecord<CsvOrganization>[] importRecords, string errorCode, string failedEntityName)
+        public async Task ValidateAsync_InvalidOrganization_WillFailAndReportFirst(ImportRecord<ImportableOrganization>[] importRecords, string errorCode, string failedEntityName)
         {
             // Arrange
             var validator = GetOrganizationsValidator();
@@ -520,7 +520,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             // Assert
             var error = validationResult.Errors.First(validationError => validationError.ErrorCode == errorCode);
             Assert.NotNull(error);
-            Assert.Equal(failedEntityName, (error.CustomState as ImportValidationState<CsvOrganization>)?.InvalidRecord.Record.OrganizationName);
+            Assert.Equal(failedEntityName, (error.CustomState as ImportValidationState<ImportableOrganization>)?.InvalidRecord.Record.OrganizationName);
         }
 
         private ICountriesService GetCountriesService()

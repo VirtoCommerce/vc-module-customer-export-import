@@ -5,7 +5,7 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
-    public sealed class ImportOrganizationsValidator : AbstractValidator<ImportRecord<CsvOrganization>[]>
+    public sealed class ImportOrganizationsValidator : AbstractValidator<ImportRecord<ImportableOrganization>[]>
     {
         private readonly ICountriesService _countriesService;
         private readonly IDynamicPropertyDictionaryItemsSearchService _dynamicPropertyDictionaryItemsSearchService;
@@ -19,8 +19,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void AttachValidators()
         {
-            RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAreNotDuplicatesValidator<CsvOrganization>());
-            RuleForEach(importRecords => importRecords).SetValidator(new ImportMemberValidator<CsvOrganization>(_countriesService, _dynamicPropertyDictionaryItemsSearchService));
+            RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAreNotDuplicatesValidator<ImportableOrganization>());
+            RuleForEach(importRecords => importRecords).SetValidator(new ImportMemberValidator<ImportableOrganization>(_countriesService, _dynamicPropertyDictionaryItemsSearchService));
             RuleForEach(importRecords => importRecords).SetValidator(new ImportOrganizationValidator());
         }
     }

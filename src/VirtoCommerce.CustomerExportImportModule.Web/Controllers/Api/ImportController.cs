@@ -72,7 +72,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
             switch (request.DataType)
             {
                 case nameof(Contact):
-                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<CsvContact, Contact>(request.FilePath,
+                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<ImportableContact, Contact>(request.FilePath,
                             10, null))
                     {
                         result.TotalCount = csvDataSource.GetTotalCount();
@@ -81,7 +81,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
                     }
                     break;
                 case nameof(Organization):
-                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<CsvOrganization, Organization>(request.FilePath,
+                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<ImportableOrganization, Organization>(request.FilePath,
                         10, null))
                     {
                         result.TotalCount = csvDataSource.GetTotalCount();

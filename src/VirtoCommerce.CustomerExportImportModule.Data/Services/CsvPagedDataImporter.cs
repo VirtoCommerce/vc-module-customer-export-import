@@ -177,20 +177,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             return existedMembers;
         }
 
-        protected static void SetIdToNullForNotExisted(ImportRecord<TCsvMember>[] importContacts, TMember[] existedContacts)
-        {
-            foreach (var importContact in importContacts)
-            {
-                var existedContact =
-                    existedContacts.FirstOrDefault(x => x.Id.EqualsInvariant(importContact.Record.Id));
-
-                if (existedContact == null)
-                {
-                    importContact.Record.Id = null;
-                }
-            }
-        }
-
         private static async Task HandleBadDataErrorAsync(Action<ImportProgressInfo> progressCallback, ImportProgressInfo importProgress, ICsvCustomerImportReporter reporter, ReadingContext context, ImportErrorsContext errorsContext)
         {
             var importError = new ImportError { Error = "This row has invalid data. The data after field with not escaped quote was lost.", RawRow = context.RawRecord };
@@ -285,43 +271,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             configuration.MissingFieldFound = null;
         }
 
-        /// <summary>
-        /// Search members by id list and outer id list and union them into one array. 
-        /// </summary>
-        /// <param name="internalIds"></param>
-        /// <param name="outerIds"></param>
-        /// <param name="memberTypes"></param>
-        /// <param name="deepSearch"></param>
-        /// <returns></returns>
-        protected async Task<Member[]> SearchMembersByIdAndOuterId(string[] internalIds, string[] outerIds, string[] memberTypes, bool deepSearch = false)
-        {
-            var criteriaById = new ExtendedMembersSearchCriteria()
-            {
-                ObjectIds = internalIds,
-                MemberTypes = memberTypes,
-                DeepSearch = deepSearch,
-                Skip = 0,
-                Take = ModuleConstants.Settings.PageSize
-            };
-
-            var membersById = internalIds.IsNullOrEmpty() ? Array.Empty<Member>() : (await _memberSearchService.SearchMembersAsync(criteriaById)).Results;
-
-            var criteriaByOuterId = new ExtendedMembersSearchCriteria()
-            {
-                OuterIds = outerIds,
-                MemberTypes = memberTypes,
-                DeepSearch = deepSearch,
-                Skip = 0,
-                Take = ModuleConstants.Settings.PageSize
-            };
-
-            var membersByOuterId = outerIds.IsNullOrEmpty() ? Array.Empty<Member>() : (await _memberSearchService.SearchMembersAsync(criteriaByOuterId)).Results;
-
-            var existedMembers = membersById.Union(membersByOuterId
-                , AnonymousComparer.Create<Member>((x, y) => x.Id == y.Id, x => x.Id.GetHashCode())).ToArray();
-
-            return existedMembers;
-        }
 
         /// <summary>
         /// Reduce existed members list. Some records may have been mistakenly selected for updating. When id and outer id from a file refs to different records in the system.
@@ -369,10 +318,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             if (progressCallback == null)
             {
                 throw new ArgumentNullException(nameof(progressCallback));
-                }
+            }
+
+            if (cancellationToken == null)
+            {
+                throw new ArgumentNullException(nameof(cancellationToken));
             }
         }
-        
+
         /// <summary>
         /// Set id to null for records that's not existed in the system. It reduce count of wrong duplicates.
         /// All such records will be created if they are valid. 
@@ -409,11 +362,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 if (existedMember != null)
                 {
                     importContact.Record.Id = existedMember.Id;
-            }
-
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException(nameof(cancellationToken));
+                }
             }
         }
     }

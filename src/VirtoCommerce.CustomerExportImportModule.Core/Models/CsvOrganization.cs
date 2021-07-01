@@ -27,18 +27,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public virtual string OrganizationName { get; set; }
 
         [Optional]
-        [Name("Parent Organization Name")]
-        public virtual string ParentOrganizationName { get; set; }
-
-        [Optional]
-        [Name("Parent Organization Id")]
-        public virtual string ParentOrganizationId { get; set; }
-
-        [Optional]
-        [Name("Parent Organization Outer Id")]
-        public virtual string ParentOrganizationOuterId { get; set; }
-
-        [Optional]
         [Name("Business category")]
         public virtual string BusinessCategory { get; set; }
 

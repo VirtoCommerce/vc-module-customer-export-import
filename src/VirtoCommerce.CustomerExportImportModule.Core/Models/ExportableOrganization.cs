@@ -18,13 +18,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public override string OrganizationName { get; set; }
 
         [Index(3)]
-        public override string ParentOrganizationName { get; set; }
+        [Name("Parent Organization Name")]
+        public string ParentOrganizationName { get; set; }
 
         [Index(4)]
-        public override string ParentOrganizationId { get; set; }
+        [Name("Parent Organization Id")]
+        public string ParentOrganizationId { get; set; }
 
         [Index(5)]
-        public override string ParentOrganizationOuterId { get; set; }
+        [Name("Parent Organization Outer Id")]
+        public string ParentOrganizationOuterId { get; set; }
 
         [Index(6)]
         public override string BusinessCategory { get; set; }

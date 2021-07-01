@@ -4,16 +4,22 @@ using Microsoft.AspNetCore.Identity;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.Platform.Core.Security;
+using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
     public class ImportContactValidator: AbstractValidator<ImportRecord<ImportableContact>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IStoreSearchService _storeSearchService;
+        private readonly ISettingsManager _settingsManager;
 
-        public ImportContactValidator(UserManager<ApplicationUser> userManager)
+        public ImportContactValidator(UserManager<ApplicationUser> userManager, IStoreSearchService storeSearchService, ISettingsManager settingsManager)
         {
             _userManager = userManager;
+            _storeSearchService = storeSearchService;
+            _settingsManager = settingsManager;
             AttachValidators();
         }
 
@@ -98,41 +104,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .WithExceededMaxLengthCodeAndMessage("Preferred Communication", 64)
                 .WithImportState();
 
-            When(x => new[]
-                {
-                    x.Record.AccountId, x.Record.AccountType, x.Record.AccountStatus, x.Record.AccountLogin, x.Record.AccountEmail, x.Record.StoreId, x.Record.StoreName,
-                    x.Record.EmailVerified.ToString()
-                }.Any(field => !string.IsNullOrEmpty(field))
-                , () =>
-                {
-
-                    RuleFor(x => x.Record.AccountLogin)
-                        .NotEmpty()
-                        .WithMissingRequiredValueCodeAndMessage("Account Login")
-                        .WithImportState()
-                        .DependentRules(() =>
-                        {
-                            RuleFor(x => x.Record.AccountLogin)
-                                .MustAsync(async (_, userName, __) => await _userManager.FindByNameAsync(userName) == null)
-                                .WithNotUniqueValueCodeAndMessage("Account Login")
-                                .WithImportState();
-                        });
-                    RuleFor(x => x.Record.AccountEmail)
-                        .NotEmpty()
-                        .WithMissingRequiredValueCodeAndMessage("Account Email")
-                        .WithImportState()
-                        .DependentRules(() =>
-                        {
-                            RuleFor(x => x.Record.AccountEmail)
-                                .MustAsync(async (_, email, __) => await _userManager.FindByEmailAsync(email) == null)
-                                .WithNotUniqueValueCodeAndMessage("Account Email")
-                                .WithImportState();
-                        });
-                    RuleFor(x => x.Record.StoreId)
-                        .NotEmpty()
-                        .WithMissingRequiredValueCodeAndMessage("Store Id")
-                        .WithImportState();
-                });
+            RuleFor(x => x).SetValidator(_ => new ImportAccountValidator(_userManager, _storeSearchService, _settingsManager));
         }
     }
 }

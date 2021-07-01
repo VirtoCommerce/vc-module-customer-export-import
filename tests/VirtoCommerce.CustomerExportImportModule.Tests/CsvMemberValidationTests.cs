@@ -2,13 +2,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Internal;
 using Moq;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Validation;
+using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Security;
+using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.StoreModule.Core.Model;
+using VirtoCommerce.StoreModule.Core.Model.Search;
+using VirtoCommerce.StoreModule.Core.Services;
 using Xunit;
 
 namespace VirtoCommerce.CustomerExportImportModule.Tests
@@ -20,6 +26,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         {
             get
             {
+                // Duplicated by internal Id
                 yield return new object[]
                 {
                     new[]
@@ -29,6 +36,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     },
                     ModuleConstants.ValidationErrors.DuplicateError, "Test1"
                 };
+
+                // Duplicated by Outer Id
                 yield return new object[]
                 {
                     new[]
@@ -39,6 +48,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     ModuleConstants.ValidationErrors.DuplicateError,
                     "Test1"
                 };
+
+                // Missed required address fields if any optional specified
                 yield return new object[]
                 {
                     new[]
@@ -73,6 +84,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     },
                     ModuleConstants.ValidationErrors.MissingRequiredValues, "Test1"
                 };
+
+                // Exceeded max length on contact fields
                 var longString = new string('*', 1000);
                 yield return new object[]
                 {
@@ -126,6 +139,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     ModuleConstants.ValidationErrors.ExceedingMaxLength, "Test1"
                 };
 
+                // Exceeded max length inside joined values
                 yield return new object[]
                 {
                     new[]
@@ -138,7 +152,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 ContactFirstName = "Test",
                                 ContactLastName = "1",
                                 ContactFullName = "Test1",
-                                Phones = string.Join(", ", new string('0', 65), new string('0', 65))
+                                Phones = string.Join(", ", new string('0', 65), new string('0', 65)),
+                                Emails = string.Join(", ", $"{new string('a', 260)}@example.org", $"{new string('b', 260)}@example.org")
                             }
                         },
                         new ImportRecord<ImportableContact>
@@ -149,12 +164,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 ContactFirstName = "Test",
                                 ContactLastName = "2",
                                 ContactFullName = "Test2",
-                                Phones = "01234567890,01234567890"
+                                Phones = "01234567890,01234567890",
+                                Emails = string.Join(", ", $"{new string('a', 242)}@example.org", $"{new string('b', 242)}@example.org")
                             }
                         }
                     },
                     ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength, "Test1"
                 };
+
+                // Invalid values in address fields
                 yield return new object[]
                 {
                     new[]
@@ -194,6 +212,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     },
                     ModuleConstants.ValidationErrors.InvalidValue, "Test1"
                 };
+
+                // Country name and id mismatch
                 yield return new object[]
                 {
                     new[]
@@ -233,6 +253,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     },
                     ModuleConstants.ValidationErrors.CountryNameAndCodeDoesntMatch, "Test1"
                 };
+
+                // Invalid dynamic property values
                 yield return new object[]
                 {
                     new[]
@@ -350,6 +372,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     ModuleConstants.ValidationErrors.InvalidValue, "Test1"
                 };
 
+                // Not unique values for account
                 yield return new object[]
                 {
                     new[]
@@ -364,7 +387,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 ContactFullName = "Test1",
                                 AccountLogin = "Test1",
                                 AccountEmail = "test1@example.org",
-                                StoreId = "Store"
+                                StoreId = "TestStore"
                             }
                         },
                         new ImportRecord<ImportableContact>
@@ -377,11 +400,50 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                                 ContactFullName = "Test2",
                                 AccountLogin = "Test2",
                                 AccountEmail = "test2@example.org",
-                                StoreId = "Store"
+                                StoreId = "TestStore"
                             }
                         }
                     },
                     ModuleConstants.ValidationErrors.NotUniqueValue, "Test1"
+                };
+
+                // Invalid values for account
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                AccountLogin = "Test2",
+                                AccountEmail = "example..org",
+                                AccountType = "Invalid",
+                                AccountStatus = "Invalid",
+                                StoreId = "InvalidStore"
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                AccountLogin = "Test3",
+                                AccountEmail = "test3@example.org",
+                                AccountType = "Customer",
+                                AccountStatus = "Approved",
+                                StoreId = "TestStore"
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.InvalidValue, "Test1"
                 };
             }
         }
@@ -391,6 +453,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         {
             get
             {
+                // Duplicated by internal Id
                 yield return new object[]
                 {
                     new[]
@@ -400,6 +463,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     },
                     ModuleConstants.ValidationErrors.DuplicateError, "Test1"
                 };
+
+                // Duplicated by Outer Id
                 yield return new object[]
                 {
                     new[]
@@ -410,6 +475,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     ModuleConstants.ValidationErrors.DuplicateError,
                     "Test1"
                 };
+
+                // Missed required address fields if any optional specified
                 yield return new object[]
                 {
                     new[]
@@ -440,6 +507,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     },
                     ModuleConstants.ValidationErrors.MissingRequiredValues, "Test1"
                 };
+
+                // Exceeding max length of organization fields
                 var longString = new string('*', 1000);
                 yield return new object[]
                 {
@@ -555,12 +624,39 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
         private SignInManager<ApplicationUser> GetSignInManager()
         {
-            return new FakeSignInManager(new[] { new ApplicationUser { UserName = "Test1", Email = "test1@example.org" } });
+            return new FakeSignInManager(new[] { new ApplicationUser { UserName = "Test1", Email = "test1@example.org", StoreId = "TestStore" } });
+        }
+
+        private IStoreSearchService GetStoreSearchService()
+        {
+            var storeSearchServiceMock = new Mock<IStoreSearchService>();
+            storeSearchServiceMock.Setup(x => x.SearchStoresAsync(It.IsAny<StoreSearchCriteria>())).ReturnsAsync<StoreSearchCriteria, IStoreSearchService, StoreSearchResult>(searchCriteria =>
+            {
+                var stores = new List<Store> { new Store { Id = "TestStore", Name = "Test Store" }, new Store { Id = "TestStore2", Name = "Test Store 2" } };
+                return new StoreSearchResult { Results = stores.Where(store => searchCriteria.ObjectIds.Contains(store.Id)).ToList(), TotalCount = stores.Count };
+            });
+            return storeSearchServiceMock.Object;
+        }
+
+        private ISettingsManager GetSettingsManager()
+        {
+            var settingsManagerMock = new Mock<ISettingsManager>();
+            settingsManagerMock.Setup(x => x.GetObjectSettingAsync(It.IsAny<string>(), null, null))
+                .ReturnsAsync<string, string, string, ISettingsManager, ObjectSettingEntry>((name, _, __) =>
+                {
+                    var settings = new List<ObjectSettingEntry>
+                    {
+                        new ObjectSettingEntry { Name = PlatformConstants.Settings.Security.SecurityAccountTypes.Name, AllowedValues = new object[] { "Administrator", "Customer", "Manager" } },
+                        new ObjectSettingEntry { Name = PlatformConstants.Settings.Other.AccountStatuses.Name, AllowedValues = new object[] { "Approved", "Deleted", "New", "Rejected" } }
+                    };
+                    return settings.FirstOrDefault(setting => setting.Name == name);
+                });
+            return settingsManagerMock.Object;
         }
 
         private ImportContactsValidator GetContactsValidator()
         {
-            return new ImportContactsValidator(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager());
+            return new ImportContactsValidator(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager(), GetStoreSearchService(), GetSettingsManager());
         }
 
         private ImportOrganizationsValidator GetOrganizationsValidator()

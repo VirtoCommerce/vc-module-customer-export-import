@@ -94,10 +94,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string TimeZone { get; set; }
 
         [Optional]
-        [Name("User groups")]
-        public string UserGroups { get; set; }
-
-        [Optional]
         [Name("Salutation")]
         public string Salutation { get; set; }
 

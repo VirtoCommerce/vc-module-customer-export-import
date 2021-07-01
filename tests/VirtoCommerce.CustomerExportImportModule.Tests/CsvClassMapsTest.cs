@@ -119,9 +119,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         private static readonly Store Store = new Store { Id = "b2b-store", Name = "b2b-store" };
 
         private static readonly string ContactCsvHeader =
-            "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Associated Organization Ids;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Birthday;TimeZone;User groups;Salutation;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Emails;Sex;Job";
+            "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Associated Organization Ids;User groups;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Birthday;TimeZone;Salutation;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Emails;Sex;Job";
         private static readonly string ContactCsvRecord =
-            "contact_id;Anton;Boroda;Anton Boroda;outer_id;org_id;org_outer_id;Boroda ltd;org_id1, org_id2;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;new;04/14/1986 00:00:00;MSK;tag1, tag2;mr;en_US;TaxId;email;pickup;777, 555;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;boroda@ya.ru;Male;Developer";
+            "contact_id;Anton;Boroda;Anton Boroda;outer_id;org_id;org_outer_id;Boroda ltd;org_id1, org_id2;tag1, tag2;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;new;04/14/1986 00:00:00;MSK;mr;en_US;TaxId;email;pickup;777, 555;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;boroda@ya.ru;Male;Developer";
 
         [Fact]
         public void Export_ContactWithDynamicProperty_HeaderAndValuesAreCorrect()
@@ -264,6 +264,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 var expectedContact = (Contact)Contact.Clone();
                 expectedContact.Id = null; // not patched
                 expectedContact.AssociatedOrganizations = null; // not imported
+                expectedContact.Groups = null; // not imported
                 yield return new object[] { ContactCsvHeader, ContactCsvRecord, expectedContact, ContactOrganization };
                 yield return new object[]
                 {

@@ -17,7 +17,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             target.Phones = string.IsNullOrEmpty(Phones) ? null : Phones.Split(',').Select(phone => phone.Trim()).ToList();
             target.BusinessCategory = BusinessCategory;
             target.Description = Description;
-            target.Groups = string.IsNullOrEmpty(OrganizationGroups) ? null : OrganizationGroups.Split(',').Select(organizationGroups => organizationGroups.Trim()).ToList();
             target.DynamicProperties = DynamicProperties;
 
             target.Addresses ??= new List<Address>();

@@ -264,6 +264,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 var expectedContact = (Contact)Contact.Clone();
                 expectedContact.Id = null; // not patched
                 expectedContact.AssociatedOrganizations = null; // not imported
+                expectedContact.Groups = null; // not imported
                 yield return new object[] { ContactCsvHeader, ContactCsvRecord, expectedContact, ContactOrganization };
                 yield return new object[]
                 {

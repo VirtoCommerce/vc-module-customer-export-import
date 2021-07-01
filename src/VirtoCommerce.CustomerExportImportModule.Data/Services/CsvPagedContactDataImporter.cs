@@ -36,11 +36,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             try
             {
                 var internalIds = importContacts.Select(x => x.Record?.Id).Distinct()
-                    .Where(x => !x.IsNullOrEmpty())
+                    .Where(x => !string.IsNullOrEmpty(x))
                     .ToArray();
 
                 var outerIds = importContacts.Select(x => x.Record?.OuterId).Distinct()
-                    .Where(x => !x.IsNullOrEmpty())
+                    .Where(x => !string.IsNullOrEmpty(x))
                     .ToArray();
 
                 var existedContacts =
@@ -48,6 +48,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     .OfType<Contact>().ToArray();
 
                 SetIdToNullForNotExisted(importContacts, existedContacts);
+
+                SetIdToRealForExistedOuterId(importContacts, existedContacts);
 
                 var validationResult = await ValidateAsync(importContacts, importReporter);
 
@@ -67,13 +69,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     || (!ec.OuterId.IsNullOrEmpty() && ec.OuterId.EqualsInvariant(x.Record.OuterId)))
                 ).ToArray();
 
+                existedContacts = GetReducedExistedByWrongOuterId(updateImportContacts, existedContacts).OfType<Contact>().ToArray();
+
                 var createImportContacts = importContacts.Except(updateImportContacts).ToArray();
 
                 var internalOrgIds = importContacts.Select(x => x.Record?.OrganizationId).Distinct()
-                    .Where(x => !x.IsNullOrEmpty()).ToArray();
+                    .Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
                 var outerOrgIds = importContacts.Select(x => x.Record?.OrganizationOuterId).Distinct()
-                    .Where(x => !x.IsNullOrEmpty()).ToArray();
+                    .Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
                 var existedOrganizations =
                     (await SearchMembersByIdAndOuterIdAsync(internalOrgIds, outerOrgIds,
@@ -101,8 +105,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-
         private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<ImportableContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
+
         {
             foreach (var existedContact in existedContacts)
             {

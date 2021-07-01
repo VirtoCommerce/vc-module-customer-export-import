@@ -36,11 +36,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             try
             {
                 var internalIds = importOrganizations.Select(x => x.Record?.Id).Distinct()
-                    .Where(x => !x.IsNullOrEmpty())
+                    .Where(x => !string.IsNullOrEmpty(x))
                     .ToArray();
 
                 var outerIds = importOrganizations.Select(x => x.Record?.OuterId).Distinct()
-                    .Where(x => !x.IsNullOrEmpty())
+                    .Where(x => !string.IsNullOrEmpty(x))
                     .ToArray();
 
                 var existedOrganizations =
@@ -48,6 +48,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     .OfType<Organization>().ToArray();
 
                 SetIdToNullForNotExisted(importOrganizations, existedOrganizations);
+
+                SetIdToRealForExistedOuterId(importOrganizations, existedOrganizations);
 
                 var validationResult = await ValidateAsync(importOrganizations, importReporter);
 
@@ -66,6 +68,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     ec.Id.EqualsInvariant(x.Record.Id)
                     || (!ec.OuterId.IsNullOrEmpty() && ec.OuterId.EqualsInvariant(x.Record.OuterId)))
                 ).ToArray();
+
+                existedOrganizations = GetReducedExistedByWrongOuterId(updateImportOrganizations, existedOrganizations).OfType<Organization>().ToArray();
 
                 var createImportOrganizations = importOrganizations.Except(updateImportOrganizations).ToArray();
 

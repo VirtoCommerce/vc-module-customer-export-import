@@ -177,20 +177,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             return existedMembers;
         }
 
-        protected static void SetIdToNullForNotExisted(ImportRecord<TCsvMember>[] importContacts, TMember[] existedContacts)
-        {
-            foreach (var importContact in importContacts)
-            {
-                var existedContact =
-                    existedContacts.FirstOrDefault(x => x.Id.EqualsInvariant(importContact.Record.Id));
-
-                if (existedContact == null)
-                {
-                    importContact.Record.Id = null;
-                }
-            }
-        }
-
         private static async Task HandleBadDataErrorAsync(Action<ImportProgressInfo> progressCallback, ImportProgressInfo importProgress, ICsvCustomerImportReporter reporter, ReadingContext context, ImportErrorsContext errorsContext)
         {
             var importError = new ImportError { Error = "This row has invalid data. The data after field with not escaped quote was lost.", RawRow = context.RawRecord };
@@ -285,7 +271,33 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             configuration.MissingFieldFound = null;
         }
 
-        private static string GetReportFilePath(string filePath)
+
+        /// <summary>
+        /// Reduce existed members list. Some records may have been mistakenly selected for updating. When id and outer id from a file refs to different records in the system.
+        /// In that case record with outer id should be excepted from the list to updating. 
+        /// </summary>
+        /// <param name="updateImportRecords"></param>
+        /// <param name="existedMembers"></param>
+        /// <returns></returns>
+        protected Member[] GetReducedExistedByWrongOuterId(ImportRecord<TCsvMember>[] updateImportRecords, TMember[] existedMembers)
+        {
+            var result = existedMembers;
+
+            foreach (var importRecord in updateImportRecords.Where(x => !string.IsNullOrEmpty(x.Record.Id) && !string.IsNullOrEmpty(x.Record.OuterId)))
+            {
+                var otherExisted = existedMembers.FirstOrDefault(x => !x.Id.EqualsInvariant(importRecord.Record.Id) && x.OuterId.EqualsInvariant(importRecord.Record.OuterId));
+
+                if (otherExisted != null && !updateImportRecords.Any(x =>
+                    x.Record.OuterId.EqualsInvariant(otherExisted.OuterId) && (x.Record.Id.EqualsInvariant(otherExisted.Id) || string.IsNullOrEmpty(x.Record.Id))))
+                {
+                    result = result.Except(new[] { otherExisted }).ToArray();
+                }
+            }
+
+            return result;
+        }
+
+        protected static string GetReportFilePath(string filePath)
         {
             var fileName = Path.GetFileName(filePath);
             var fileExtension = Path.GetExtension(fileName);
@@ -311,6 +323,46 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             if (cancellationToken == null)
             {
                 throw new ArgumentNullException(nameof(cancellationToken));
+            }
+        }
+
+        /// <summary>
+        /// Set id to null for records that's not existed in the system. It reduce count of wrong duplicates.
+        /// All such records will be created if they are valid. 
+        /// </summary>
+        /// <param name="importMembers"></param>
+        /// <param name="existedMembers"></param>
+        protected static void SetIdToNullForNotExisted(ImportRecord<TCsvMember>[] importMembers, TMember[] existedMembers)
+        {
+            foreach (var importContact in importMembers)
+            {
+                var existedMember =
+                    existedMembers.FirstOrDefault(x => x.Id.EqualsInvariant(importContact.Record.Id));
+
+                if (existedMember == null)
+                {
+                    importContact.Record.Id = null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Set id for import records to the real existed value when the system record was found by outer id.
+        /// It allow us to find duplicates not only by outer id but by id also for such records. 
+        /// </summary>
+        /// <param name="importMembers"></param>
+        /// <param name="existedMembers"></param>
+        protected static void SetIdToRealForExistedOuterId(ImportRecord<TCsvMember>[] importMembers, TMember[] existedMembers)
+        {
+            foreach (var importContact in importMembers.Where(x => string.IsNullOrEmpty(x.Record.Id) && !string.IsNullOrEmpty(x.Record.OuterId)))
+            {
+                var existedMember =
+                    existedMembers.FirstOrDefault(x => !string.IsNullOrEmpty(x.OuterId) && x.OuterId.EqualsInvariant(importContact.Record.OuterId));
+
+                if (existedMember != null)
+                {
+                    importContact.Record.Id = existedMember.Id;
+                }
             }
         }
     }

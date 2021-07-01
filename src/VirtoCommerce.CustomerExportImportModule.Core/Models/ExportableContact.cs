@@ -48,6 +48,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             ContactFirstName = contact.FirstName;
             ContactLastName = contact.LastName;
             ContactFullName = contact.FullName;
+            Emails = contact.Emails.IsNullOrEmpty() ? null : string.Join(", ", contact.Emails);
             OrganizationId = organization?.Id;
             OrganizationOuterId = organization?.OuterId;
             OrganizationName = organization?.Name;

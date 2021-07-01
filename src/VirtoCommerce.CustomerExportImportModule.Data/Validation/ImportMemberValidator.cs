@@ -27,6 +27,27 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void AttachValidators()
         {
+            RuleFor(x => x.Record.Emails)
+                .Must(emailsColumnValue =>
+                {
+                    var emails = string.IsNullOrEmpty(emailsColumnValue) ? null : emailsColumnValue.Split(',').Select(email => email.Trim()).ToList();
+                    var emailValidator = new EmailValidator();
+                    return emails == null || emails.All(email => emailValidator.Validate(email).IsValid);
+                })
+                .WithInvalidValueCodeAndMessage("Emails")
+                .WithImportState()
+                .DependentRules(() => {
+                    RuleFor(x => x.Record.Emails)
+                        .Must(emailsColumnValue =>
+                        {
+                            var emails = string.IsNullOrEmpty(emailsColumnValue) ? null : emailsColumnValue.Split(',').Select(email => email.Trim()).ToList();
+                            return emails == null || emails.All(email => email.Length <= 254);
+                        })
+                        .WithErrorCode(ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength)
+                        .WithMessage(string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength], "Emails", 254))
+                        .WithImportState();
+                });
+
             RuleFor(x => x.Record.Phones)
                 .Must(phonesColumnValue =>
                 {

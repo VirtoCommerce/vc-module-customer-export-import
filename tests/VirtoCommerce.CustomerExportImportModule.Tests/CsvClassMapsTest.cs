@@ -86,6 +86,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             BirthDate = new DateTime(1986, 04, 14),
             TimeZone = "MSK",
             Phones = new List<string>(new[] { "777", "555" }),
+            Emails = new List<string>(new[] { "boroda@ya.ru" }),
             Groups = new List<string>(new[] { "tag1", "tag2" }),
             Salutation = "mr",
             DefaultLanguage = "en_US",
@@ -118,9 +119,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         private static readonly Store Store = new Store { Id = "b2b-store", Name = "b2b-store" };
 
         private static readonly string ContactCsvHeader =
-            "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Associated Organization Ids;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Birthday;TimeZone;User groups;Salutation;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Sex;Job";
+            "Contact Id;Contact First Name;Contact Last Name;Contact Full Name;Contact Outer Id;Organization Id;Organization Outer Id;Organization Name;Associated Organization Ids;Account Id;Account Login;Store Id;Store Name;Account Email;Account Type;Account Status;Email Verified;Contact Status;Birthday;TimeZone;User groups;Salutation;Default language;Taxpayer ID;Preferred communication;Preferred delivery;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Emails;Sex;Job";
         private static readonly string ContactCsvRecord =
-            "contact_id;Anton;Boroda;Anton Boroda;outer_id;org_id;org_outer_id;Boroda ltd;org_id1, org_id2;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;new;04/14/1986 00:00:00;MSK;tag1, tag2;mr;en_US;TaxId;email;pickup;777, 555;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Male;Developer";
+            "contact_id;Anton;Boroda;Anton Boroda;outer_id;org_id;org_outer_id;Boroda ltd;org_id1, org_id2;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;new;04/14/1986 00:00:00;MSK;tag1, tag2;mr;en_US;TaxId;email;pickup;777, 555;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;boroda@ya.ru;Male;Developer";
 
         [Fact]
         public void Export_ContactWithDynamicProperty_HeaderAndValuesAreCorrect()
@@ -221,8 +222,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             stream.Seek(0, SeekOrigin.Begin);
 
             //Assert
-            var expected = "Organization Id;Organization Outer Id;Organization Name;Parent Organization Name;Parent Organization Id;Parent Organization Outer Id;Business category;Description;Organization Groups;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Size\r\n"
-                           + "org_id1;OuterId1;Boroda ltd;parent_outer_id;parent_otg_id;parent_outer_id;Market Place;org desc;tag1, tag2;777, 555;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Huge\r\n";
+            var expected = "Organization Id;Organization Outer Id;Organization Name;Parent Organization Name;Parent Organization Id;Parent Organization Outer Id;Business category;Description;Organization Groups;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Emails;Size\r\n"
+                           + "org_id1;OuterId1;Boroda ltd;parent_outer_id;parent_otg_id;parent_outer_id;Market Place;org desc;tag1, tag2;777, 555;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;;Huge\r\n";
 
             var sr = new StreamReader(stream);
             var csv = sr.ReadToEnd();

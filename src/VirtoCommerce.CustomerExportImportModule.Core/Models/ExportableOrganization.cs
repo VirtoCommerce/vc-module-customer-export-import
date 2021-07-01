@@ -43,6 +43,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             OuterId = organization.OuterId;
             OrganizationName = organization.Name;
             ParentOrganizationName = parentOrganization?.Name;
+            Emails = organization.Emails.IsNullOrEmpty() ? null : string.Join(", ", organization.Emails);
             ParentOrganizationId = organization.ParentId;
             ParentOrganizationOuterId = parentOrganization?.OuterId;
             AddressType = address?.AddressType.ToString();

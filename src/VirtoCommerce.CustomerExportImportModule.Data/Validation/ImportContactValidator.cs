@@ -1,4 +1,3 @@
-using System.Linq;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;

@@ -73,7 +73,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                     RuleFor(x => x.Record.StoreId)
                         .MustAsync(async (storeId, _) =>
                         {
-                            var storeSearchResult = await _storeSearchService.SearchStoresAsync(new StoreSearchCriteria { ObjectIds = new List<string> { storeId }, Take = 0 });
+                            var storeSearchResult = await _storeSearchService.SearchStoresAsync(new StoreSearchCriteria { StoreIds = new [] { storeId }, Take = 0 });
                             return storeSearchResult.TotalCount == 1;
                         })
                         .WithInvalidValueCodeAndMessage("Store Id")

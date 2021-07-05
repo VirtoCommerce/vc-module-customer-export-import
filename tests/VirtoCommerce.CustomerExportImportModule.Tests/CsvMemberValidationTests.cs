@@ -633,7 +633,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             storeSearchServiceMock.Setup(x => x.SearchStoresAsync(It.IsAny<StoreSearchCriteria>())).ReturnsAsync<StoreSearchCriteria, IStoreSearchService, StoreSearchResult>(searchCriteria =>
             {
                 var stores = new List<Store> { new Store { Id = "TestStore", Name = "Test Store" }, new Store { Id = "TestStore2", Name = "Test Store 2" } };
-                return new StoreSearchResult { Results = stores.Where(store => searchCriteria.ObjectIds.Contains(store.Id)).ToList(), TotalCount = stores.Count };
+                return new StoreSearchResult { Results = stores.Where(store => searchCriteria.StoreIds.Contains(store.Id)).ToList(), TotalCount = stores.Count };
             });
             return storeSearchServiceMock.Object;
         }

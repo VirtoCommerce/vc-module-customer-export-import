@@ -13,12 +13,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IStoreSearchService _storeSearchService;
         private readonly ISettingsManager _settingsManager;
+        private readonly ImportRecord<ImportableContact>[] _allRecords;
 
-        public ImportContactValidator(UserManager<ApplicationUser> userManager, IStoreSearchService storeSearchService, ISettingsManager settingsManager)
+        public ImportContactValidator(UserManager<ApplicationUser> userManager, IStoreSearchService storeSearchService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
         {
             _userManager = userManager;
             _storeSearchService = storeSearchService;
             _settingsManager = settingsManager;
+            _allRecords = allRecords;
             AttachValidators();
         }
 
@@ -103,7 +105,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .WithExceededMaxLengthCodeAndMessage("Preferred Communication", 64)
                 .WithImportState();
 
-            RuleFor(x => x).SetValidator(_ => new ImportAccountValidator(_userManager, _storeSearchService, _settingsManager));
+            RuleFor(x => x).SetValidator(_ => new ImportAccountValidator(_userManager, _storeSearchService, _settingsManager, _allRecords));
         }
     }
 }

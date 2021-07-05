@@ -33,7 +33,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         {
             RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAreNotDuplicatesValidator<ImportableContact>());
             RuleForEach(importRecords => importRecords).SetValidator(new ImportMemberValidator<ImportableContact>(_countriesService, _dynamicPropertyDictionaryItemsSearchService));
-            RuleForEach(importRecords => importRecords).SetValidator(new ImportContactValidator(_signInManager.UserManager, _storeSearchService, _settingsManager));
+            RuleForEach(importRecords => importRecords).SetValidator(allRecords => new ImportContactValidator(_signInManager.UserManager, _storeSearchService, _settingsManager, allRecords));
         }
     }
 }

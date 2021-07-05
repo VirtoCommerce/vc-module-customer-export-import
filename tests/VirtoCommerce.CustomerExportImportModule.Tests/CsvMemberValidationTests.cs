@@ -445,6 +445,45 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     },
                     ModuleConstants.ValidationErrors.InvalidValue, "Test1"
                 };
+
+                // Duplicated account
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                AccountLogin = "Test3",
+                                AccountEmail = "test3@example.org",
+                                AccountType = "Customer",
+                                AccountStatus = "Approved",
+                                StoreId = "TestStore"
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                AccountLogin = "Test3",
+                                AccountEmail = "test3@example.org",
+                                AccountType = "Customer",
+                                AccountStatus = "Approved",
+                                StoreId = "TestStore"
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.NotUniqueValue, "Test2"
+                };
             }
         }
 

@@ -78,7 +78,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     Email = "c@mail.com",
                     UserType = "customer",
                     Status = "new",
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    PasswordExpired = true,
                 }
             },
             Status = "new",
@@ -253,6 +254,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var contact = new Contact();
             csvContact.PatchModel(contact);
             var organization = csvContact.ToOrganization();
+
+            if (expectedContact.SecurityAccounts.Any() && contact.SecurityAccounts.Any())
+            {
+                contact.SecurityAccounts.First().Id = expectedContact.SecurityAccounts.First().Id;
+            }
+
             Assert.Equal(expectedContact, contact, new ByFieldValuesEqualityComparer<Contact>());
             Assert.Equal(expectedOrganization, organization, new ByFieldValuesEqualityComparer<Organization>());
         }

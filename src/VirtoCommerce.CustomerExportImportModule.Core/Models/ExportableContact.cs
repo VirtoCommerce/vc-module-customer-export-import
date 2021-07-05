@@ -7,7 +7,7 @@ using VirtoCommerce.StoreModule.Core.Model;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ExportableContact: CsvContact
+    public sealed class ExportableContact : CsvContact
     {
         [Index(0)]
         public override string Id { get; set; }
@@ -42,6 +42,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Optional]
         [Name("User groups")]
         public string UserGroups { get; set; }
+
+        [Index(10)]
+        [Optional]
+        [Name("Account Id")]
+        public string AccountId { get; set; }
 
         public ExportableContact FromModels(Contact contact, Organization organization, Store store)
         {

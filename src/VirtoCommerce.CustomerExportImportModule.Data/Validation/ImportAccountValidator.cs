@@ -68,15 +68,18 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                     RuleFor(x => x.Record.StoreId)
                         .NotEmpty()
                         .WithMissingRequiredValueCodeAndMessage("Store Id")
-                        .WithImportState();
-                    RuleFor(x => x.Record.StoreId)
-                        .MustAsync(async (storeId, _) =>
+                        .WithImportState()
+                        .DependentRules(() =>
                         {
-                            var storeSearchResult = await _storeSearchService.SearchStoresAsync(new StoreSearchCriteria { StoreIds = new [] { storeId }, Take = 0 });
-                            return storeSearchResult.TotalCount == 1;
-                        })
-                        .WithInvalidValueCodeAndMessage("Store Id")
-                        .WithImportState();
+                            RuleFor(x => x.Record.StoreId)
+                                .MustAsync(async (storeId, _) =>
+                                {
+                                    var storeSearchResult = await _storeSearchService.SearchStoresAsync(new StoreSearchCriteria { StoreIds = new [] { storeId }, Take = 0 });
+                                    return storeSearchResult.TotalCount == 1;
+                                })
+                                .WithInvalidValueCodeAndMessage("Store Id")
+                                .WithImportState();
+                        });
 
                     RuleFor(x => x.Record.AccountType)
                         .MustAsync(async (accountType, _) =>

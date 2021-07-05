@@ -115,14 +115,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private async Task CreateAccountsForContacts(Contact[] contactsForSave)
         {
             foreach (var contact in contactsForSave)
-            {
                 foreach (var account in contact.SecurityAccounts)
                 {
                     account.MemberId = contact.Id;
 
                     await _userManager.CreateAsync(account, ModuleConstants.DefaultContactAccountPassword);
                 }
-            }
         }
 
         private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<ImportableContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)

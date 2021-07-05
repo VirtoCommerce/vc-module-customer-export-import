@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.Platform.Core;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model.Search;
@@ -49,7 +50,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                 {
                                     var firstRecordWithAccountLogin = _allRecords.FirstOrDefault(otherRecord => string.Equals(otherRecord.Record.AccountLogin, userName, StringComparison.Ordinal));
                                     return await _userManager.FindByNameAsync(userName) == null &&
-                                           (_allRecords.All(otherRecord => !string.Equals(otherRecord.Record.AccountLogin, userName, StringComparison.Ordinal)) || firstRecordWithAccountLogin == thisRecord);
+                                           (_allRecords.All(otherRecord => !userName.EqualsInvariant(otherRecord.Record.AccountLogin)) || firstRecordWithAccountLogin == thisRecord);
                                 })
                                 .WithNotUniqueValueCodeAndMessage("Account Login")
                                 .WithImportState();
@@ -71,7 +72,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                         {
                                             var firstRecordWithAccountEmail = _allRecords.FirstOrDefault(otherRecord => string.Equals(otherRecord.Record.AccountLogin, email, StringComparison.Ordinal));
                                             return await _userManager.FindByEmailAsync(email) == null &&
-                                                   (_allRecords.All(otherRecord => !string.Equals(otherRecord.Record.AccountLogin, email, StringComparison.Ordinal)) || firstRecordWithAccountEmail == thisRecord);
+                                                   (_allRecords.All(otherRecord => !email.EqualsInvariant(otherRecord.Record.AccountLogin)) || firstRecordWithAccountEmail == thisRecord);
                                         })
                                         .WithNotUniqueValueCodeAndMessage("Account Email")
                                         .WithImportState();

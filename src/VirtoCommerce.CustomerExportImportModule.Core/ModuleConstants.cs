@@ -9,6 +9,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
 
         public const int MByte = 1024 * KByte;
 
+        public const string DefaultContactAccountPassword = "Password1!";
+
         public static class ValidationErrors
         {
             public const string DuplicateError = "Duplicate";

@@ -48,9 +48,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                             RuleFor(x => x.Record.AccountLogin)
                                 .MustAsync(async (thisRecord, userName, __) =>
                                 {
-                                    var firstRecordWithAccountLogin = _allRecords.FirstOrDefault(otherRecord => userName.EqualsInvariant(otherRecord.Record.AccountLogin));
+                                    var lastRecordWithAccountLogin = _allRecords.LastOrDefault(otherRecord => userName.EqualsInvariant(otherRecord.Record.AccountLogin));
                                     return await _userManager.FindByNameAsync(userName) == null &&
-                                           (_allRecords.All(otherRecord => !userName.EqualsInvariant(otherRecord.Record.AccountLogin)) || firstRecordWithAccountLogin == thisRecord);
+                                           (_allRecords.All(otherRecord => !userName.EqualsInvariant(otherRecord.Record.AccountLogin)) || lastRecordWithAccountLogin == thisRecord);
                                 })
                                 .WithNotUniqueValueCodeAndMessage("Account Login")
                                 .WithImportState();
@@ -70,9 +70,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                     RuleFor(x => x.Record.AccountEmail)
                                         .MustAsync(async (thisRecord, email, __) =>
                                         {
-                                            var firstRecordWithAccountEmail = _allRecords.FirstOrDefault(otherRecord => email.EqualsInvariant(otherRecord.Record.AccountEmail));
+                                            var lastRecordWithAccountEmail = _allRecords.LastOrDefault(otherRecord => email.EqualsInvariant(otherRecord.Record.AccountEmail));
                                             return await _userManager.FindByEmailAsync(email) == null &&
-                                                   (_allRecords.All(otherRecord => !email.EqualsInvariant(otherRecord.Record.AccountEmail)) || firstRecordWithAccountEmail == thisRecord);
+                                                   (_allRecords.All(otherRecord => !email.EqualsInvariant(otherRecord.Record.AccountEmail)) || lastRecordWithAccountEmail == thisRecord);
                                         })
                                         .WithNotUniqueValueCodeAndMessage("Account Email")
                                         .WithImportState();

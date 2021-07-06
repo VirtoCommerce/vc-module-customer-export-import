@@ -50,7 +50,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 });
             }
 
-            target.SecurityAccounts ??= new List<ApplicationUser>();
+            target.SecurityAccounts = new List<ApplicationUser>();
             var accountSpecified = new[] { AccountLogin, AccountEmail }.Any(accountField => !string.IsNullOrEmpty(accountField));
 
             if (accountSpecified)

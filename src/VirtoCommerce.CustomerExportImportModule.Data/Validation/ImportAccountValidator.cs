@@ -33,7 +33,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         {
             When(x => new[]
                 {
-                    x.Record.AccountId, x.Record.AccountType, x.Record.AccountStatus, x.Record.AccountLogin, x.Record.AccountEmail, x.Record.StoreId, x.Record.StoreName,
+                    x.Record.AccountType, x.Record.AccountStatus, x.Record.AccountLogin, x.Record.AccountEmail, x.Record.StoreId, x.Record.StoreName,
                     x.Record.EmailVerified.ToString()
                 }.Any(field => !string.IsNullOrEmpty(field))
                 , () =>
@@ -88,7 +88,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                             RuleFor(x => x.Record.StoreId)
                                 .MustAsync(async (storeId, _) =>
                                 {
-                                    var storeSearchResult = await _storeSearchService.SearchStoresAsync(new StoreSearchCriteria { StoreIds = new [] { storeId }, Take = 0 });
+                                    var storeSearchResult = await _storeSearchService.SearchStoresAsync(new StoreSearchCriteria { StoreIds = new[] { storeId }, Take = 0 });
                                     return storeSearchResult.TotalCount == 1;
                                 })
                                 .WithInvalidValueCodeAndMessage("Store Id")

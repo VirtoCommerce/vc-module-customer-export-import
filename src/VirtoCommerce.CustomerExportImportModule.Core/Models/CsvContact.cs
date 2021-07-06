@@ -29,27 +29,23 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Contact Full Name")]
         [Required]
         public virtual string ContactFullName { get; set; }
-        
+
         [Optional]
         [JsonProperty("contactOuterId")]
         [Name("Contact Outer Id")]
         public override string OuterId { get; set; }
-        
+
         [Optional]
         [Name("Organization Id")]
         public virtual string OrganizationId { get; set; }
-        
+
         [Optional]
         [Name("Organization Outer Id")]
         public virtual string OrganizationOuterId { get; set; }
-        
+
         [Optional]
         [Name("Organization Name")]
         public virtual string OrganizationName { get; set; }
-
-        [Optional]
-        [Name("Account Id")]
-        public string AccountId { get; set; }
 
         [Optional]
         [Name("Account Login")]

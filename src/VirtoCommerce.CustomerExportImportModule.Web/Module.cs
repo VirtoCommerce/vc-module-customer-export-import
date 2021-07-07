@@ -31,17 +31,22 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             // database initialization
             var connectionString = Configuration.GetConnectionString("VirtoCommerce.CustomerExportImport") ?? Configuration.GetConnectionString("VirtoCommerce");
             serviceCollection.AddDbContext<VirtoCommerceCustomerExportImportDbContext>(options => options.UseSqlServer(connectionString));
-
-
+            
             serviceCollection.AddTransient<ICustomerExportPagedDataSourceFactory, CustomerExportPagedDataSourceFactory>();
             serviceCollection.AddTransient<IExportWriterFactory, ExportWriterFactory>();
             serviceCollection.AddTransient<ICustomerDataExporter, CustomerDataExporter>();
+
             serviceCollection.AddTransient<IMemberSearchService, ExportImportMemberSearchService>();
             serviceCollection.AddSingleton<ICustomerImportPagedDataSourceFactory, CustomerImportPagedDataSourceFactory>();
+
             serviceCollection.AddTransient<ICsvCustomerDataValidator, CsvCustomerDataValidator>();
             serviceCollection.AddTransient<IValidator<ImportRecord<ImportableContact>[]>, ImportContactsValidator>();
             serviceCollection.AddTransient<IValidator<ImportRecord<ImportableOrganization>[]>, ImportOrganizationsValidator>();
+            
+            serviceCollection.AddTransient<IPasswordGenerator, PasswordGenerator>();
+
             serviceCollection.AddSingleton<ICsvCustomerImportReporterFactory, CsvCustomerImportReporterFactory>();
+
             serviceCollection.AddTransient<ICsvPagedCustomerDataImporter, CsvPagedContactDataImporter>();
             serviceCollection.AddTransient<ICsvPagedCustomerDataImporter, CsvPagedOrganizationDataImporter>();
 

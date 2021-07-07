@@ -723,15 +723,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
         private IPasswordValidator<ApplicationUser> GetPasswordValidator()
         {
-            ISecurityRepository SecurityRepositoryFactory() => Mock.Of<ISecurityRepository>();
-            var passwordOptionsMock = new Mock<IOptions<PasswordOptionsExtended>>();
-            passwordOptionsMock.Setup(o => o.Value).Returns(new PasswordOptionsExtended());
-
-            var passwordHasher = new Mock<IPasswordHasher<ApplicationUser>>();
-            passwordHasher.Setup(x => x.VerifyHashedPassword(It.IsAny<ApplicationUser>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(PasswordVerificationResult.Success);
-
-            return new CustomPasswordValidator(new CustomIdentityErrorDescriber(), SecurityRepositoryFactory, passwordHasher.Object, passwordOptionsMock.Object);
+            return new PasswordValidator<ApplicationUser>();
         }
 
         private SignInManager<ApplicationUser> GetSignInManager()

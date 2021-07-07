@@ -14,15 +14,18 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         private readonly ICountriesService _countriesService;
         private readonly IDynamicPropertyDictionaryItemsSearchService _dynamicPropertyDictionaryItemsSearchService;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IPasswordValidator<ApplicationUser> _passwordValidator;
         private readonly IStoreSearchService _storeSearchService;
         private readonly ISettingsManager _settingsManager;
 
-        public ImportContactsValidator(ICountriesService countriesService, IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService, SignInManager<ApplicationUser> signInManager,
+        public ImportContactsValidator(ICountriesService countriesService, IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService,
+            SignInManager<ApplicationUser> signInManager, IPasswordValidator<ApplicationUser> passwordValidator,
             IStoreSearchService storeSearchService, ISettingsManager settingsManager)
         {
             _countriesService = countriesService;
             _dynamicPropertyDictionaryItemsSearchService = dynamicPropertyDictionaryItemsSearchService;
             _signInManager = signInManager;
+            _passwordValidator = passwordValidator;
             _storeSearchService = storeSearchService;
             _settingsManager = settingsManager;
 
@@ -33,7 +36,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         {
             RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAreNotDuplicatesValidator<ImportableContact>());
             RuleForEach(importRecords => importRecords).SetValidator(new ImportMemberValidator<ImportableContact>(_countriesService, _dynamicPropertyDictionaryItemsSearchService));
-            RuleForEach(importRecords => importRecords).SetValidator(allRecords => new ImportContactValidator(_signInManager.UserManager, _storeSearchService, _settingsManager, allRecords));
+            RuleForEach(importRecords => importRecords).SetValidator(allRecords => new ImportContactValidator(_signInManager.UserManager, _passwordValidator, _storeSearchService, _settingsManager, allRecords));
         }
     }
 }

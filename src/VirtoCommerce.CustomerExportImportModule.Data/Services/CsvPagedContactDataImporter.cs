@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
-using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
@@ -119,7 +118,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 {
                     account.MemberId = contact.Id;
 
-                    await _userManager.CreateAsync(account, ModuleConstants.DefaultContactAccountPassword);
+                    if (string.IsNullOrEmpty(account.Password))
+                    {
+                        await _userManager.CreateAsync(account);
+                    }
+                    else
+                    {
+                        await _userManager.CreateAsync(account, account.Password);
+                    }
                 }
         }
 

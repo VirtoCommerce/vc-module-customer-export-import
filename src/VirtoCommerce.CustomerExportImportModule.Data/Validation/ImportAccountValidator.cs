@@ -2,8 +2,10 @@ using System;
 using System.Linq;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
+using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
@@ -16,13 +18,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
     public class ImportAccountValidator : AbstractValidator<ImportRecord<ImportableContact>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IPasswordValidator<ApplicationUser> _passwordValidator;
         private readonly IStoreSearchService _storeSearchService;
         private readonly ISettingsManager _settingsManager;
         private readonly ImportRecord<ImportableContact>[] _allRecords;
 
-        public ImportAccountValidator(UserManager<ApplicationUser> userManager, IStoreSearchService storeSearchService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
+        public ImportAccountValidator(UserManager<ApplicationUser> userManager, IPasswordValidator<ApplicationUser> passwordValidator, IStoreSearchService storeSearchService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
         {
             _userManager = userManager;
+            _passwordValidator = passwordValidator;
             _storeSearchService = storeSearchService;
             _settingsManager = settingsManager;
             _allRecords = allRecords;
@@ -94,6 +98,18 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                 .WithInvalidValueCodeAndMessage("Store Id")
                                 .WithImportState();
                         });
+
+                    RuleFor(x => x.Record.Password)
+                        .MustAsync(async (thisRecord, password, _) =>
+                        {
+                            var contact = new Contact();
+                            thisRecord.Record.PatchModel(contact);
+                            return await _passwordValidator.ValidateAsync(_userManager, contact.SecurityAccounts.FirstOrDefault(), password) == IdentityResult.Success;
+                        })
+                        .When(x => !string.IsNullOrEmpty(x.Record.Password))
+                        .WithErrorCode(ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy)
+                        .WithMessage(string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy], "Password"))
+                        .WithImportState();
 
                     RuleFor(x => x.Record.AccountType)
                         .MustAsync(async (accountType, _) =>

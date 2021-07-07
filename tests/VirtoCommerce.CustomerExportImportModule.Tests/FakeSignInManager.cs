@@ -10,11 +10,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 {
     public class FakeSignInManager : SignInManager<ApplicationUser>
     {
-        public FakeSignInManager(ApplicationUser[] existingUsers)
-            : base(new FakeUserManager(existingUsers),
+        public FakeSignInManager(ApplicationUser[] existingUsers, IPasswordValidator<ApplicationUser> passwordValidator, IOptions<IdentityOptions> options)
+            : base(new FakeUserManager(existingUsers, passwordValidator),
                 new Mock<IHttpContextAccessor>().Object,
                 new Mock<IUserClaimsPrincipalFactory<ApplicationUser>>().Object,
-                new Mock<IOptions<IdentityOptions>>().Object,
+                options,
                 new Mock<ILogger<SignInManager<ApplicationUser>>>().Object,
                 new Mock<IAuthenticationSchemeProvider>().Object,
                 new Mock<IUserConfirmation<ApplicationUser>>().Object)

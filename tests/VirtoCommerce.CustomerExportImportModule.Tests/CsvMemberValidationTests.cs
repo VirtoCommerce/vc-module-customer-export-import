@@ -372,41 +372,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     ModuleConstants.ValidationErrors.InvalidValue, "Test1"
                 };
 
-                // Not unique values for account
-                yield return new object[]
-                {
-                    new[]
-                    {
-                        new ImportRecord<ImportableContact>
-                        {
-                            Record = new ImportableContact
-                            {
-                                Id = "TestId1",
-                                ContactFirstName = "Test",
-                                ContactLastName = "1",
-                                ContactFullName = "Test1",
-                                AccountLogin = "Test1",
-                                AccountEmail = "test1@example.org",
-                                StoreId = "TestStore"
-                            }
-                        },
-                        new ImportRecord<ImportableContact>
-                        {
-                            Record = new ImportableContact
-                            {
-                                Id = "TestId2",
-                                ContactFirstName = "Test",
-                                ContactLastName = "2",
-                                ContactFullName = "Test2",
-                                AccountLogin = "Test2",
-                                AccountEmail = "test2@example.org",
-                                StoreId = "TestStore"
-                            }
-                        }
-                    },
-                    ModuleConstants.ValidationErrors.NotUniqueValue, "Test1"
-                };
-
                 // Invalid values for account
                 yield return new object[]
                 {
@@ -446,7 +411,42 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     ModuleConstants.ValidationErrors.InvalidValue, "Test1"
                 };
 
-                // Duplicated account
+                // Not unique values (existing in the system) for account
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                AccountLogin = "Test1",
+                                AccountEmail = "test1@example.org",
+                                StoreId = "TestStore"
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                AccountLogin = "Test2",
+                                AccountEmail = "test2@example.org",
+                                StoreId = "TestStore"
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.NotUniqueValue, "Test1"
+                };
+
+                // Not unique values (existing in the file) for account
                 yield return new object[]
                 {
                     new[]
@@ -482,7 +482,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                             }
                         }
                     },
-                    ModuleConstants.ValidationErrors.NotUniqueValue, "Test2"
+                    ModuleConstants.ValidationErrors.NotUniqueValue, "Test1"
                 };
             }
         }

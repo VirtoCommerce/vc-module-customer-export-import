@@ -3,26 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Security;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
     public sealed class CsvPagedContactDataImporter : CsvPagedDataImporter<ImportableContact, Contact>
     {
         private readonly IMemberService _memberService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public override string MemberType => nameof(Contact);
 
         public CsvPagedContactDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<ImportableContact>[]> importContactValidator
-            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
+            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver, UserManager<ApplicationUser> userManager)
         : base(memberSearchService, dataValidator, dataSourceFactory, importContactValidator, importReporterFactory, blobUrlResolver)
         {
             _memberService = memberService;
+            _userManager = userManager;
         }
 
         protected override async Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICustomerImportPagedDataSource<ImportableContact> dataSource,
@@ -91,6 +96,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 await _memberService.SaveChangesAsync(contactsForSave);
 
+                await CreateAccountsForContacts(contactsForSave);
+
                 importProgress.ContactsCreated += newContacts.Length;
                 importProgress.ContactsUpdated += existedContacts.Length;
             }
@@ -103,6 +110,17 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 importProgress.ProcessedCount = Math.Min(dataSource.CurrentPageNumber * dataSource.PageSize, importProgress.TotalCount);
                 importProgress.ErrorCount = importProgress.ProcessedCount - importProgress.ContactsCreated - importProgress.ContactsUpdated;
             }
+        }
+
+        private async Task CreateAccountsForContacts(Contact[] contactsForSave)
+        {
+            foreach (var contact in contactsForSave)
+                foreach (var account in contact.SecurityAccounts)
+                {
+                    account.MemberId = contact.Id;
+
+                    await _userManager.CreateAsync(account, ModuleConstants.DefaultContactAccountPassword);
+                }
         }
 
         private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<ImportableContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)

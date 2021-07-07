@@ -8,7 +8,7 @@ using Address = VirtoCommerce.CustomerModule.Core.Model.Address;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ImportableContact: CsvContact
+    public sealed class ImportableContact : CsvContact
     {
         public void PatchModel(Contact target)
         {
@@ -50,21 +50,21 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 });
             }
 
-            target.SecurityAccounts ??= new List<ApplicationUser>();
-            var accountSpecified = new[] { AccountId, AccountLogin, AccountEmail }.Any(accountField => !string.IsNullOrEmpty(accountField));
+            target.SecurityAccounts = new List<ApplicationUser>();
+            var accountSpecified = new[] { AccountLogin, AccountEmail }.Any(accountField => !string.IsNullOrEmpty(accountField));
 
             if (accountSpecified)
             {
                 target.SecurityAccounts.Add(
                     new ApplicationUser
                     {
-                        Id = AccountId,
                         StoreId = StoreId,
                         UserName = AccountLogin,
                         Email = AccountEmail,
                         UserType = AccountType,
                         Status = AccountStatus,
-                        EmailConfirmed = EmailVerified ?? false
+                        EmailConfirmed = EmailVerified ?? false,
+                        PasswordExpired = true,
                     }
                 );
             }

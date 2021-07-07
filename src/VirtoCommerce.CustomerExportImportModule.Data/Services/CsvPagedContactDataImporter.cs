@@ -18,15 +18,17 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     {
         private readonly IMemberService _memberService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IPasswordGenerator _passwordGenerator;
 
         public override string MemberType => nameof(Contact);
 
         public CsvPagedContactDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<ImportableContact>[]> importContactValidator
-            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver, UserManager<ApplicationUser> userManager)
+            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver, UserManager<ApplicationUser> userManager, IPasswordGenerator passwordGenerator)
         : base(memberSearchService, dataValidator, dataSourceFactory, importContactValidator, importReporterFactory, blobUrlResolver)
         {
             _memberService = memberService;
             _userManager = userManager;
+            _passwordGenerator = passwordGenerator;
         }
 
         protected override async Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICustomerImportPagedDataSource<ImportableContact> dataSource,
@@ -120,7 +122,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                     if (string.IsNullOrEmpty(account.Password))
                     {
-                        await _userManager.CreateAsync(account);
+                        var generatedPassword = _passwordGenerator.GeneratePassword();
+                        await _userManager.CreateAsync(account, generatedPassword);
                     }
                     else
                     {

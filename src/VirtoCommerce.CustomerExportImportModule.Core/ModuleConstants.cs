@@ -38,6 +38,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
             public const string NotUniqueValue = "not-unique-value";
 
             public const string CountryNameAndCodeDoesntMatch = "country-name-and-code-doesnt-match";
+
+            public const string PasswordDoesntMeetSecurityPolicy = "password-doesnt-meet-security-policy";
         }
 
         public static readonly Dictionary<string, string> ValidationMessages = new Dictionary<string, string>
@@ -47,7 +49,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
             { ValidationErrors.ArrayValuesExceedingMaxLength, "Every value in column '{0}' may have maximum {1} characters. The number of values is unlimited." },
             { ValidationErrors.InvalidValue, "This row has invalid value in the column '{0}'." },
             { ValidationErrors.NotUniqueValue, "Value in column '{0}' should be unique." },
-            { ValidationErrors.CountryNameAndCodeDoesntMatch, "The value in column Country Code is not for the country specified in Country column" }
+            { ValidationErrors.CountryNameAndCodeDoesntMatch, "The value in column Country Code is not for the country specified in Country column" },
+            { ValidationErrors.PasswordDoesntMeetSecurityPolicy, "Password doesn’t meet the platform security policy. Please, contact administrator" }
         };
 
         public static class Features

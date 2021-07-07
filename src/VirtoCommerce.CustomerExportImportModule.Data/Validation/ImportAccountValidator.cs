@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.CustomerModule.Core.Model;
@@ -106,7 +107,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                             return await _passwordValidator.ValidateAsync(_userManager, contact.SecurityAccounts.FirstOrDefault(), password) == IdentityResult.Success;
                         })
                         .When(x => !string.IsNullOrEmpty(x.Record.Password))
-                        .WithInvalidValueCodeAndMessage("Password")
+                        .WithErrorCode(ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy)
+                        .WithMessage(string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy], "Password"))
                         .WithImportState();
 
                     RuleFor(x => x.Record.AccountType)

@@ -19,17 +19,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     {
         private readonly IMemberService _memberService;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public override string MemberType => nameof(Contact);
 
         public CsvPagedContactDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<ImportableContact>[]> importContactValidator
-            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver, UserManager<ApplicationUser> userManager)
         : base(memberSearchService, dataValidator, dataSourceFactory, importContactValidator, importReporterFactory, blobUrlResolver)
         {
             _memberService = memberService;
             _userManager = userManager;
-            _signInManager = signInManager;
         }
 
         protected override async Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICustomerImportPagedDataSource<ImportableContact> dataSource,

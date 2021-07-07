@@ -13,12 +13,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
     {
         private readonly ApplicationUser[] _existingUsers;
 
-        public FakeUserManager(ApplicationUser[] existingUsers)
+        public FakeUserManager(ApplicationUser[] existingUsers, IPasswordValidator<ApplicationUser> passwordValidator)
             : base(new Mock<IUserStore<ApplicationUser>>().Object,
                 new Mock<IOptions<IdentityOptions>>().Object,
                 new Mock<IPasswordHasher<ApplicationUser>>().Object,
                 new IUserValidator<ApplicationUser>[0],
-                new IPasswordValidator<ApplicationUser>[0],
+                new[] { passwordValidator },
                 new Mock<ILookupNormalizer>().Object,
                 new Mock<IdentityErrorDescriber>().Object,
                 new Mock<IServiceProvider>().Object,

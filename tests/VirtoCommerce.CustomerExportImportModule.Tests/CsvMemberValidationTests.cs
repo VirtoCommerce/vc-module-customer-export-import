@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Options;
 using Moq;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
@@ -12,6 +14,8 @@ using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.Platform.Security;
+using VirtoCommerce.Platform.Security.Repositories;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Model.Search;
 using VirtoCommerce.StoreModule.Core.Services;
@@ -484,6 +488,62 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     },
                     ModuleConstants.ValidationErrors.NotUniqueValue, "Test1"
                 };
+
+                // Password
+                yield return new object[]
+                {
+                    new[]
+                    {
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId1",
+                                ContactFirstName = "Test",
+                                ContactLastName = "1",
+                                ContactFullName = "Test1",
+                                AccountLogin = "Test2",
+                                AccountEmail = "test2@example.org",
+                                AccountType = "Customer",
+                                AccountStatus = "Approved",
+                                StoreId = "TestStore",
+                                Password = "Invalid"
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId2",
+                                ContactFirstName = "Test",
+                                ContactLastName = "2",
+                                ContactFullName = "Test2",
+                                AccountLogin = "Test3",
+                                AccountEmail = "test3@example.org",
+                                AccountType = "Customer",
+                                AccountStatus = "Approved",
+                                StoreId = "TestStore",
+                                Password = new string('*', 32)
+                            }
+                        },
+                        new ImportRecord<ImportableContact>
+                        {
+                            Record = new ImportableContact
+                            {
+                                Id = "TestId3",
+                                ContactFirstName = "Test",
+                                ContactLastName = "3",
+                                ContactFullName = "Test3",
+                                AccountLogin = "Test4",
+                                AccountEmail = "test4@example.org",
+                                AccountType = "Customer",
+                                AccountStatus = "Approved",
+                                StoreId = "TestStore"
+                            }
+                        }
+                    },
+                    ModuleConstants.ValidationErrors.InvalidValue, "Test1"
+                };
             }
         }
 
@@ -661,9 +721,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             return dynamicPropertyDictionaryItemsSearchService.Object;
         }
 
+        private IPasswordValidator<ApplicationUser> GetPasswordValidator()
+        {
+            ISecurityRepository SecurityRepositoryFactory() => Mock.Of<ISecurityRepository>();
+            var passwordOptionsMock = new Mock<IOptions<PasswordOptionsExtended>>();
+            passwordOptionsMock.Setup(o => o.Value).Returns(new PasswordOptionsExtended());
+
+            var passwordHasher = new Mock<IPasswordHasher<ApplicationUser>>();
+            passwordHasher.Setup(x => x.VerifyHashedPassword(It.IsAny<ApplicationUser>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(PasswordVerificationResult.Success);
+
+            return new CustomPasswordValidator(new CustomIdentityErrorDescriber(), SecurityRepositoryFactory, passwordHasher.Object, passwordOptionsMock.Object);
+        }
+
         private SignInManager<ApplicationUser> GetSignInManager()
         {
-            return new FakeSignInManager(new[] { new ApplicationUser { UserName = "Test1", Email = "test1@example.org", StoreId = "TestStore" } });
+            return new FakeSignInManager(new[] { new ApplicationUser { UserName = "Test1", Email = "test1@example.org", StoreId = "TestStore" } }, GetPasswordValidator(), new OptionsWrapper<IdentityOptions>(new IdentityOptions
+            {
+                Password = new PasswordOptions { RequireDigit = false, RequireLowercase = false, RequireUppercase = false, RequiredLength = 32, RequiredUniqueChars = 0, RequireNonAlphanumeric = true }
+            }));
         }
 
         private IStoreSearchService GetStoreSearchService()
@@ -695,7 +771,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
         private ImportContactsValidator GetContactsValidator()
         {
-            return new ImportContactsValidator(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager(), GetStoreSearchService(), GetSettingsManager());
+            return new ImportContactsValidator(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager(), GetPasswordValidator(), GetStoreSearchService(), GetSettingsManager());
         }
 
         private ImportOrganizationsValidator GetOrganizationsValidator()

@@ -11,13 +11,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
     public class ImportContactValidator: AbstractValidator<ImportRecord<ImportableContact>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IPasswordValidator<ApplicationUser> _passwordValidator;
         private readonly IStoreSearchService _storeSearchService;
         private readonly ISettingsManager _settingsManager;
         private readonly ImportRecord<ImportableContact>[] _allRecords;
 
-        public ImportContactValidator(UserManager<ApplicationUser> userManager, IStoreSearchService storeSearchService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
+        public ImportContactValidator(UserManager<ApplicationUser> userManager, IPasswordValidator<ApplicationUser> passwordValidator, IStoreSearchService storeSearchService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
         {
             _userManager = userManager;
+            _passwordValidator = passwordValidator;
             _storeSearchService = storeSearchService;
             _settingsManager = settingsManager;
             _allRecords = allRecords;
@@ -105,7 +107,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .WithExceededMaxLengthCodeAndMessage("Preferred Communication", 64)
                 .WithImportState();
 
-            RuleFor(x => x).SetValidator(_ => new ImportAccountValidator(_userManager, _storeSearchService, _settingsManager, _allRecords));
+            RuleFor(x => x).SetValidator(_ => new ImportAccountValidator(_userManager, _passwordValidator, _storeSearchService, _settingsManager, _allRecords));
         }
     }
 }

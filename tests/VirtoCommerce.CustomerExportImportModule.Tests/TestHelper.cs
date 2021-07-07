@@ -4,10 +4,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Moq;
+using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Security;
+using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.CustomerExportImportModule.Tests
 {
@@ -94,6 +96,26 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 return $"{property.Name}: {(value is IEnumerable<object> enumerable ? $"[{string.Join(", ", enumerable.Select(x => x.ToString()))}]" : value)}";
             });
             return $"{{{string.Join(", ", propertiesAndValues)}}}";
+        }
+
+        public static Mock<ISettingsManager> GetSettingsManagerMoq()
+        {
+            var settingsManagerMoq = new Mock<ISettingsManager>();
+
+            settingsManagerMoq.Setup(x =>
+                    x.GetObjectSettingAsync(
+                        It.Is<string>(x => x == ModuleConstants.Settings.General.ImportFileMaxSize.Name),
+                        null, null))
+                .ReturnsAsync(new ObjectSettingEntry()
+                { Value = ModuleConstants.Settings.General.ImportFileMaxSize.DefaultValue });
+
+            settingsManagerMoq.Setup(x =>
+                    x.GetObjectSettingAsync(
+                        It.Is<string>(x => x == ModuleConstants.Settings.General.ImportLimitOfLines.Name),
+                        null, null))
+                .ReturnsAsync(new ObjectSettingEntry()
+                { Value = ModuleConstants.Settings.General.ImportLimitOfLines.DefaultValue });
+            return settingsManagerMoq;
         }
     }
 }

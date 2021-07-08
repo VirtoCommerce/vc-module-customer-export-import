@@ -121,7 +121,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             var errorsInfos = validationResult.Errors.Select(x => new { Message = x.ErrorMessage, (x.CustomState as ImportValidationState<TCsvMember>)?.InvalidRecord }).ToArray();
 
-            var errorsGroups = errorsInfos.OrderBy(x => x.InvalidRecord.Record).GroupBy(x => x.InvalidRecord);
+            var errorsGroups = errorsInfos.OrderBy(x => x.InvalidRecord.Row).GroupBy(x => x.InvalidRecord);
 
             foreach (var group in errorsGroups)
             {

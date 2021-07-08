@@ -4,6 +4,7 @@ using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerModule.Core.Model;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 using Address = VirtoCommerce.CustomerModule.Core.Model.Address;
 
@@ -40,7 +41,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             {
                 target.Addresses.Add(new Address
                 {
-                    AddressType = !string.IsNullOrEmpty(AddressType) ? Enum.Parse<AddressType>(AddressType) : CoreModule.Core.Common.AddressType.BillingAndShipping,
+                    AddressType = EnumUtility.SafeParse(AddressType, CoreModule.Core.Common.AddressType.BillingAndShipping),
                     FirstName = AddressFirstName,
                     LastName = AddressLastName,
                     CountryName = AddressCountry,

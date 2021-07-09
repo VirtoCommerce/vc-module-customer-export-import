@@ -3,8 +3,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using CsvHelper;
 using Moq;
 using VirtoCommerce.CustomerExportImportModule.Core;
+using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.Platform.Core.Assets;
 using VirtoCommerce.Platform.Core.DynamicProperties;
@@ -116,6 +118,27 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 .ReturnsAsync(new ObjectSettingEntry()
                 { Value = ModuleConstants.Settings.General.ImportLimitOfLines.DefaultValue });
             return settingsManagerMoq;
+        }
+
+
+        public static string GetCsvStringFromObjects<T>(IEnumerable<T> records)
+        {
+            var result = "";
+            var stream = new MemoryStream();
+
+            using var sw = new StreamWriter(stream, leaveOpen: true);
+            using var csvWriter = new CsvWriter(sw, new ExportConfiguration());
+
+            csvWriter.WriteRecords(records);
+
+            sw.Flush();
+
+            using var sr = new StreamReader(stream);
+
+            stream.Seek(0, SeekOrigin.Begin);
+            result = sr.ReadToEnd();
+
+            return result;
         }
     }
 }

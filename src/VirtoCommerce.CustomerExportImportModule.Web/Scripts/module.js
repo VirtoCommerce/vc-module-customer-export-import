@@ -29,6 +29,7 @@ angular.module(moduleName, ['ui.grid.autoFitColumns']).run([
                         bladeNavigationService.showBlade(newBlade, blade);
                     },
                     canExecuteMethod: function () { return true; },
+                    permission: 'customer:simpleImport',
                     index: 4,
                 }, "virtoCommerce.customerModule.memberListController");
             toolbarService.register(
@@ -138,6 +139,7 @@ angular.module(moduleName, ['ui.grid.autoFitColumns']).run([
                     canExecuteMethod: function () {
                         return true;
                     },
+                    permission: 'customer:simpleExport',
                     index: 5
                 },
                 'virtoCommerce.customerModule.memberListController'

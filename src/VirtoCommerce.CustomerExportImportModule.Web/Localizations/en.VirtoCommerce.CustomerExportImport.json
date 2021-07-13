@@ -112,8 +112,8 @@
     }
   },
   "permissions": {
-    "customer:export": "Export customers data",
-    "customer:import": "Import customers data"
+    "customer:simpleExport": "Export customers data",
+    "customer:simpleImport": "Import customers data"
   },
   "settings": {
   }

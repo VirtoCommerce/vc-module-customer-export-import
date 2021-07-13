@@ -4,8 +4,6 @@ angular.module('virtoCommerce.customerExportImportModule')
 
         var blade = $scope.blade;
 
-        blade.importPermission = "import:access";
-
         function initialize() {
             blade.isLoading = true;
             $scope.showUnparsedRowsWarning = false;
@@ -77,7 +75,6 @@ angular.module('virtoCommerce.customerExportImportModule')
                     };
                     dialogService.showDialog(dialog, "Modules/$(VirtoCommerce.CustomerExportImport)/Scripts/dialogs/customerImport-dialog.tpl.html", "platformWebApp.confirmDialogController");
                 },
-                permission: blade.importPermission
             },
             {
                 name: "priceExportImport.blades.import-preview.upload-new",

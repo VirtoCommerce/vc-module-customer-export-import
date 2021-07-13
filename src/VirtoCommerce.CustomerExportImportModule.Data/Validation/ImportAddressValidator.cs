@@ -29,6 +29,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 , () =>
                 {
                     RuleFor(x => x.Record.AddressType).IsEnumName(typeof(AddressType))
+                        .When(x => !string.IsNullOrEmpty(x.Record.AddressType))
                         .WithInvalidValueCodeAndMessage("Address Type")
                         .WithImportState();
 

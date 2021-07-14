@@ -11,7 +11,7 @@
     </dependencies>
 
     <title>Customer Export Import</title>
-    <description>This module adds customers export and import functionality using it for customer management.</description>
+    <description>This module adds customers export and import functionality. Use it for customer management.</description>
     <authors>
         <author>Solution team</author>
     </authors>
@@ -25,7 +25,7 @@
     <releaseNotes>First version.</releaseNotes>
     <copyright>Copyright © 2011-2021 Virto Commerce. All rights reserved</copyright>
     <tags>customer export import</tags>
-  
+
     <assemblyFile>VirtoCommerce.CustomerExportImportModule.Web.dll</assemblyFile>
     <moduleType>VirtoCommerce.CustomerExportImportModule.Web.Module, VirtoCommerce.CustomerExportImportModule.Web</moduleType>
 </module>

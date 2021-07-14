@@ -7,10 +7,9 @@
 [![Security rating](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-customer-export-import&metric=security_rating)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-customer-export-import)
 [![Maintainability rating](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-customer-export-import&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-customer-export-import)
 
-If you want to transfer a large amount of customer information between Virto Commerce and another system,
-then you can use a specially-formatted spreadsheet to import or export that data. Virto Commerce uses CSV (semicolon-separated value) files to perform this kind of bulk task.
+If you want to transfer a customers accounts such as contacts, organizations and Virto Commerce users accounts between Virto Commerce and another system, use a CSV (semicolon-separated value) spreadsheets to perform this kind of bulk task.
 
-The business goal for the module is to provide to non-technical not high skilled business users (like "category manager") who works with customers on a daily basis and don't understand the database structure to work comfortably with customers export and import functionality using it for customer management.
+The business goal for the module is to provide customers export and import functionality to non-technical business users (like "category manager"), who works with customers on a daily basis and does not use the SQL databases as primary tools.
 
 ![Main-Screen](docs/media/main-screen.png)
 
@@ -21,7 +20,8 @@ If you want to automated transferring information from 3rd party system, like ER
 * I need to export contacts to edit and to update.
 * I need to export organizations to edit and to update.
 * I need to migrate contacts from another system.
-* I need to migrate organizations from another system
+* I need to migrate organizations from another system.
+* I need to migrate acoounts from another system.
 
 
 

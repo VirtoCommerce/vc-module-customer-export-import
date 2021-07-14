@@ -31,7 +31,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             // database initialization
             var connectionString = Configuration.GetConnectionString("VirtoCommerce.CustomerExportImport") ?? Configuration.GetConnectionString("VirtoCommerce");
             serviceCollection.AddDbContext<VirtoCommerceCustomerExportImportDbContext>(options => options.UseSqlServer(connectionString));
-            
+
             serviceCollection.AddTransient<ICustomerExportPagedDataSourceFactory, CustomerExportPagedDataSourceFactory>();
             serviceCollection.AddTransient<IExportWriterFactory, ExportWriterFactory>();
             serviceCollection.AddTransient<ICustomerDataExporter, CustomerDataExporter>();
@@ -42,7 +42,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             serviceCollection.AddTransient<ICsvCustomerDataValidator, CsvCustomerDataValidator>();
             serviceCollection.AddTransient<IValidator<ImportRecord<ImportableContact>[]>, ImportContactsValidator>();
             serviceCollection.AddTransient<IValidator<ImportRecord<ImportableOrganization>[]>, ImportOrganizationsValidator>();
-            
+
             serviceCollection.AddTransient<IPasswordGenerator, PasswordGenerator>();
 
             serviceCollection.AddSingleton<ICsvCustomerImportReporterFactory, CsvCustomerImportReporterFactory>();
@@ -85,7 +85,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
                 }).ToArray());
 
             var featureStorage = appBuilder.ApplicationServices.GetService<IFeatureStorage>();
-            featureStorage.TryAddFeatureDefinition(ModuleConstants.Features.CustomerExportImport, featureManagementCore.ModuleConstants.FeatureFilters.Developers);
+            featureStorage.TryAddFeatureDefinition(ModuleConstants.Features.CustomerExportImport, true);
 
             // ensure that all pending migrations are applied
             using var serviceScope = appBuilder.ApplicationServices.CreateScope();

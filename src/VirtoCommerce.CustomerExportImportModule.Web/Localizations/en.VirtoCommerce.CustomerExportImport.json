@@ -99,7 +99,7 @@
         "main-text-beginning": "You have selected",
         "items": "items",
         "main-text-middle": "(including nested) but export is limited with",
-        "main-text-end": ", you retrive to export more"
+        "main-text-end": ", you retrieve to export more"
       }
     },
     "validation-errors": {

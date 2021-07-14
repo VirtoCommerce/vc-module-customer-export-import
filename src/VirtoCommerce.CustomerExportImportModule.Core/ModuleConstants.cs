@@ -50,7 +50,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
             { ValidationErrors.InvalidValue, "This row has invalid value in the column '{0}'." },
             { ValidationErrors.NotUniqueValue, "Value in column '{0}' should be unique." },
             { ValidationErrors.CountryNameAndCodeDoesntMatch, "The value in column Country Code is not for the country specified in Country column" },
-            { ValidationErrors.PasswordDoesntMeetSecurityPolicy, "Password doesn’t meet the platform security policy. Please, contact administrator" }
+            { ValidationErrors.PasswordDoesntMeetSecurityPolicy, "Password does not meet the platform security policy. Please, contact administrator" }
         };
 
         public static class Features

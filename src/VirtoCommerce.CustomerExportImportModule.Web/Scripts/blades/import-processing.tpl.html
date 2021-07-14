@@ -50,6 +50,14 @@
                         </li>
                     </ul>
                 </div>
+
+                <div ng-if="blade.notification.errors && blade.notification.errors.length > 0">
+                    <span class="sub-t">{{ 'customerExportImport.blades.import-processing.labels.error-log' | translate }}</span>
+                    <div class="log">
+                        <p ng-repeat="error in blade.notification.errors track by $index" class="error">{{error}}</p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

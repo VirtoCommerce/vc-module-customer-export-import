@@ -60,7 +60,8 @@
           "lines-created": "Lines created",
           "lines-updated": "Lines updated",
           "error-count": "Error count",
-          "errors-report": "Errors report download Url:"
+          "errors-report": "Errors report download Url:",
+          "error-log": "Errors"
         }
       }
     },

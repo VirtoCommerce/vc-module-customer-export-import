@@ -35,7 +35,7 @@
                     </ul>
                 </div>
                 <div ng-if="blade.notification.errors && blade.notification.errors.length > 0">
-                    <span class="sub-t">{{ 'customerExportImport.blades.export-processing.labels.errors-log' | translate }}</span>
+                    <span class="sub-t">{{ 'customerExportImport.blades.export-processing.labels.error-log' | translate }}</span>
                     <div class="log">
                         <p ng-repeat="error in blade.notification.errors track by $index" class="error">{{error}}</p>
                     </div>

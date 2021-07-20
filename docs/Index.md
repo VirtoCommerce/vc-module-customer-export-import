@@ -71,7 +71,7 @@ All Address values are required for creation/updating address. If you don't need
 
 You can create new account in relation to contact. Account name, Account email, Store id values are required for Account creating. Please notice, you can only create account, but not update.
 
-Example: [..\Downloads\Contacts\_example.csv](/C:%5CUsers%5C79787%5CDownloads%5CContacts_example.csv)
+Example: [Contacts\_sample.csv](media/samples/Contacts_sample.csv)
 
 **Organisations CSV file format for import**
 
@@ -102,7 +102,7 @@ Each column must be separated by a semicolon. Only Organisation name value is re
 All Address values are required for creation/updating address. If you don't need to create/update address leave it empty.
 
 
-Example: [../Downloads/Organizations\_sample.csv](/C:%5CUsers%5C79787%5CDownloads%5COrganizations_sample.csv)
+Example: [Organizations\_sample.csv](media/samples/Organizations_sample.csv)
 
 ## Export Contacts and Organizations
 

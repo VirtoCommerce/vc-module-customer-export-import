@@ -4,7 +4,7 @@ If you want to transfer a large amount of customer information between Virto Com
 
 The business goal for the module is to provide to non-technical not high skilled business users (like customer manager) who works with customers on a daily basis and do not understand the database structure to work comfortably with customers export and import functionality using it for customers management.
 
-![Screenshot_4](docs\media\Screenshot4.png)
+![Screenshot_4](media/Screenshot4.png)
 
 > Note If you want to automated transferring information from 3rd party system, like ERP, then see API, Integration Middleware approach and Azure Logic Apps connectors.
 
@@ -24,6 +24,7 @@ You can export and view a sample contacts or organizations CSV file and use it a
 
 The first line of CSV file should be Header:
 
+<<<<<<< HEAD
 Header | Required |
 | --- | --- |
 | Contact First Name |  \*required |
@@ -64,6 +65,46 @@ Header | Required |
 | Address Email | |
 | Address Phone | |
 | All Dynamic Properties | |
+=======
+Contact First Name \*required<br />
+Contact Last Name \*required<br />
+Contact Full Name \*required<br />
+Contact Id<br />
+Contact Outer Id<br />
+Organization Id<br />
+Organization Outer Id<br />
+Organization Name<br />
+Email<br />
+Account Login \*required for account<br />
+Store Id \*required for account<br />
+Store Name<br />
+Account Email \*required for account<br />
+Account Type<br />
+Account Status<br />
+Email Verified<br />
+Contact Status<br />
+Associated Organization Id<br />
+Birthday<br />
+TimeZone<br />
+Phones<br />
+Salutation<br />
+Default language<br />
+Taxpayer ID<br />
+Preferred communication<br />
+Preferred delivery<br />
+Address Type \*required for address<br />
+Address First Name<br />
+Address Last Name<br />
+Address Country<br />
+Address Region<br />
+Address City<br />
+Address Line1<br />
+Address Line2<br />
+Address Zip Code<br />
+Address Email<br />
+Address Phone<br />
+All Dynamic Properties<br />
+>>>>>>> 3b61911748a548e7eca18319dae160996c7bd80e
 
 
 Each column must be separated by a semicolon. Only Contact First Name, Contact Last Name, Contact Full Name values are required for Contact creation.
@@ -75,12 +116,13 @@ Account name and Account email should be unique for each account. Please notice,
 
 In case of errors full contact line will be skipped. You can download error report on statistics page and check error detail for skipped line.
 
-Example: [..\Downloads\Contacts\_example.csv](/C:%5CUsers%5C79787%5CDownloads%5CContacts_example.csv)
+Example: [Contacts\_sample.csv](media/samples/Contacts_sample.csv)
 
-**Organisations CSV file format for import**
+**Organizations CSV file format for import**
 
 The first line should be Header:
 
+<<<<<<< HEAD
 Header | Required |
 | --- | --- |
 | Organization Name |  required |
@@ -104,12 +146,34 @@ Header | Required |
 | All Dynamic Properties | |
 
 Each column must be separated by a semicolon. Only Organisation name value is required for creation organisation.
+=======
+Organization Name \*required<br />
+Organization Id<br />
+Organization Outer Id<br />
+Address Type \*Required for address<br />
+Address First Name<br />
+Address Last Name<br />
+Address Country<br />
+Address Region<br />
+Address City<br />
+Address Address Line1<br />
+Address Address Line2<br />
+Address Zip Code<br />
+Address Email<br />
+Address Phone<br />
+Phones<br />
+Business category<br />
+Description<br />
+All Dynamic Properties<br />
+
+Each column must be separated by a semicolon. Only Organization name value is required for creation organization.
+>>>>>>> 3b61911748a548e7eca18319dae160996c7bd80e
 
 All Address values are required for creation/updating address. If you don't need to create/update address leave it empty.
 
 In case of errors organization line will be skipped. You can download error report on statistics page and check error detail for skipped line.
 
-Example: [../Downloads/Organizations\_sample.csv](/C:%5CUsers%5C79787%5CDownloads%5COrganizations_sample.csv)
+Example: [Organizations\_sample.csv](media/samples/Organizations_sample.csv)
 
 ## Export Contacts and Organizations
 
@@ -197,11 +261,25 @@ Example: [../Downloads/Organizations\_sample.csv](/C:%5CUsers%5C79787%5CDownload
 
 ## Advanced settings
 
+<<<<<<< HEAD
 Limit for number of lines to export = 10.000 by default. 
 Ask system administrator to change it throught an environment variable for `CustomerExportImport__Export__LimitOfLines`
+=======
+Limit for number of lines to export = 10.000 by default Ask system administrator to change it throught an environment variable for
+
+<CustomerExportImport__Export__LimitOfLines>
+
+Limit for number of lines to import = 10.000 by default Ask system administrator to change it throught an environment variable for
+
+<CustomerExportImport__Import__LimitOfLines>
+>>>>>>> 3b61911748a548e7eca18319dae160996c7bd80e
 
 Limit for number of lines to import = 10.000 by default. 
 Ask system administrator to change it throught an environment variable for `CustomerExportImport__Import__LimitOfLines`
 
+<<<<<<< HEAD
 Limit for size of csv file = 1mb by default. 
 Ask system administrator to change it throught an environment variable for `CustomerExportImport__Import__FileMaxSize`
+=======
+<CustomerExportImport__Import__FileMaxSize>
+>>>>>>> 3b61911748a548e7eca18319dae160996c7bd80e

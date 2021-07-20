@@ -4,7 +4,7 @@ If you want to transfer a large amount of customer information between Virto Com
 
 The business goal for the module is to provide to non-technical not high skilled business users (like customer manager) who works with customers on a daily basis and do not understand the database structure to work comfortably with customers export and import functionality using it for customers management.
 
-![Screenshot_4](docs\media\Screenshot4.png)
+![Screenshot_4](media/Screenshot4.png)
 
 > Note If you want to automated transferring information from 3rd party system, like ERP, then see API, Integration Middleware approach and Azure Logic Apps connectors.
 

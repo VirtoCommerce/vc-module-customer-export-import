@@ -24,48 +24,6 @@ You can export and view a sample contacts or organizations CSV file and use it a
 
 The first line of CSV file should be Header:
 
-<<<<<<< HEAD
-Header | Required |
-| --- | --- |
-| Contact First Name |  \*required |
-| Contact Last Name |   \*required |
-| Contact Full Name |   \*required |
-| Contact Id | |
-| Contact Outer Id | |
-| Organization Id | |
-| Organization Outer Id | |
-| Organization Name | |
-| Email | |
-| Account Login |  \*required for account |
-| Store Id |  \*required for account |
-| Store Name | |
-| Account Email |  \*required for account |
-| Account Type | |
-| Account Status | |
-| Email Verified | |
-| Contact Status | |
-| Associated Organization Id | |
-| Birthday | |
-| TimeZone | |
-| Phones | |
-| Salutation | |
-| Default language ||
-| Taxpayer ID | |
-| Preferred communication | |
-| Preferred delivery | |
-| Address Type |  \*required for address |
-| Address First Name | |
-| Address Last Name | |
-| Address Country | |
-| Address Region | |
-| Address City | |
-| Address Line1 | |
-| Address Line2 | |
-| Address Zip Code | |
-| Address Email | |
-| Address Phone | |
-| All Dynamic Properties | |
-=======
 Contact First Name \*required<br />
 Contact Last Name \*required<br />
 Contact Full Name \*required<br />
@@ -104,7 +62,6 @@ Address Zip Code<br />
 Address Email<br />
 Address Phone<br />
 All Dynamic Properties<br />
->>>>>>> 3b61911748a548e7eca18319dae160996c7bd80e
 
 
 Each column must be separated by a semicolon. Only Contact First Name, Contact Last Name, Contact Full Name values are required for Contact creation.
@@ -122,31 +79,7 @@ Example: [Contacts\_sample.csv](media/samples/Contacts_sample.csv)
 
 The first line should be Header:
 
-<<<<<<< HEAD
-Header | Required |
-| --- | --- |
-| Organization Name |  required |
-| Organization Id | |
-| Organization Outer Id | |
-| Address Type |  Required for address |
-| Address First Name | |
-| Address Last Name | |
-| Address Country | |
-| Address Region | |
-| Address City | |
-| Address Address Line1 | |
-| Address Address Line2 | |
-| Address Zip Code | |
-| Address Email | |
-| Address Phone | |
-| Phones | |
-| Emails | |
-| Business category | |
-| Description | |
-| All Dynamic Properties | |
 
-Each column must be separated by a semicolon. Only Organisation name value is required for creation organisation.
-=======
 Organization Name \*required<br />
 Organization Id<br />
 Organization Outer Id<br />
@@ -167,7 +100,6 @@ Description<br />
 All Dynamic Properties<br />
 
 Each column must be separated by a semicolon. Only Organization name value is required for creation organization.
->>>>>>> 3b61911748a548e7eca18319dae160996c7bd80e
 
 All Address values are required for creation/updating address. If you don't need to create/update address leave it empty.
 
@@ -261,25 +193,13 @@ Example: [Organizations\_sample.csv](media/samples/Organizations_sample.csv)
 
 ## Advanced settings
 
-<<<<<<< HEAD
+
 Limit for number of lines to export = 10.000 by default. 
 Ask system administrator to change it throught an environment variable for `CustomerExportImport__Export__LimitOfLines`
-=======
-Limit for number of lines to export = 10.000 by default Ask system administrator to change it throught an environment variable for
-
-<CustomerExportImport__Export__LimitOfLines>
-
-Limit for number of lines to import = 10.000 by default Ask system administrator to change it throught an environment variable for
-
-<CustomerExportImport__Import__LimitOfLines>
->>>>>>> 3b61911748a548e7eca18319dae160996c7bd80e
 
 Limit for number of lines to import = 10.000 by default. 
 Ask system administrator to change it throught an environment variable for `CustomerExportImport__Import__LimitOfLines`
 
-<<<<<<< HEAD
 Limit for size of csv file = 1mb by default. 
 Ask system administrator to change it throught an environment variable for `CustomerExportImport__Import__FileMaxSize`
-=======
-<CustomerExportImport__Import__FileMaxSize>
->>>>>>> 3b61911748a548e7eca18319dae160996c7bd80e
+

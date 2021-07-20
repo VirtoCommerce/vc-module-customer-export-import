@@ -24,44 +24,44 @@ You can export and view a sample contacts or organizations CSV file and use it a
 
 The first line of CSV file should be Header:
 
-Contact First Name \*required
-Contact Last Name \*required
-Contact Full Name \*required
-Contact Id
-Contact Outer Id
-Organization Id
-Organization Outer Id
-Organization Name
-Email
-Account Login \*required for account
-Store Id \*required for account
-Store Name
-Account Email \*required for account
-Account Type
-Account Status
-Email Verified
-Contact Status
-Associated Organization Id
-Birthday
-TimeZone
-Phones
-Salutation
-Default language
-Taxpayer ID
-Preferred communication
-Preferred delivery
-Address Type \*required for address
-Address First Name
-Address Last Name
-Address Country
-Address Region
-Address City
-Address Line1
-Address Line2
-Address Zip Code
-Address Email
-Address Phone
-All Dynamic Properties
+Contact First Name \*required<br />
+Contact Last Name \*required<br />
+Contact Full Name \*required<br />
+Contact Id<br />
+Contact Outer Id<br />
+Organization Id<br />
+Organization Outer Id<br />
+Organization Name<br />
+Email<br />
+Account Login \*required for account<br />
+Store Id \*required for account<br />
+Store Name<br />
+Account Email \*required for account<br />
+Account Type<br />
+Account Status<br />
+Email Verified<br />
+Contact Status<br />
+Associated Organization Id<br />
+Birthday<br />
+TimeZone<br />
+Phones<br />
+Salutation<br />
+Default language<br />
+Taxpayer ID<br />
+Preferred communication<br />
+Preferred delivery<br />
+Address Type \*required for address<br />
+Address First Name<br />
+Address Last Name<br />
+Address Country<br />
+Address Region<br />
+Address City<br />
+Address Line1<br />
+Address Line2<br />
+Address Zip Code<br />
+Address Email<br />
+Address Phone<br />
+All Dynamic Properties<br />
 
 
 Each column must be separated by a semicolon. Only Contact First Name, Contact Last Name, Contact Full Name values are required for Contact creation.
@@ -76,24 +76,24 @@ Example: [Contacts\_sample.csv](media/samples/Contacts_sample.csv)
 
 The first line should be Header:
 
-Organization Name \*required
-Organization Id
-Organization Outer Id
-Address Type \*Required for address
-Address First Name
-Address Last Name
-Address Country
-Address Region
-Address City
-Address Address Line1
-Address Address Line2
-Address Zip Code
-Address Email
-Address Phone
-Phones
-Business category
-Description
-All Dynamic Properties
+Organization Name \*required<br />
+Organization Id<br />
+Organization Outer Id<br />
+Address Type \*Required for address<br />
+Address First Name<br />
+Address Last Name<br />
+Address Country<br />
+Address Region<br />
+Address City<br />
+Address Address Line1<br />
+Address Address Line2<br />
+Address Zip Code<br />
+Address Email<br />
+Address Phone<br />
+Phones<br />
+Business category<br />
+Description<br />
+All Dynamic Properties<br />
 
 Each column must be separated by a semicolon. Only Organization name value is required for creation organization.
 

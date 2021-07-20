@@ -1,4 +1,4 @@
-# customer Export & Import module
+# Customer Export & Import module
 
 [![CI status](https://github.com/VirtoCommerce/vc-module-customer-export-import/workflows/Module%20CI/badge.svg?branch=dev)](https://github.com/VirtoCommerce/vc-module-customer-export-import/actions?query=workflow%3A"Module+CI")
 [![Deployment status](https://github.com/VirtoCommerce/vc-module-customer-export-import/workflows/Module%20deployment/badge.svg?branch=dev)](https://github.com/VirtoCommerce/vc-module-customer-export-import/actions?query=workflow%3A"Module+deployment")
@@ -8,7 +8,7 @@
 [![Maintainability rating](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-customer-export-import&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-customer-export-import)
 
 If you want to transfer a large amount of customer information between Virto Commerce and another system, then you can use a specially-formatted spreadsheet to import or export that data. Virto Commerce uses CSV (semicolon-separated value) files to perform this kind of bulk task.
- 
+
 The business goal for the module is to provide to non-technical not high skilled business users (like "customer manager") who works with customers on a daily basis and do not understand the database structure to work comfortably with customers export and import functionality using it for customers management. 
 
 

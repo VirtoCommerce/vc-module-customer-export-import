@@ -4,7 +4,7 @@ If you want to transfer a large amount of customer information between Virto Com
 
 The business goal for the module is to provide to non-technical not high skilled business users (like customer manager) who works with customers on a daily basis and do not understand the database structure to work comfortably with customers export and import functionality using it for customers management.
 
-![Screenshot_4](docs\media\Screenshot_4.png)
+![Screenshot_4](docs\media\Screenshot4.png)
 
 > Note If you want to automated transferring information from 3rd party system, like ERP, then see API, Integration Middleware approach and Azure Logic Apps connectors.
 
@@ -188,12 +188,12 @@ Example: [../Downloads/Organizations\_sample.csv](/C:%5CUsers%5C79787%5CDownload
 
 Limit for number of lines to export = 10.000 by default Ask system administrator to change it throught an environment variable for
 
-<CustomerExportImport\_\_Export\_\_LimitOfLines >
+<CustomerExportImport__Export__LimitOfLines >
 
 Limit for number of lines to import = 10.000 by default Ask system administrator to change it throught an environment variable for
 
-<CustomerExportImport\_\_Import\_\_LimitOfLines >
+<CustomerExportImport__Import__LimitOfLines >
 
 Limit for size of csv file = 1mb by default Ask system administrator to change it throught an environment variable for
 
-<CustomerExportImport\_\_Import\_\_FileMaxSize
+<CustomerExportImport__Import__FileMaxSize

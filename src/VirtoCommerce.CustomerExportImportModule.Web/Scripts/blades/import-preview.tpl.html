@@ -1,0 +1,51 @@
+<div class="blade-static _expanded customer-export-import d-flex preview-header">
+        <div class="d-flex align-items-center mr-auto p-14 preview-legend">
+            {{ 'customerExportImport.blades.import-preview.preview-legend' | translate }}
+        </div>
+        <div class="d-flex align-items-center p-14 bl-1 preview-count">
+            <div class="mr-5">
+                {{ 'customerExportImport.blades.import-preview.labels.preview-count' | translate }}
+            </div>
+            <div>
+                <span class="count">{{blade.currentEntities.length | number:0}}</span> of <span class="count">{{blade.totalCount | number:0}}</span>
+            </div>
+        </div>
+</div>
+<div class="customer-export-import preview-warning-block" ng-if="showUnparsedRowsWarning">
+    <i class="fas fa-exclamation-triangle triangle-warning-icon mr-10"></i> <span class="preview-warning-text">{{unparsedRowsCount | number:0}} lines from {{previewCount | number:0}} have not been parsed for preview. Check final report after import.</span>
+</div>
+<div class="blade-content __xlarge-wide customer-export-import">
+    <div class="blade-inner">
+        <div class="inner-block" ng-init="setGridOptions({
+            data: 'blade.currentEntities',
+            useExternalSorting: false,
+            enableSorting: false,
+            minimumColumnSize: 140,
+            rowHeight: 40,
+            enableColumnResizing: false,
+            enableAutoFitColumns: true,
+            rowTemplate: 'list.row.html',
+            })">
+            <div class="table-wrapper" ng-if="blade.currentEntities.length">
+                <div ui-grid="gridOptions" ui-grid-auto-fit-columns ui-grid-auto-resize ui-grid-resize-columns ui-grid-move-columns ui-grid-height ui-grid-pinning></div>
+            </div>
+            <div class="note" ng-if="!blade.currentEntities.length">{{ 'platform.list.no-data' | translate }}</div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="list.row.html">
+    <div
+    ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.uid"
+    ui-grid-one-bind-id-grid="rowRenderIndex + '-' + col.uid + '-cell'"
+    class="ui-grid-cell grid-text-color fs-12"
+    ng-class="{'ui-grid-row-header-cell': col.isRowHeader}"
+    role="{{col.isRowHeader ? 'rowheader' : 'gridcell' }}"
+    ui-grid-cell></div>
+</script>
+
+<script type="text/ng-template" id="birthday.col.html">
+    <div
+    class="ui-grid-cell-contents"
+    ng-bind-template="{{ COL_FIELD | date:'mediumDate' }}"></div>
+</script>

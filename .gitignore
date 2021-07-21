@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Webpack output
 dist/
+
+# prettier config file
+.prettierrc
+
+launchSettings.json

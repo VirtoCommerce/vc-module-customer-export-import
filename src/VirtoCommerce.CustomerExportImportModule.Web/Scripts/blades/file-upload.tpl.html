@@ -1,0 +1,86 @@
+<div class="blade-content customer-export-import">
+    <div class="blade-inner">
+        <div class="inner-block">
+            <form class="form" name="formScope">
+                <fieldset>
+                    <div class="form-group __info list mb-40">
+                        <label class="form-label font-weight-500">{{ 'customerExportImport.blades.file-upload.labels.data-type' | translate }}</label>
+                        <div class="form-input" data-role="input-control">
+                            <ui-select ng-model="blade.dataType" ng-disabled="!blade.importFromRoot || blade.csvFilePath">
+                                <ui-select-match allow-clear="true" placeholder="{{ 'customerExportImport.blades.file-upload.data-type-placeholder' | translate }}">{{$select.selected.key}}</ui-select-match>
+                                <ui-select-choices repeat="x in blade.availableDataTypes | filter: { key: $select.search }">
+                                    <span ng-bind-html="x.key | highlight: $select.search"></span>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="list-descr">{{ 'customerExportImport.blades.file-upload.data-type-description' | translate }}</div>
+                    </div>
+                    <input id="selectCustomerCsv" class="__hide" type="file" accept=".csv" nv-file-select uploader="uploader" multiple ng-disabled="!blade.dataType"/>
+
+                    <div ng-if="!blade.dataType" over-class="bd-blue" class="drag-area disabled">
+                        <ng-include src="'dragContent'"></ng-include>
+                    </div>
+                    <div ng-if="blade.dataType" over-class="bd-blue" nv-file-over nv-file-drop uploader="uploader" class="drag-area">
+                        <ng-include src="'dragContent'"></ng-include>
+                    </div>
+
+                    <div ng-show="uploader.isUploading">
+                        <div class="sub-t">{{ 'customerExportImport.blades.file-upload.labels.progress' | translate }}</div>
+                        <div class="progress-bar __aqua" ng-style="{'width': uploader.progress + '%'}"></div>
+                    </div>
+
+                    <div ng-show="showUploadResult">
+                        <div class="sub-t upload-result-title" ng-if="csvMaxSizeError || fileTypeError">{{ 'customerExportImport.blades.file-upload.upload-result.failed' | translate }}</div>
+                        <div class="sub-t upload-result-title" ng-if="!(csvMaxSizeError || fileTypeError)">{{ 'customerExportImport.blades.file-upload.upload-result.success' | translate }}</div>
+                        <div class="d-flex flex-column mt-15 p-10 upload-result-border">
+                            <div class="d-flex" ng-class="{'align-items-center': csvMaxSizeError || fileTypeError}">
+                                <i ng-if="csvMaxSizeError || fileTypeError" class="fas fa-file-excel fa-4x icon-danger" aria-hidden="true"></i>
+                                <span ng-if="!(csvMaxSizeError || fileTypeError) && !internalCsvError" class="fa-stack fa-2x icon-success">
+                                    <i class="fas fa-file fa-stack-2x"></i>
+                                    <i class="fab fas fa-check fa-stack-1x text-white mt-10"></i>
+                                </span>
+                                <span ng-if="!(csvMaxSizeError || fileTypeError) && internalCsvError" class="fa-stack fa-2x icon-warning mr-20">
+                                    <i class="fas fa-file fa-stack-2x"></i>
+                                    <i class="fab fas fa-exclamation fa-stack-1x text-white mt-10 pl-7"></i>
+                                </span>
+                                <div class="d-flex flex-column ml-10">
+                                    <span class="word-break-all font-weight-500">{{newUploadedFile.name}}</span>
+                                    <div ng-if="!internalCsvError">
+                                        <small ng-if="!(csvMaxSizeError || fileTypeError)" class="upload-result-message">{{newUploadedFile.size}}</small>
+                                        <small ng-if="csvMaxSizeError && fileTypeError" class="upload-result-message">{{ 'customerExportImport.blades.file-upload.upload-result.file-type-error' | translate }}</small>
+                                        <small ng-if="csvMaxSizeError && !fileTypeError" class="upload-result-message">{{ 'customerExportImport.blades.file-upload.upload-result.max-size-error' | translate: {fileMaxSize: formattedSizeLimit} }}</small>
+                                        <small ng-if="fileTypeError && !csvMaxSizeError" class="upload-result-message">{{ 'customerExportImport.blades.file-upload.upload-result.file-type-error' | translate }}</small>
+                                    </div>
+                                    <div ng-if="internalCsvError">
+                                        <ul>
+                                            <li ng-repeat="error in csvValidationErrors" class="upload-result-validation-errors">
+                                                <small class="upload-result-message" ng-bind="translateErrorCode(error)"></small>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end"  ng-if="!(csvMaxSizeError || fileTypeError)">
+                                <span class="btn btn-small btn-danger-outline" ng-class="{'mr-10': !internalCsvError}" ng-click="deleteUploadedItem()">{{ 'customerExportImport.blades.file-upload.actions.delete' | translate }}</span>
+                                <span class="btn btn-small border-primary" ng-if="!internalCsvError" ng-click="showPreview()">{{ 'customerExportImport.blades.file-upload.actions.preview' | translate }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script type='text/ng-template' id="dragContent">
+    <span class="drag-content">
+        <i class="fa fa-cloud-upload fa-2x icon-cloud" aria-hidden="true"></i>
+        <br>
+        <small>{{ 'customerExportImport.blades.file-upload.drag-and-drop.placeholder' | translate }}</small>
+        <br>
+        <small>{{ 'customerExportImport.blades.file-upload.drag-and-drop.or' | translate }}</small>
+        <a ng-click="browse()" ng-class="{'disabled-cursor': !blade.dataType}" ng-disabled="!blade.dataType">{{ 'customerExportImport.blades.file-upload.drag-and-drop.link' | translate }}</a>
+    </span>
+</script>

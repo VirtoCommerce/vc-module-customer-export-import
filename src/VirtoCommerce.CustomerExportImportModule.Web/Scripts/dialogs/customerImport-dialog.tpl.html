@@ -1,0 +1,20 @@
+<div class="modal-header customer-export-import">
+    <h3 class="modal-title" ng-if="dataType.value === 'Contact'">{{ 'customerExportImport.dialogs.customer-import.title-contacts' | translate }}</h3>
+    <h3 class="modal-title" ng-if="dataType.value === 'Organization'">{{ 'customerExportImport.dialogs.customer-import.title-organizations' | translate }}</h3>
+</div>
+<div class="modal-body">
+    <div>
+        <b>{{ membersQty }} <span ng-if="dataType.value === 'Contact'">{{ 'customerExportImport.dialogs.customer-import.contacts' | translate }}</span><span ng-if="dataType.value === 'Organization'">{{ 'customerExportImport.dialogs.customer-import.organizations' | translate }}</span></b> {{ 'customerExportImport.dialogs.customer-import.main-text-middle' | translate }}
+        <span ng-if="organizationName">
+            <b>{{ 'customerExportImport.dialogs.customer-import.current-organization' | translate }} "{{ organizationName }}"</b>
+        </span>
+        <span ng-if="!organizationName">
+            <b>{{ 'customerExportImport.dialogs.customer-import.root' | translate }}</b>
+        </span>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn cancel-btn" ng-click="cancel()">{{ 'platform.commands.cancel' | translate }}</button>
+    <button class="btn" ng-click="yes()">{{ 'customerExportImport.dialogs.customer-import.import' | translate }}</button>
+</div>

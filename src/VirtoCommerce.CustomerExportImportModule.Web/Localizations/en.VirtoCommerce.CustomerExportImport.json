@@ -1,0 +1,121 @@
+{
+  "customerExportImport": {
+    "blades": {
+      "export-processing": {
+        "title": "Export progress",
+        "labels": {
+          "start": "Start",
+          "end": "End",
+          "errors": "Error count",
+          "total": "Total count",
+          "processed": "Processed count",
+          "contacts-url": "Download Contacts:",
+          "organizations-url": "Download Organizations:",
+          "error-log": "Errors"
+        }
+      },
+      "file-upload": {
+        "title-root": "Import into root",
+        "title-member": "Import into {{member}}",
+        "subtitle": "Upload CSV",
+        "data-type-placeholder": "Select data type to import",
+        "data-type-description": "Select the type of data to be loaded for the import to work correctly",
+        "labels": {
+          "progress": "Progress",
+          "data-type": "Data type"
+        },
+        "drag-and-drop": {
+          "placeholder": "Drag and drop file here",
+          "or": "or ",
+          "link": "browse your files"
+        },
+        "upload-result": {
+          "failed": "Upload failed",
+          "success": "Uploaded",
+          "max-size-error": "The file size limit is {{ fileMaxSize }}. The file size is too large. Try to upload another one.",
+          "file-type-error": "CSV format is required. The suggested file is in different format."
+        },
+        "actions": {
+          "preview": "Preview",
+          "delete": "Delete"
+        }
+      },
+      "import-preview": {
+        "title": "Preview",
+        "subtitle": "Uploaded CSV file preview",
+        "preview-legend": "Please use horizontal scroll to see all columns from the import preview",
+        "labels": {
+          "preview-count": "Preview count:"
+        }
+      },
+      "import-processing": {
+        "title": "Import progress",
+        "subtitles": {
+          "contacts": "Contacts",
+          "errors": "Errors"
+        },
+        "labels": {
+          "start": "Start",
+          "end": "End",
+          "lines-created": "Lines created",
+          "lines-updated": "Lines updated",
+          "error-count": "Error count",
+          "errors-report": "Errors report download Url:",
+          "error-log": "Errors"
+        }
+      }
+    },
+    "dialogs": {
+      "csv-file-delete": {
+        "title": "Delete CSV",
+        "subtitle": "Are you sure you want to delete this csv file?"
+      },
+      "csv-file-delete-and-close-preview": {
+        "title": "Delete CSV",
+        "subtitle": "Are you sure you want to close preview and delete file "
+      },
+      "customer-export": {
+        "title": "Contacts export",
+        "all": "All",
+        "from": "from",
+        "organization": "organization",
+        "main-text-end": " will be exported to csv file.",
+        "subtitle-empty-export": "No contacts or organizations are selected.",
+        "contacts": "contacts",
+        "organizations": "organizations",
+        "export": "Export"
+      },
+      "customer-import": {
+        "title-contacts": "Contacts import",
+        "title-organizations": "Organizations import",
+        "contacts": "contacts",
+        "organizations": "organizations",
+        "main-text-middle": "will be imported into the",
+        "root": "root",
+        "current-organization": "current organization",
+        "import": "Import"
+      },
+      "customer-warning": {
+        "title": "Contacts & Organizations export",
+        "main-text-beginning": "You have selected",
+        "items": "items",
+        "main-text-middle": "(including nested) but export is limited with",
+        "main-text-end": ", you retrieve to export more"
+      }
+    },
+    "validation-errors": {
+      "file-not-existed": "The file does not exist.",
+      "exceeding-file-max-size": "The file size limit is {{ fileMaxSize }}. The file size is too large. Try to upload another one.",
+      "wrong-delimiter": "The wrong delimiter. Should be used ';'.",
+      "exceeding-line-limits": "The import limit is {{ importLimitOfLines }} lines but your file contains {{ linesCount }} lines. The file can not be imported.",
+      "missing-required-columns": "The required columns: \"{{ missedColumns }}\" are not in the file. The file can not be imported.",
+      "no-data": "File has no data."
+    }
+  },
+  "permissions": {
+    "customer:simpleExport": "Export customers data",
+    "customer:simpleImport": "Import customers data"
+  },
+  "settings": {
+  }
+}

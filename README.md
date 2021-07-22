@@ -27,7 +27,7 @@ If you want to automated transferring information from 3rd party system, like ER
 
 
 ## Documentation
-* [Module Documentation](https://virtocommerce.com/docs/latest/modules/customer-export-import/)
+* [Module Documentation](https://virtocommerce.com/docs/latest/modules/customer-export-import/index/)
 * [View on GitHub](docs/index.md)
 
 ## Development

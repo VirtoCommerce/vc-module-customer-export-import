@@ -12,8 +12,8 @@ The business goal for the module is to provide to non-technical not high skilled
 
 - I need to create a new organization with customers.
 - I need to make bulk changes for multiple customers in the organization of few hundreds of records.
-- I need to make a bulk update (change user group according to customer segment) for a users in organization.
-- I need to add new organization for a batch of customers added to the Customer module.
+- I need to migrate contacts from another system.
+- I need to migrate organizations from another system.
 
 ## Using CSV
 
@@ -51,27 +51,27 @@ Taxpayer ID<br />
 Preferred communication<br />
 Preferred delivery<br />
 Address Type \*required for address<br />
-Address First Name<br />
-Address Last Name<br />
-Address Country<br />
-Address Region<br />
-Address City<br />
-Address Line1<br />
-Address Line2<br />
-Address Zip Code<br />
-Address Email<br />
-Address Phone<br />
+Address First Name \*required for address<br />
+Address Last Name \*required for address<br />
+Address Country \*required for address<br />
+Address Region \*required for address<br />
+Address City \*required for address<br />
+Address Line1 \*required for address<br />
+Address Line2 \*required for address<br />
+Address Zip Code \*required for address<br />
+Address Email \*required for address<br />
+Address Phone \*required for address<br />
 All Dynamic Properties<br />
 
 
-Each column must be separated by a semicolon. Only Contact First Name, Contact Last Name, Contact Full Name values are required for Contact creation.
+> Each column must be separated by a semicolon. Only Contact First Name, Contact Last Name, Contact Full Name values are required for Contact creation.
 
-All Address values are required for creation/updating address. If you don't need to create/update address leave it empty.
+> All Address values are required for creation/updating address. If you don't need to create/update address leave it empty.
 
-You can create new account in relation to contact. Account name, Account email, Store id values are required for Account creating. 
-Account name and Account email should be unique for each account. Please notice, you can only create account, but not update.
+> You can create new account in relation to contact. Account name, Account email, Store id values are required for Account creating. 
+> Account name and Account email should be unique for each account. Please notice, you can only create account, but not update.
 
-In case of errors full contact line will be skipped. You can download error report on statistics page and check error detail for skipped line.
+> In case of errors full contact line will be skipped. You can download error report on statistics page and check error detail for skipped line.
 
 Example: [Contacts\_sample.csv](media/samples/Contacts_sample.csv)
 
@@ -83,27 +83,27 @@ The first line should be Header:
 Organization Name \*required<br />
 Organization Id<br />
 Organization Outer Id<br />
-Address Type \*Required for address<br />
-Address First Name<br />
-Address Last Name<br />
-Address Country<br />
-Address Region<br />
-Address City<br />
-Address Address Line1<br />
-Address Address Line2<br />
-Address Zip Code<br />
-Address Email<br />
-Address Phone<br />
+Address Type \*required for address<br />
+Address First Name \*required for address<br />
+Address Last Name \*required for address<br />
+Address Country \*required for address<br />
+Address Region \*required for address<br />
+Address City \*required for address<br />
+Address Address Line1 \*required for address<br />
+Address Address Line2 \*required for address<br />
+Address Zip Code \*required for address<br />
+Address Email \*required for address<br />
+Address Phone \*required for address<br />
 Phones<br />
 Business category<br />
 Description<br />
 All Dynamic Properties<br />
 
-Each column must be separated by a semicolon. Only Organization name value is required for creation organization.
+> Each column must be separated by a semicolon. Only Organization name value is required for creation organization.
 
-All Address values are required for creation/updating address. If you don't need to create/update address leave it empty.
+> All Address values are required for creation/updating address. If you don't need to create/update address leave it empty.
 
-In case of errors organization line will be skipped. You can download error report on statistics page and check error detail for skipped line.
+> In case of errors organization line will be skipped. You can download error report on statistics page and check error detail for skipped line.
 
 Example: [Organizations\_sample.csv](media/samples/Organizations_sample.csv)
 
@@ -185,7 +185,7 @@ Example: [Organizations\_sample.csv](media/samples/Organizations_sample.csv)
 ### Update existing organizations
 
 1. The user opens root of Customer management module > click import
-2. Browse and upload file >
+2. Upload file >
 3. The system shows Uploaded CSV file
 4. The user opens to preview uploaded file > Click Import
 5. The system shows a popup with the text: "NN organizations will be imported"
@@ -203,3 +203,43 @@ Ask system administrator to change it throught an environment variable for `Cust
 Limit for size of csv file = 1mb by default. 
 Ask system administrator to change it throught an environment variable for `CustomerExportImport__Import__FileMaxSize`
 
+## Requirements for data
+
+For both contacts & organizations:<br />
+
+Address Country, Address Country Code should follow ISO 3166-1 alpha-3 standard<br />
+Dynamic property: type sh<br />
+Address Country, Address Country Code should follow ISO 3166-1 alpha-3 standard<br />
+Dynamic property: type should correlate to specified in admin<br />
+
+Maximum length for values in columns:<br />
+
+Address First Name - 128<br />
+Address Last Name - 128<br />
+Address Email - 64<br />
+Address Phone - 256<br />
+Address Line 1 - 128<br />
+Address Line 2 - 128<br />
+Address City - 128<br />
+Address Region - 128<br />
+Address Country Code - 64<br />
+Address County - 128<br />
+Address Zip Code - 32<br />
+Dynamic property with type ShortText - 512 per value<br />  
+Phones - 64 per value<br />
+Contact Outer Id - 128<br />
+Contact First Name - 128<br />
+Contact Last Name - 128<br />
+Contact Full Name - 254<br />
+Organization Outer Id - 128<br />
+Organization Name - 128<br />
+Contact Status - 64<br />
+TimeZone - 32<br />
+Salutation - 256<br />
+Default Language - 32<br />
+Tax Payer Id - 64<br />
+Preferred Delivery - 64<br />
+Preferred Communication - 64<br />  
+Organization Outer Id - 128<br />
+Organization Name - 128<br />
+Business Category - 64<br />

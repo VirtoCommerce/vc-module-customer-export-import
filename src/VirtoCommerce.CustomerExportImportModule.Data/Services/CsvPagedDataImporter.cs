@@ -84,7 +84,19 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 while (await dataSource.FetchAsync())
                 {
-                    await ProcessChunkAsync(request, progressCallback, dataSource, errorsContext, importProgress, importReporter);
+                    try
+                    {
+                        await ProcessChunkAsync(request, progressCallback, dataSource.Items, errorsContext, importProgress, importReporter);
+                    }
+                    catch (Exception e)
+                    {
+                        HandleError(progressCallback, importProgress, e.Message);
+                    }
+                    finally
+                    {
+                        importProgress.ProcessedCount = Math.Min(dataSource.CurrentPageNumber * dataSource.PageSize, importProgress.TotalCount);
+                        importProgress.ErrorCount = importProgress.ProcessedCount - importProgress.CreatedCount - importProgress.UpdatedCount;
+                    }
 
                     if (importProgress.ProcessedCount != importProgress.TotalCount)
                     {
@@ -112,7 +124,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         }
 
 
-        protected abstract Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICustomerImportPagedDataSource<TCsvMember> dataSource,
+        protected abstract Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ImportRecord<TCsvMember>[] importRecords,
             ImportErrorsContext errorsContext, ImportProgressInfo importProgress, ICsvCustomerImportReporter importReporter);
 
         protected async Task<ValidationResult> ValidateAsync(ImportRecord<TCsvMember>[] importRecords, ICsvCustomerImportReporter importReporter)

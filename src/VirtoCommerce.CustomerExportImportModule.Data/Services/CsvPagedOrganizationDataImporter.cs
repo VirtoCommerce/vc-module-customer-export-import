@@ -25,74 +25,62 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             _memberService = memberService;
         }
 
-        protected override async Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICustomerImportPagedDataSource<ImportableOrganization> dataSource,
+        protected override async Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ImportRecord<ImportableOrganization>[] importRecords,
             ImportErrorsContext errorsContext, ImportProgressInfo importProgress, ICsvCustomerImportReporter importReporter)
         {
-            var importOrganizations = dataSource.Items
+            var importOrganizations = importRecords
                 // expect records that was parsed with errors
                 .Where(importContact => !errorsContext.ErrorsRows.Contains(importContact.Row))
                 .ToArray();
 
-            try
-            {
-                var internalIds = importOrganizations.Select(x => x.Record?.Id).Distinct()
-                    .Where(x => !string.IsNullOrEmpty(x))
-                    .ToArray();
+            var internalIds = importOrganizations.Select(x => x.Record?.Id).Distinct()
+                .Where(x => !string.IsNullOrEmpty(x))
+                .ToArray();
 
-                var outerIds = importOrganizations.Select(x => x.Record?.OuterId).Distinct()
-                    .Where(x => !string.IsNullOrEmpty(x))
-                    .ToArray();
+            var outerIds = importOrganizations.Select(x => x.Record?.OuterId).Distinct()
+                .Where(x => !string.IsNullOrEmpty(x))
+                .ToArray();
 
-                var existedOrganizations =
-                    (await SearchMembersByIdAndOuterIdAsync(internalIds, outerIds, new[] { nameof(Organization) }, true))
-                    .OfType<Organization>().ToArray();
+            var existedOrganizations =
+                (await SearchMembersByIdAndOuterIdAsync(internalIds, outerIds, new[] { nameof(Organization) }, true))
+                .OfType<Organization>().ToArray();
 
-                SetIdToNullForNotExisted(importOrganizations, existedOrganizations);
+            SetIdToNullForNotExisted(importOrganizations, existedOrganizations);
 
-                SetIdToRealForExistedOuterId(importOrganizations, existedOrganizations);
+            SetIdToRealForExistedOuterId(importOrganizations, existedOrganizations);
 
-                var validationResult = await ValidateAsync(importOrganizations, importReporter);
+            var validationResult = await ValidateAsync(importOrganizations, importReporter);
 
-                var invalidImportOrganizations = validationResult.Errors
-                    .Select(x => (x.CustomState as ImportValidationState<ImportableOrganization>)?.InvalidRecord).Distinct().ToArray();
+            var invalidImportOrganizations = validationResult.Errors
+                .Select(x => (x.CustomState as ImportValidationState<ImportableOrganization>)?.InvalidRecord).Distinct().ToArray();
 
-                importOrganizations = importOrganizations.Except(invalidImportOrganizations).ToArray();
+            importOrganizations = importOrganizations.Except(invalidImportOrganizations).ToArray();
 
-                //reduce existed set after validation
-                existedOrganizations = existedOrganizations.Where(ec => importOrganizations.Any(ic =>
-                        ec.Id.EqualsInvariant(ic.Record.Id)
-                        || !string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId)))
-                    .ToArray();
+            //reduce existed set after validation
+            existedOrganizations = existedOrganizations.Where(ec => importOrganizations.Any(ic =>
+                    ec.Id.EqualsInvariant(ic.Record.Id)
+                    || !string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId)))
+                .ToArray();
 
-                var updateImportOrganizations = importOrganizations.Where(x => existedOrganizations.Any(ec =>
-                    ec.Id.EqualsInvariant(x.Record.Id)
-                    || (!ec.OuterId.IsNullOrEmpty() && ec.OuterId.EqualsInvariant(x.Record.OuterId)))
-                ).ToArray();
+            var updateImportOrganizations = importOrganizations.Where(x => existedOrganizations.Any(ec =>
+                ec.Id.EqualsInvariant(x.Record.Id)
+                || (!ec.OuterId.IsNullOrEmpty() && ec.OuterId.EqualsInvariant(x.Record.OuterId)))
+            ).ToArray();
 
-                existedOrganizations = GetReducedExistedByWrongOuterId(updateImportOrganizations, existedOrganizations).OfType<Organization>().ToArray();
+            existedOrganizations = GetReducedExistedByWrongOuterId(updateImportOrganizations, existedOrganizations).OfType<Organization>().ToArray();
 
-                var createImportOrganizations = importOrganizations.Except(updateImportOrganizations).ToArray();
+            var createImportOrganizations = importOrganizations.Except(updateImportOrganizations).ToArray();
 
-                var newOrganizations = CreateNewOrganizations(createImportOrganizations);
+            var newOrganizations = CreateNewOrganizations(createImportOrganizations);
 
-                PatchExistedOrganizations(existedOrganizations, updateImportOrganizations);
+            PatchExistedOrganizations(existedOrganizations, updateImportOrganizations);
 
-                var organizationsForSave = newOrganizations.Union(existedOrganizations).ToArray();
+            var organizationsForSave = newOrganizations.Union(existedOrganizations).ToArray();
 
-                await _memberService.SaveChangesAsync(organizationsForSave);
+            await _memberService.SaveChangesAsync(organizationsForSave);
 
-                importProgress.ContactsCreated += newOrganizations.Length;
-                importProgress.ContactsUpdated += existedOrganizations.Length;
-            }
-            catch (Exception e)
-            {
-                HandleError(progressCallback, importProgress, e.Message);
-            }
-            finally
-            {
-                importProgress.ProcessedCount = Math.Min(dataSource.CurrentPageNumber * dataSource.PageSize, importProgress.TotalCount);
-                importProgress.ErrorCount = importProgress.ProcessedCount - importProgress.ContactsCreated - importProgress.ContactsUpdated;
-            }
+            importProgress.CreatedCount += newOrganizations.Length;
+            importProgress.UpdatedCount += existedOrganizations.Length;
         }
 
 

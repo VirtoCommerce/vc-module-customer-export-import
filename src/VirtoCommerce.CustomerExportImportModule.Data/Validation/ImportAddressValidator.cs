@@ -49,6 +49,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
                     RuleFor(x => x.Record.AddressEmail)
                         .EmailAddress()
+                        .When(x => !string.IsNullOrEmpty(x.Record.AddressEmail))
                         .WithInvalidValueCodeAndMessage("Address Email")
                         .WithImportState();
                     RuleFor(x => x.Record.AddressEmail)

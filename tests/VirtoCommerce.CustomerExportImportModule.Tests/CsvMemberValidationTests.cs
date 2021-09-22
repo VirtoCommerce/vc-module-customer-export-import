@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 using Moq;
 using VirtoCommerce.CustomerExportImportModule.Core;
@@ -14,8 +13,6 @@ using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.Platform.Security;
-using VirtoCommerce.Platform.Security.Repositories;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Model.Search;
 using VirtoCommerce.StoreModule.Core.Services;
@@ -215,47 +212,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                         }
                     },
                     ModuleConstants.ValidationErrors.InvalidValue, "Test1"
-                };
-
-                // Country name and id mismatch
-                yield return new object[]
-                {
-                    new[]
-                    {
-                        new ImportRecord<ImportableContact>
-                        {
-                            Record = new ImportableContact
-                            {
-                                Id = "TestId1",
-                                ContactFirstName = "Test",
-                                ContactLastName = "1",
-                                ContactFullName = "Test1",
-                                AddressType = "BillingOrShipping",
-                                AddressLine1 = "Line1",
-                                AddressCity = "City",
-                                AddressCountryCode = "RUS",
-                                AddressCountry = "United States",
-                                AddressZipCode = "123456"
-                            }
-                        },
-                        new ImportRecord<ImportableContact>
-                        {
-                            Record = new ImportableContact
-                            {
-                                Id = "TestId2",
-                                ContactFirstName = "Test",
-                                ContactLastName = "2",
-                                ContactFullName = "Test2",
-                                AddressType = "BillingAndShipping",
-                                AddressLine1 = "Line1",
-                                AddressCity = "City",
-                                AddressCountryCode = "USA",
-                                AddressCountry = "United States",
-                                AddressZipCode = "123456"
-                            }
-                        }
-                    },
-                    ModuleConstants.ValidationErrors.CountryNameAndCodeDoesntMatch, "Test1"
                 };
 
                 // Invalid dynamic property values

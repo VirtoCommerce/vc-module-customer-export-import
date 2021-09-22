@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core
@@ -40,7 +41,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
             public const string PasswordDoesntMeetSecurityPolicy = "password-doesnt-meet-security-policy";
         }
 
-        public static readonly Dictionary<string, string> ValidationMessages = new Dictionary<string, string>
+        public static readonly ReadOnlyDictionary<string, string> ValidationMessages = new  ReadOnlyDictionary<string, string>(new Dictionary<string, string>
         {
             { ValidationErrors.MissingRequiredValues, "The required value in column '{0}' is missing." },
             { ValidationErrors.ExceedingMaxLength, "Value in column '{0}' may have maximum {1} characters." },
@@ -48,7 +49,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
             { ValidationErrors.InvalidValue, "This row has invalid value in the column '{0}'." },
             { ValidationErrors.NotUniqueValue, "Value in column '{0}' should be unique." },
             { ValidationErrors.PasswordDoesntMeetSecurityPolicy, "Password does not meet the platform security policy. Please, contact administrator" }
-        };
+        });
 
         public static class Features
         {

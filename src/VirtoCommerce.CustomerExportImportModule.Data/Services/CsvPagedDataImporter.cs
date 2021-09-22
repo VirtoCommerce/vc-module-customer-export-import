@@ -100,7 +100,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                         ConvertCountryCodesToIso3(dataSource.Items);
 
-                        await SetCountryNameToPlatformValueByIso3CodeAsync(dataSource.Items);
+                        await SetCountryNameAsync(dataSource.Items);
 
                         await ProcessChunkAsync(request, progressCallback, importRecords, errorsContext, importProgress, importReporter);
                     }
@@ -139,7 +139,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-        private async Task SetCountryNameToPlatformValueByIso3CodeAsync(ImportRecord<TCsvMember>[] dataSourceItems)
+        private async Task SetCountryNameAsync(ImportRecord<TCsvMember>[] dataSourceItems)
         {
             var countries = await _countriesService.GetCountriesAsync();
 

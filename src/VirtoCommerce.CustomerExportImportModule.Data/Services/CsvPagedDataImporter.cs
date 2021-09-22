@@ -28,12 +28,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly IValidator<ImportRecord<TCsvMember>[]> _importRecordsValidator;
         private readonly IBlobUrlResolver _blobUrlResolver;
         private readonly CountryProvider _countryProvider;
+        private readonly Country[] _countries;
+
 
         public abstract string MemberType { get; }
 
         protected CsvPagedDataImporter(IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, IValidator<ImportRecord<TCsvMember>[]> importRecordsValidator,
-            ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver, CountryProvider countryProvider)
+            ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver,
+            CountryProvider countryProvider, ICountriesService countriesService)
         {
             _memberSearchService = memberSearchService;
             _dataValidator = dataValidator;
@@ -42,6 +45,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             _importRecordsValidator = importRecordsValidator;
             _blobUrlResolver = blobUrlResolver;
             _countryProvider = countryProvider;
+            _countries = countriesService.GetCountriesAsync().GetAwaiter().GetResult().ToArray();
         }
 
         public virtual async Task ImportAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
@@ -96,6 +100,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                         ConvertCountryCodesToIso3(dataSource.Items);
 
+                        SetCountryNameToPlatformValueByIso3Code(dataSource.Items);
+
                         await ProcessChunkAsync(request, progressCallback, importRecords, errorsContext, importProgress, importReporter);
                     }
                     catch (Exception e)
@@ -130,6 +136,24 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 }
 
                 progressCallback(importProgress);
+            }
+        }
+
+        private void SetCountryNameToPlatformValueByIso3Code(ImportRecord<TCsvMember>[] dataSourceItems)
+        {
+            foreach (var importRecord in dataSourceItems)
+            {
+                var countryCode = importRecord.Record.AddressCountryCode;
+
+                if (!string.IsNullOrEmpty(countryCode) && countryCode.Length == 3)
+                {
+                    var country = _countries.FirstOrDefault(x => x.Id.EqualsInvariant(countryCode));
+                    importRecord.Record.AddressCountry = country?.Name;
+                }
+                else
+                {
+                    importRecord.Record.AddressCountry = null;
+                }
             }
         }
 

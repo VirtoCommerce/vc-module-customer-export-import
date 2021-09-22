@@ -28,7 +28,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly IValidator<ImportRecord<TCsvMember>[]> _importRecordsValidator;
         private readonly IBlobUrlResolver _blobUrlResolver;
         private readonly CountryProvider _countryProvider;
-        private readonly Country[] _countries;
+        private readonly ICountriesService _countriesService;
 
 
         public abstract string MemberType { get; }
@@ -45,7 +45,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             _importRecordsValidator = importRecordsValidator;
             _blobUrlResolver = blobUrlResolver;
             _countryProvider = countryProvider;
-            _countries = countriesService.GetCountriesAsync().GetAwaiter().GetResult().ToArray();
+            _countriesService = countriesService;
         }
 
         public virtual async Task ImportAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
@@ -100,7 +100,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                         ConvertCountryCodesToIso3(dataSource.Items);
 
-                        SetCountryNameToPlatformValueByIso3Code(dataSource.Items);
+                        await SetCountryNameToPlatformValueByIso3CodeAsync(dataSource.Items);
 
                         await ProcessChunkAsync(request, progressCallback, importRecords, errorsContext, importProgress, importReporter);
                     }
@@ -139,15 +139,17 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-        private void SetCountryNameToPlatformValueByIso3Code(ImportRecord<TCsvMember>[] dataSourceItems)
+        private async Task SetCountryNameToPlatformValueByIso3CodeAsync(ImportRecord<TCsvMember>[] dataSourceItems)
         {
+            var countries = await _countriesService.GetCountriesAsync();
+
             foreach (var importRecord in dataSourceItems)
             {
                 var countryCode = importRecord.Record.AddressCountryCode;
 
                 if (!string.IsNullOrEmpty(countryCode) && countryCode.Length == 3)
                 {
-                    var country = _countries.FirstOrDefault(x => x.Id.EqualsInvariant(countryCode));
+                    var country = countries.FirstOrDefault(x => x.Id.EqualsInvariant(countryCode));
                     importRecord.Record.AddressCountry = country?.Name;
                 }
                 else

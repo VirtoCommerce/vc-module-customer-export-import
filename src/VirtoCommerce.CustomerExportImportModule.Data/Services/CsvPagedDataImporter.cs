@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CsvHelper;
 using FluentValidation;
 using FluentValidation.Results;
+using Nager.Country;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
@@ -26,12 +27,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly ICustomerImportPagedDataSourceFactory _dataSourceFactory;
         private readonly IValidator<ImportRecord<TCsvMember>[]> _importRecordsValidator;
         private readonly IBlobUrlResolver _blobUrlResolver;
+        private readonly CountryProvider _countryProvider;
 
         public abstract string MemberType { get; }
 
         protected CsvPagedDataImporter(IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, IValidator<ImportRecord<TCsvMember>[]> importRecordsValidator,
-            ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
+            ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver, CountryProvider countryProvider)
         {
             _memberSearchService = memberSearchService;
             _dataValidator = dataValidator;
@@ -39,6 +41,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             _dataSourceFactory = dataSourceFactory;
             _importRecordsValidator = importRecordsValidator;
             _blobUrlResolver = blobUrlResolver;
+            _countryProvider = countryProvider;
         }
 
         public virtual async Task ImportAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
@@ -86,7 +89,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 {
                     try
                     {
-                        await ProcessChunkAsync(request, progressCallback, dataSource.Items, errorsContext, importProgress, importReporter);
+                        var importRecords = dataSource.Items
+                            // expect records that was parsed with errors
+                            .Where(x => !errorsContext.ErrorsRows.Contains(x.Row))
+                            .ToArray();
+
+                        ConvertCountryCodesToIso3(dataSource.Items);
+
+                        await ProcessChunkAsync(request, progressCallback, importRecords, errorsContext, importProgress, importReporter);
                     }
                     catch (Exception e)
                     {
@@ -120,6 +130,18 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 }
 
                 progressCallback(importProgress);
+            }
+        }
+
+        private void ConvertCountryCodesToIso3(ImportRecord<TCsvMember>[] importRecords)
+        {
+            foreach (var importRecord in importRecords.Where(x => !string.IsNullOrEmpty(x.Record.AddressCountryCode) && x.Record.AddressCountryCode.Length == 2))
+            {
+                var countryInfo = _countryProvider.GetCountry(importRecord.Record.AddressCountryCode);
+                if (countryInfo != null)
+                {
+                    importRecord.Record.AddressCountryCode = countryInfo.Alpha3Code.ToString();
+                }
             }
         }
 

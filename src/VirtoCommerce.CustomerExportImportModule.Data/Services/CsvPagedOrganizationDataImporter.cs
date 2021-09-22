@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
+using Nager.Country;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
@@ -19,8 +20,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         public override string MemberType => nameof(Organization);
 
         public CsvPagedOrganizationDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<ImportableOrganization>[]> importOrganizationValidator
-            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver)
-        : base(memberSearchService, dataValidator, dataSourceFactory, importOrganizationValidator, importReporterFactory, blobUrlResolver)
+            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver,
+            CountryProvider countryProvider)
+        : base(memberSearchService, dataValidator, dataSourceFactory, importOrganizationValidator, importReporterFactory, blobUrlResolver, countryProvider)
         {
             _memberService = memberService;
         }
@@ -28,10 +30,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         protected override async Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ImportRecord<ImportableOrganization>[] importRecords,
             ImportErrorsContext errorsContext, ImportProgressInfo importProgress, ICsvCustomerImportReporter importReporter)
         {
-            var importOrganizations = importRecords
-                // expect records that was parsed with errors
-                .Where(importContact => !errorsContext.ErrorsRows.Contains(importContact.Row))
-                .ToArray();
+            var importOrganizations = importRecords;
 
             var internalIds = importOrganizations.Select(x => x.Record?.Id).Distinct()
                 .Where(x => !string.IsNullOrEmpty(x))

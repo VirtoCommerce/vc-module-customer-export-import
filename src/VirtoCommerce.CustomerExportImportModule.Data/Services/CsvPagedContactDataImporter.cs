@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Nager.Country;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
@@ -23,8 +24,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         public override string MemberType => nameof(Contact);
 
         public CsvPagedContactDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<ImportableContact>[]> importContactValidator
-            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver, UserManager<ApplicationUser> userManager, IPasswordGenerator passwordGenerator)
-        : base(memberSearchService, dataValidator, dataSourceFactory, importContactValidator, importReporterFactory, blobUrlResolver)
+            , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver, UserManager<ApplicationUser> userManager, IPasswordGenerator passwordGenerator,
+            CountryProvider countryProvider)
+        : base(memberSearchService, dataValidator, dataSourceFactory, importContactValidator, importReporterFactory, blobUrlResolver, countryProvider)
         {
             _memberService = memberService;
             _userManager = userManager;
@@ -34,11 +36,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         protected override async Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ImportRecord<ImportableContact>[] importRecords,
             ImportErrorsContext errorsContext, ImportProgressInfo importProgress, ICsvCustomerImportReporter importReporter)
         {
-            var importContacts = importRecords
-                // expect records that was parsed with errors
-                .Where(importContact => !errorsContext.ErrorsRows.Contains(importContact.Row))
-                .ToArray();
-
+            var importContacts = importRecords;
 
             var internalIds = importContacts.Select(x => x.Record?.Id).Distinct()
                 .Where(x => !string.IsNullOrEmpty(x))

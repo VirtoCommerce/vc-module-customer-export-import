@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
 using VirtoCommerce.CoreModule.Core.Common;
-using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.Platform.Core.Common;
@@ -29,15 +28,21 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 , () =>
                 {
                     RuleFor(x => x.Record.AddressType).IsEnumName(typeof(AddressType))
+                        .NotEmpty()
+                        .WithMissingRequiredValueCodeAndMessage("Address Type")
                         .When(x => !string.IsNullOrEmpty(x.Record.AddressType))
                         .WithInvalidValueCodeAndMessage("Address Type")
                         .WithImportState();
 
                     RuleFor(x => x.Record.AddressFirstName)
+                        .NotEmpty()
+                        .WithMissingRequiredValueCodeAndMessage("Address First Name")
                         .MaximumLength(128)
                         .WithExceededMaxLengthCodeAndMessage("Address First Name", 128)
                         .WithImportState();
                     RuleFor(x => x.Record.AddressLastName)
+                        .NotEmpty()
+                        .WithMissingRequiredValueCodeAndMessage("Address Last Name")
                         .MaximumLength(128)
                         .WithExceededMaxLengthCodeAndMessage("Address Last Name", 128)
                         .WithImportState();
@@ -101,45 +106,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                             RuleFor(x => x.Record.AddressCountryCode)
                                 .Must((importRecord, countryCode, context) =>
                                 {
-                                    var countries = (IList<Country>) context.ParentContext.RootContextData[Countries];
+                                    var countries = (IList<Country>)context.ParentContext.RootContextData[Countries];
                                     return countries.Any(country => country.Id == countryCode);
                                 })
                                 .WithInvalidValueCodeAndMessage("Address Country Code")
                                 .WithImportState();
                         });
-
-                    RuleFor(x => x.Record.AddressCountry)
-                        .NotEmpty()
-                        .WithMissingRequiredValueCodeAndMessage("Address Country")
-                        .WithImportState()
-                        .DependentRules(() =>
-                        {
-                            RuleFor(x => x.Record.AddressCountry)
-                                .MaximumLength(128)
-                                .WithExceededMaxLengthCodeAndMessage("Address Country", 128)
-                                .WithImportState();
-                            RuleFor(x => x.Record.AddressCountry)
-                                .Must((importRecord, countryName, context) =>
-                                {
-                                    var countries = (IList<Country>) context.ParentContext.RootContextData[Countries];
-                                    return countries.Any(country => country.Name == countryName);
-                                })
-                                .WithInvalidValueCodeAndMessage("Address Country")
-                                .WithImportState();
-                        });
-
-                    RuleFor(x => x.Record)
-                        .Must((importRecord, member, context) =>
-                        {
-                            var countries = (IList<Country>) context.ParentContext.RootContextData[Countries];
-                            // Because where is no possibility to depend on multiple rules or .When() overload which pass context with countries data
-                            return countries.All(country => country.Id != member.AddressCountryCode) ||
-                                   countries.All(country => country.Name != member.AddressCountry) ||
-                                   countries.Any(country => country.Id == member.AddressCountryCode && country.Name == member.AddressCountry);
-                        })
-                        .WithErrorCode(ModuleConstants.ValidationErrors.CountryNameAndCodeDoesntMatch)
-                        .WithMessage(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.CountryNameAndCodeDoesntMatch])
-                        .WithImportState();
 
                     RuleFor(x => x.Record.AddressZipCode)
                         .NotEmpty()

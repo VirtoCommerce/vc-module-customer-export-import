@@ -36,6 +36,38 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public override string OuterId { get; set; }
 
         [Optional]
+        [Name("Contact Status")]
+        public virtual string ContactStatus { get; set; }
+
+        [Optional]
+        [Name("Contact Birthday")]
+        public virtual DateTime? Birthday { get; set; }
+
+        [Optional]
+        [Name("Contact TimeZone")]
+        public virtual string TimeZone { get; set; }
+
+        [Optional]
+        [Name("Contact Salutation")]
+        public virtual string Salutation { get; set; }
+
+        [Optional]
+        [Name("Contact Default language")]
+        public virtual string DefaultLanguage { get; set; }
+
+        [Optional]
+        [Name("Contact Taxpayer ID")]
+        public virtual string TaxPayerId { get; set; }
+
+        [Optional]
+        [Name("Contact Preferred communication")]
+        public virtual string PreferredCommunication { get; set; }
+
+        [Optional]
+        [Name("Contact Preferred delivery")]
+        public virtual string PreferredDelivery { get; set; }
+
+        [Optional]
         [Name("Organization Id")]
         public virtual string OrganizationId { get; set; }
 
@@ -49,64 +81,32 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         [Optional]
         [Name("Account Login")]
-        public string AccountLogin { get; set; }
+        public virtual string AccountLogin { get; set; }
 
         [Optional]
-        [Name("Store Id")]
-        public string StoreId { get; set; }
+        [Name("Account Store Id")]
+        public virtual string StoreId { get; set; }
 
         [Optional]
-        [Name("Store Name")]
-        public string StoreName { get; set; }
+        [Name("Account Store Name")]
+        public virtual string StoreName { get; set; }
 
         [Optional]
         [Name("Account Email")]
-        public string AccountEmail { get; set; }
+        public virtual string AccountEmail { get; set; }
 
         [Optional]
         [Name("Account Type")]
-        public string AccountType { get; set; }
+        public virtual string AccountType { get; set; }
 
         [Optional]
         [Name("Account Status")]
-        public string AccountStatus { get; set; }
+        public virtual string AccountStatus { get; set; }
 
         [Optional]
-        [Name("Email Verified")]
+        [Name("Account Email Verified")]
         [BooleanTrueValues("yes", "true")]
         [BooleanFalseValues("no", "false")]
-        public bool? EmailVerified { get; set; }
-
-        [Optional]
-        [Name("Contact Status")]
-        public string ContactStatus { get; set; }
-
-        [Optional]
-        [Name("Birthday")]
-        public DateTime? Birthday { get; set; }
-
-        [Optional]
-        [Name("TimeZone")]
-        public string TimeZone { get; set; }
-
-        [Optional]
-        [Name("Salutation")]
-        public string Salutation { get; set; }
-
-        [Optional]
-        [Name("Default language")]
-        public string DefaultLanguage { get; set; }
-
-        [Optional]
-        [Name("Taxpayer ID")]
-        public string TaxPayerId { get; set; }
-
-        [Optional]
-        [Name("Preferred communication")]
-        public string PreferredCommunication { get; set; }
-
-        [Optional]
-        [Name("Preferred delivery")]
-        public string PreferredDelivery { get; set; }
+        public virtual bool? EmailVerified { get; set; }
     }
 }

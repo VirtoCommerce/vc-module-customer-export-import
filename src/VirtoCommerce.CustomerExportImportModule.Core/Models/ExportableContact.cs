@@ -35,12 +35,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         [Index(8)]
         [Optional]
-        [Name("Associated Organization Ids")]
+        [Name("Contact Associated Organization Ids")]
         public string AssociatedOrganizationIds { get; set; }
 
         [Index(9)]
         [Optional]
-        [Name("User groups")]
+        [Name("Contact User groups")]
         public string UserGroups { get; set; }
 
         [Index(10)]

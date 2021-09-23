@@ -27,22 +27,24 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 }.Any(field => !string.IsNullOrEmpty(field))
                 , () =>
                 {
-                    RuleFor(x => x.Record.AddressType).IsEnumName(typeof(AddressType))
-                        .NotEmpty()
-                        .WithMissingRequiredValueCodeAndMessage("Address Type")
+                    RuleFor(x => x.Record.AddressType)
+                        .IsEnumName(typeof(AddressType))
                         .When(x => !string.IsNullOrEmpty(x.Record.AddressType))
                         .WithInvalidValueCodeAndMessage("Address Type")
                         .WithImportState();
 
-                    RuleFor(x => x.Record.AddressFirstName)
+                    RuleFor(x => x.Record.AddressFirstName).Cascade(CascadeMode.StopOnFirstFailure)
                         .NotEmpty()
                         .WithMissingRequiredValueCodeAndMessage("Address First Name")
+                        .WithImportState()
                         .MaximumLength(128)
                         .WithExceededMaxLengthCodeAndMessage("Address First Name", 128)
                         .WithImportState();
-                    RuleFor(x => x.Record.AddressLastName)
+
+                    RuleFor(x => x.Record.AddressLastName).Cascade(CascadeMode.StopOnFirstFailure)
                         .NotEmpty()
                         .WithMissingRequiredValueCodeAndMessage("Address Last Name")
+                        .WithImportState()
                         .MaximumLength(128)
                         .WithExceededMaxLengthCodeAndMessage("Address Last Name", 128)
                         .WithImportState();
@@ -52,10 +54,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .When(x => !string.IsNullOrEmpty(x.Record.AddressEmail))
                         .WithInvalidValueCodeAndMessage("Address Email")
                         .WithImportState();
+
                     RuleFor(x => x.Record.AddressEmail)
                         .MaximumLength(64)
                         .WithExceededMaxLengthCodeAndMessage("Address Email", 64)
                         .WithImportState();
+
                     RuleFor(x => x.Record.AddressPhone)
                         .MaximumLength(256)
                         .WithExceededMaxLengthCodeAndMessage("Address Phone", 256)
@@ -72,6 +76,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                 .WithExceededMaxLengthCodeAndMessage("Address Line1", 128)
                                 .WithImportState();
                         });
+
                     RuleFor(x => x.Record.AddressLine2)
                         .MaximumLength(128)
                         .WithExceededMaxLengthCodeAndMessage("Address Line2", 128)

@@ -21,6 +21,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         where TCsvMember : CsvMember
         where TMember : Member
     {
+        private const int _iso2CodeCountryLength = 2;
+        private const int _iso3CodeCountryLength = 3;
+
         private readonly IMemberSearchService _memberSearchService;
         private readonly ICsvCustomerDataValidator _dataValidator;
         private readonly ICsvCustomerImportReporterFactory _importReporterFactory;
@@ -147,7 +150,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             {
                 var countryCode = importRecord.Record.AddressCountryCode;
 
-                if (!string.IsNullOrEmpty(countryCode) && countryCode.Length == 3)
+                if (!string.IsNullOrEmpty(countryCode) && countryCode.Length == _iso3CodeCountryLength)
                 {
                     var country = countries.FirstOrDefault(x => x.Id.EqualsInvariant(countryCode));
                     importRecord.Record.AddressCountry = country?.Name;
@@ -161,7 +164,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         private void ConvertCountryCodesToIso3(ImportRecord<TCsvMember>[] importRecords)
         {
-            foreach (var importRecord in importRecords.Where(x => !string.IsNullOrEmpty(x.Record.AddressCountryCode) && x.Record.AddressCountryCode.Length == 2))
+            foreach (var importRecord in importRecords.Where(x => !string.IsNullOrEmpty(x.Record.AddressCountryCode) && x.Record.AddressCountryCode.Length == _iso2CodeCountryLength))
             {
                 var countryInfo = _countryProvider.GetCountry(importRecord.Record.AddressCountryCode);
                 if (countryInfo != null)

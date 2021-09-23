@@ -20,18 +20,18 @@
                     <div class="progress-bar absolute" ng-style="{'width': blade.progressPercentage + '%'}"></div>
                 </div>
 
-                <div class="block" ng-if="blade.notification.contactsCreated || blade.notification.contactsUpdated || blade.notification.errorCount || blade.notification.totalCount">
+                <div class="block" ng-if="blade.notification.createdCount || blade.notification.updatedCount || blade.notification.errorCount || blade.notification.totalCount">
                     <ul class="list __info list-main">
                         <li class="list-item" id="contacts">
                             <p class="list-item-title">{{ blade.dataType.key }}</p>
                             <ul class="list __info list-sub">
                                 <li class="list-item mr-30">
                                     <div class="list-t">{{ 'customerExportImport.blades.import-processing.labels.lines-created' | translate }}</div>
-                                    <div class="list-descr">{{blade.notification.contactsCreated | number:0}}</div>
+                                    <div class="list-descr">{{blade.notification.createdCount | number:0}}</div>
                                 </li>
                                 <li class="list-item">
                                     <div class="list-t">{{ 'customerExportImport.blades.import-processing.labels.lines-updated' | translate }}</div>
-                                    <div class="list-descr">{{blade.notification.contactsUpdated | number:0}}</div>
+                                    <div class="list-descr">{{blade.notification.updatedCount | number:0}}</div>
                                 </li>
                             </ul>
                         </li>

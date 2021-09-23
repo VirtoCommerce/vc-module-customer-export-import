@@ -40,6 +40,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public virtual string ContactStatus { get; set; }
 
         [Optional]
+        [Name("Contact Phones")]
+        public override string Phones { get; set; }
+
+        [Optional]
+        [Name("Contact Emails")]
+        public override string Emails { get; set; }
+
+        [Optional]
         [Name("Contact Birthday")]
         public virtual DateTime? Birthday { get; set; }
 

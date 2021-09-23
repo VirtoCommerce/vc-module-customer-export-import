@@ -27,7 +27,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly ICustomerImportPagedDataSourceFactory _dataSourceFactory;
         private readonly IValidator<ImportRecord<TCsvMember>[]> _importRecordsValidator;
         private readonly IBlobUrlResolver _blobUrlResolver;
-        private readonly CountryProvider _countryProvider;
+        private readonly ICountryProvider _countryProvider;
         private readonly ICountriesService _countriesService;
 
 
@@ -36,7 +36,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         protected CsvPagedDataImporter(IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, IValidator<ImportRecord<TCsvMember>[]> importRecordsValidator,
             ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver,
-            CountryProvider countryProvider, ICountriesService countriesService)
+            ICountryProvider countryProvider, ICountriesService countriesService)
         {
             _memberSearchService = memberSearchService;
             _dataValidator = dataValidator;

@@ -25,7 +25,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public CsvPagedContactDataImporter(IMemberService memberService, IMemberSearchService memberSearchService, ICsvCustomerDataValidator dataValidator, IValidator<ImportRecord<ImportableContact>[]> importContactValidator
             , ICustomerImportPagedDataSourceFactory dataSourceFactory, ICsvCustomerImportReporterFactory importReporterFactory, IBlobUrlResolver blobUrlResolver, UserManager<ApplicationUser> userManager, IPasswordGenerator passwordGenerator,
-            CountryProvider countryProvider, ICountriesService countriesService)
+            ICountryProvider countryProvider, ICountriesService countriesService)
         : base(memberSearchService, dataValidator, dataSourceFactory, importContactValidator, importReporterFactory, blobUrlResolver, countryProvider, countriesService)
         {
             _memberService = memberService;

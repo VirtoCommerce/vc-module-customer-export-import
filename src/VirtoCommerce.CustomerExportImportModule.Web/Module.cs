@@ -53,7 +53,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             serviceCollection.AddOptions<ExportOptions>().Bind(Configuration.GetSection("CustomerExportImport:Export")).ValidateDataAnnotations();
             serviceCollection.AddOptions<ImportOptions>().Bind(Configuration.GetSection("CustomerExportImport:Import")).ValidateDataAnnotations();
 
-            serviceCollection.AddTransient<CountryProvider>();
+            serviceCollection.AddTransient<ICountryProvider, CountryProvider>();
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)

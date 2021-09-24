@@ -14,16 +14,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public override string Id { get; set; }
 
         [Index(1)]
-        public override string ContactFirstName { get; set; }
+        public override string OuterId { get; set; }
 
         [Index(2)]
-        public override string ContactLastName { get; set; }
+        public override string ContactFirstName { get; set; }
 
         [Index(3)]
-        public override string ContactFullName { get; set; }
+        public override string ContactLastName { get; set; }
 
         [Index(4)]
-        public override string OuterId { get; set; }
+        public override string ContactFullName { get; set; }
 
         [Index(5)]
         public override string OrganizationId { get; set; }

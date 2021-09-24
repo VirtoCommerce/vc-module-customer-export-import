@@ -11,7 +11,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
     public sealed class ImportableContact : CsvContact
     {
         [Optional]
-        [Name("Password")]
+        [Name("Account Password")]
         public string Password { get; set; }
 
         public void PatchModel(Contact target)

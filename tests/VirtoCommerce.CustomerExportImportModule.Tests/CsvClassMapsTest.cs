@@ -272,6 +272,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 expectedContact.Id = null; // not patched
                 expectedContact.AssociatedOrganizations = null; // not imported
                 expectedContact.Groups = null; // not imported
+                expectedContact.Addresses[0].CountryName = null; // not imported. It will be set by code at import.
                 yield return new object[] { ContactCsvHeader, ContactCsvRecord, expectedContact, ContactOrganization };
                 yield return new object[]
                 {

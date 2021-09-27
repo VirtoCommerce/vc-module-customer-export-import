@@ -6,7 +6,7 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ExportableOrganization: CsvOrganization
+    public sealed class ExportableOrganization : CsvOrganization
     {
         [Index(0)]
         public override string Id { get; set; }
@@ -39,6 +39,49 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Optional]
         [Name("Organization Groups")]
         public string OrganizationGroups { get; set; }
+
+        [Index(9)]
+        public override string Emails { get; set; }
+
+        [Index(10)]
+        public override string Phones { get; set; }
+
+        [Index(11)]
+        public override string AddressType { get; set; }
+
+        [Index(12)]
+        public override string AddressFirstName { get; set; }
+
+        [Index(13)]
+        public override string AddressLastName { get; set; }
+
+        [Index(14)]
+        public override string AddressCountry { get; set; }
+
+        [Index(15)]
+        public override string AddressCountryCode { get; set; }
+
+        [Index(16)]
+        public override string AddressRegion { get; set; }
+
+        [Index(17)]
+        public override string AddressCity { get; set; }
+
+        [Index(18)]
+        public override string AddressLine1 { get; set; }
+
+        [Index(19)]
+        public override string AddressLine2 { get; set; }
+
+        [Index(20)]
+        public override string AddressZipCode { get; set; }
+
+        [Index(21)]
+        public override string AddressEmail { get; set; }
+
+        [Index(22)]
+        public override string AddressPhone { get; set; }
+
 
         public CsvOrganization FromModels(Organization organization, Organization parentOrganization)
         {

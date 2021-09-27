@@ -14,6 +14,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Account Password")]
         public string Password { get; set; }
 
+        /// <summary>
+        /// 'Address Country' from file is not used. It will be set at import process from ISO countries dictionary
+        /// by 'Address Code' field. Therefore it is ignored.
+        /// </summary>
+        [Ignore]
+        [Name("Address Country")]
+        public override string AddressCountry { get; set; }
+
         public void PatchModel(Contact target)
         {
             target.OuterId = OuterId;

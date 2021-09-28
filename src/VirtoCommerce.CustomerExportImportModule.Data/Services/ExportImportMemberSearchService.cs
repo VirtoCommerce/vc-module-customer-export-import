@@ -38,11 +38,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 var orgSkip = criteria.Skip;
                 var orgTake = criteria.Take;
                 var orgMemberTypes = criteria.MemberTypes?.Select(x => x).ToArray();
-                //do not use index searching if concrete members are selected
-                if (!criteria.ObjectIds.IsNullOrEmpty())
-                {
-                    criteria.Keyword = null;
-                }
 
                 var withoutOrganizations = criteria.MemberTypes != null && !criteria.MemberTypes.Contains(OrganizationMemberType);
 

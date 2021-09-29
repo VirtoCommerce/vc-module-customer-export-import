@@ -64,10 +64,12 @@ angular.module(moduleName, ['ui.grid.autoFitColumns']).run([
                                 const selectedOrganizationsList = _.filter(selectedRows, { memberType: organizationMemberTypeName });
                                 const selectedMembersList = selectedContactsList.concat(selectedOrganizationsList);
                                 exportDataRequest.objectIds = _.pluck(selectedMembersList, 'id');
+                                const objectIdsIsEmpty = !exportDataRequest.objectIds || exportDataRequest.objectIds.length === 0;
+                                exportDataRequest.keyword = objectIdsIsEmpty ? exportDataRequest.keyword : null;
                             }
 
-                            const contactsSearchRequest = members.search(getSearchCriteria(contactMemberTypeName, organizationId, keyword, exportDataRequest.objectIds)).$promise;
-                            const organizationsSearchRequest = members.search(getSearchCriteria(organizationMemberTypeName, organizationId, keyword, exportDataRequest.objectIds)).$promise;
+                            const contactsSearchRequest = members.search(getSearchCriteria(contactMemberTypeName)).$promise;
+                            const organizationsSearchRequest = members.search(getSearchCriteria(organizationMemberTypeName)).$promise;
 
                             $q.all([contactsSearchRequest, organizationsSearchRequest]).then(([contactsSearchResponse, organizationsSearchResponse]) => {
                                 const contactsNumber = contactsSearchResponse.totalCount;
@@ -81,12 +83,12 @@ angular.module(moduleName, ['ui.grid.autoFitColumns']).run([
                             });
                         });
 
-                        function getSearchCriteria(memberType, memberId, searchKey, objectIds) {
+                        function getSearchCriteria(memberType) {
                             return {
                                 memberType,
-                                memberId,
-                                objectIds: objectIds,
-                                keyword: searchKey,
+                                memberId: exportDataRequest.organizationId,
+                                objectIds: exportDataRequest.objectIds,
+                                keyword: exportDataRequest.keyword,
                                 deepSearch: true,
                                 objectType: 'Member',
                                 take: 0

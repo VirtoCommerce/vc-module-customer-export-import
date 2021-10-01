@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
-using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
@@ -13,8 +11,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
     public sealed class ImportableContact : CsvContact
     {
         [Optional]
-        [Name("Password")]
+        [Name("Account Password")]
         public string Password { get; set; }
+
+        /// <summary>
+        /// 'Address Country' from file is not used. It will be set at import process from ISO countries dictionary
+        /// by 'Address Code' field. Therefore it is ignored.
+        /// </summary>
+        [Ignore]
+        [Name("Address Country")]
+        public override string AddressCountry { get; set; }
 
         public void PatchModel(Contact target)
         {

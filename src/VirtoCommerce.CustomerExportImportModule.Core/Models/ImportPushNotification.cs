@@ -18,13 +18,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         public int TotalCount { get; set; }
 
-        public int ContactsCreated { get; set; }
+        public int CreatedCount { get; set; }
 
-        public int ContactsUpdated { get; set; }
-
-        public int OrganizationsCreated { get; set; }
-
-        public int OrganizationsUpdated { get; set; }
+        public int UpdatedCount { get; set; }
 
         public int ErrorCount { get; set; }
 

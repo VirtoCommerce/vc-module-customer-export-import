@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Nager.Country;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
@@ -16,7 +17,6 @@ using VirtoCommerce.FeatureManagementModule.Core.Services;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
-using featureManagementCore = VirtoCommerce.FeatureManagementModule.Core;
 
 namespace VirtoCommerce.CustomerExportImportModule.Web
 {
@@ -52,6 +52,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
 
             serviceCollection.AddOptions<ExportOptions>().Bind(Configuration.GetSection("CustomerExportImport:Export")).ValidateDataAnnotations();
             serviceCollection.AddOptions<ImportOptions>().Bind(Configuration.GetSection("CustomerExportImport:Import")).ValidateDataAnnotations();
+
+            serviceCollection.AddTransient<ICountryProvider, CountryProvider>();
         }
 
         public void PostInitialize(IApplicationBuilder appBuilder)

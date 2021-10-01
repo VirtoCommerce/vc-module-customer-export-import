@@ -86,7 +86,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             // Get stores from accounts
             var accounts = contacts.Select(contact => contact.SecurityAccounts.OrderBy(account => account.Id).FirstOrDefault()).Where(account => account != null).Distinct().ToArray();
-            var storeIds = accounts.Select(account => account.StoreId).ToArray();
+            var storeIds = accounts.Select(account => account.StoreId).Where(storeId => !string.IsNullOrEmpty(storeId)).Distinct().ToArray();
             var stores = (await _storeService.GetByIdsAsync(storeIds, StoreResponseGroup.None.ToString())).ToDictionary(store => store.Id, store => store);
 
             Items = searchResult.Results.Select<Member, IExportable>(member =>
@@ -95,10 +95,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 {
                     case nameof(Contact):
                         var contact = (Contact)member;
-                        var contactOrganizationId = contact.Organizations?.OrderBy(organizationId => organizationId).FirstOrDefault();
+                        var organizationId = contact.Organizations?.OrderBy(organizationId => organizationId).FirstOrDefault();
                         var account = contact.SecurityAccounts.OrderBy(securityAccount => securityAccount.Id).FirstOrDefault();
-                        var accountStoreId = account?.StoreId;
-                        return new ExportableContact().FromModels(contact, contactOrganizationId != null ? allOrganizations[contactOrganizationId] : null, accountStoreId != null ? stores[accountStoreId] : null);
+                        var storeId = account?.StoreId;
+                        return new ExportableContact().FromModels(contact,
+                            organizationId != null && allOrganizations.ContainsKey(organizationId) ? allOrganizations[organizationId] : null,
+                            storeId != null && stores.ContainsKey(storeId) ? stores[storeId] : null);
                     case nameof(Organization):
                         var organization = (Organization)member;
                         var parentOrganizationId = organization.ParentId;

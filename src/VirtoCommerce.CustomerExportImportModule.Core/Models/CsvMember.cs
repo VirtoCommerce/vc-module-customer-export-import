@@ -13,59 +13,59 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         [Optional]
         [Name("Phones")]
-        public string Phones { get; set; }
-
-        [Optional]
-        [Name("Address Type")]
-        public string AddressType { get; set; }
-
-        [Optional]
-        [Name("Address First Name")]
-        public string AddressFirstName { get; set; }
-
-        [Optional]
-        [Name("Address Last Name")]
-        public string AddressLastName { get; set; }
-        
-        [Optional]
-        [Name("Address Country")]
-        public string AddressCountry { get; set; }
-
-        [Optional]
-        [Name("Address Country Code")]
-        public string AddressCountryCode { get; set; }
-
-        [Optional]
-        [Name("Address Region")]
-        public string AddressRegion { get; set; }
-
-        [Optional]
-        [Name("Address City")]
-        public string AddressCity { get; set; }
-
-        [Optional]
-        [Name("Address Line1")]
-        public string AddressLine1 { get; set; }
-
-        [Optional]
-        [Name("Address Line2")]
-        public string AddressLine2 { get; set; }
-
-        [Optional]
-        [Name("Address Zip Code")]
-        public string AddressZipCode { get; set; }
-
-        [Optional]
-        [Name("Address Email")]
-        public string AddressEmail { get; set; }
-
-        [Optional]
-        [Name("Address Phone")]
-        public string AddressPhone { get; set; }
+        public virtual string Phones { get; set; }
 
         [Optional]
         [Name("Emails")]
-        public string Emails { get; set; }
+        public virtual string Emails { get; set; }
+
+        [Optional]
+        [Name("Address Type")]
+        public virtual string AddressType { get; set; }
+
+        [Optional]
+        [Name("Address First Name")]
+        public virtual string AddressFirstName { get; set; }
+
+        [Optional]
+        [Name("Address Last Name")]
+        public virtual string AddressLastName { get; set; }
+
+        [Optional]
+        [Name("Address Country")]
+        public virtual string AddressCountry { get; set; }
+
+        [Optional]
+        [Name("Address Country Code")]
+        public virtual string AddressCountryCode { get; set; }
+
+        [Optional]
+        [Name("Address Region")]
+        public virtual string AddressRegion { get; set; }
+
+        [Optional]
+        [Name("Address City")]
+        public virtual string AddressCity { get; set; }
+
+        [Optional]
+        [Name("Address Line1")]
+        public virtual string AddressLine1 { get; set; }
+
+        [Optional]
+        [Name("Address Line2")]
+        public virtual string AddressLine2 { get; set; }
+
+        [Optional]
+        [Name("Address Zip Code")]
+        public virtual string AddressZipCode { get; set; }
+
+        [Optional]
+        [Name("Address Email")]
+        public virtual string AddressEmail { get; set; }
+
+        [Optional]
+        [Name("Address Phone")]
+        public virtual string AddressPhone { get; set; }
 
         [Ignore]
         public string ObjectType { get; set; }

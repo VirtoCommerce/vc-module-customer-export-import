@@ -19,21 +19,21 @@
         "title-member": "Import into {{member}}",
         "subtitle": "Upload CSV",
         "data-type-placeholder": "Select data type to import",
-        "data-type-description": "Select the type of data to be loaded for the import to work correctly",
+        "data-type-description": "Select the type of data you would like to import",
         "labels": {
           "progress": "Progress",
           "data-type": "Data type"
         },
         "drag-and-drop": {
-          "placeholder": "Drag and drop file here",
+          "placeholder": "Drag and drop your file here",
           "or": "or ",
           "link": "browse your files"
         },
         "upload-result": {
           "failed": "Upload failed",
           "success": "Uploaded",
-          "max-size-error": "The file size limit is {{ fileMaxSize }}. The file size is too large. Try to upload another one.",
-          "file-type-error": "CSV format is required. The suggested file is in different format."
+          "max-size-error": "The maximum file size is {{ fileMaxSize }}. Your file size is too large. Try uploading another one.",
+          "file-type-error": "The file you are trying to upload has an invalid format. Please upload a CSV file."
         },
         "actions": {
           "preview": "Preview",
@@ -42,8 +42,8 @@
       },
       "import-preview": {
         "title": "Preview",
-        "subtitle": "Uploaded CSV file preview",
-        "preview-legend": "Please use horizontal scroll to see all columns from the import preview",
+        "subtitle": "Preview the CSV file you are going to upload",
+        "preview-legend": "Please use horizontal scrolling to see all columns in the import preview",
         "labels": {
           "preview-count": "Preview count:"
         }
@@ -60,7 +60,7 @@
           "lines-created": "Lines created",
           "lines-updated": "Lines updated",
           "error-count": "Error count",
-          "errors-report": "Errors report download Url:",
+          "errors-report": "URL to download error report:",
           "error-log": "Errors"
         }
       }
@@ -68,26 +68,26 @@
     "dialogs": {
       "csv-file-delete": {
         "title": "Delete CSV",
-        "subtitle": "Are you sure you want to delete this csv file?"
+        "subtitle": "Are you sure you want to delete this CSV file?"
       },
       "csv-file-delete-and-close-preview": {
         "title": "Delete CSV",
-        "subtitle": "Are you sure you want to close preview and delete file "
+        "subtitle": "Are you sure you want to close preview and delete this file? "
       },
       "customer-export": {
-        "title": "Contacts export",
+        "title": "Export contacts",
         "all": "All",
         "from": "from",
         "organization": "organization",
-        "main-text-end": " will be exported to csv file.",
-        "subtitle-empty-export": "No contacts or organizations are selected.",
+        "main-text-end": " will be exported to a CSV file.",
+        "subtitle-empty-export": "You have not selected any contacts or organizations.",
         "contacts": "contacts",
         "organizations": "organizations",
         "export": "Export"
       },
       "customer-import": {
-        "title-contacts": "Contacts import",
-        "title-organizations": "Organizations import",
+        "title-contacts": "Import contacts",
+        "title-organizations": "Import organizations",
         "contacts": "contacts",
         "organizations": "organizations",
         "main-text-middle": "will be imported into the",
@@ -96,26 +96,25 @@
         "import": "Import"
       },
       "customer-warning": {
-        "title": "Contacts & Organizations export",
+        "title": "Export contacts and organizations",
         "main-text-beginning": "You have selected",
         "items": "items",
-        "main-text-middle": "(including nested) but export is limited with",
-        "main-text-end": ", you retrieve to export more"
+        "main-text-middle": "(including the nested ones), while you cannot export more than",
+        "main-text-end": "please select a valid number of items and try again."
       }
     },
     "validation-errors": {
       "file-not-existed": "The file does not exist.",
-      "exceeding-file-max-size": "The file size limit is {{ fileMaxSize }}. The file size is too large. Try to upload another one.",
-      "wrong-delimiter": "The wrong delimiter. Should be used ';'.",
-      "exceeding-line-limits": "The import limit is {{ importLimitOfLines }} lines but your file contains {{ linesCount }} lines. The file can not be imported.",
-      "missing-required-columns": "The required columns: \"{{ missedColumns }}\" are not in the file. The file can not be imported.",
-      "no-data": "File has no data."
+      "exceeding-file-max-size": "The maximum file size is {{ fileMaxSize }}. Your file size is too large. Try uploading another one.",
+      "wrong-delimiter": "Invalid delimiter. Please use only semicolon (;) as a delimiter.",
+      "exceeding-line-limits": "We are unable to import your file, as the maximum number of lines to import is {{ importLimitOfLines }}. Your file currently has {{ linesCount }} lines.",
+      "missing-required-columns": "We are unable to import your file, as the following required columns: \\\"{{ missedColumns }}\\\" are missing in it.",
+      "no-data": "This file has no data."
     }
   },
   "permissions": {
-    "customer:simpleExport": "Export customers data",
-    "customer:simpleImport": "Import customers data"
+    "customer:simpleExport": "Export customer data",
+    "customer:simpleImport": "Import customer data"
   },
-  "settings": {
-  }
+  "settings": {}
 }

@@ -15,7 +15,7 @@
         "webpack-cli": "3.3.2"
     },
     "dependencies": {
-        "angular": "1.4.4",
+        "angular": "1.8.0",
         "ui-grid-auto-fit-columns": "^1.2.2"
     }
 }

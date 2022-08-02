@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Moq;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
-using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Security;
 

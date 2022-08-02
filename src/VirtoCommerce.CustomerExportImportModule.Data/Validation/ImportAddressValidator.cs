@@ -112,7 +112,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                             RuleFor(x => x.Record.AddressCountryCode)
                                 .Must((importRecord, countryCode, context) =>
                                 {
-                                    var countries = (IList<Country>)context.ParentContext.RootContextData[Countries];
+                                    var countries = (IList<Country>)context.RootContextData[Countries];
                                     return countries.Any(country => country.Id == countryCode);
                                 })
                                 .WithInvalidValueCodeAndMessage("Address Country Code")

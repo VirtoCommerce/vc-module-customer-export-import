@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
-using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.AssetsModule.Core.Assets;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {

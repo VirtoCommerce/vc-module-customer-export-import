@@ -23,7 +23,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .ForEach(rule => rule.SetValidator(_ => new ImportEntityIsNotDuplicateValidator<T>()));
         }
 
-        private void GetDuplicates(ImportRecord<T>[] importRecords, ValidationContext<T> context)
+        private void GetDuplicates(ImportRecord<T>[] importRecords, ValidationContext<ImportRecord<T>[]> context)
         {
             var duplicatesById = importRecords.Where(importRecord => !string.IsNullOrEmpty(importRecord.Record.Id))
                 .GroupBy(importRecord => importRecord.Record.Id)

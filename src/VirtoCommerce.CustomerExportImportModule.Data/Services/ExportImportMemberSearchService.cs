@@ -15,10 +15,10 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
-    public sealed class ExportImportMemberSearchService : MemberSearchService
+    public class ExportImportMemberSearchService : MemberSearchService
     {
-        private const int ElasticMaxTake = 10000;
-        const string OrganizationMemberType = nameof(Organization);
+        protected virtual int ElasticMaxTake => 10000;
+        protected virtual string OrganizationMemberType => nameof(Organization);
 
         public ExportImportMemberSearchService(Func<IMemberRepository> repositoryFactory, IMemberService memberService, IIndexedMemberSearchService indexedSearchService, IPlatformMemoryCache platformMemoryCache)
             : base(repositoryFactory, memberService, indexedSearchService, platformMemoryCache)
@@ -29,7 +29,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             var result = new MemberSearchResult();
 
-            if (criteria == null || (!criteria.DeepSearch || (criteria.MemberId == null && criteria.ObjectIds.IsNullOrEmpty() && criteria.Keyword.IsNullOrEmpty())))
+            if (criteria == null || !criteria.DeepSearch || (criteria.MemberId == null && criteria.ObjectIds.IsNullOrEmpty() && string.IsNullOrEmpty(criteria.Keyword)))
             {
                 result = await base.SearchMembersAsync(criteria);
             }
@@ -46,16 +46,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 if (withoutOrganizations)
                 {
-                    criteria.MemberTypes = criteria.MemberTypes.Union(new[]{
-                        OrganizationMemberType
-                    }).ToArray();
+                    criteria.MemberTypes = criteria.MemberTypes.Union(new[]{ OrganizationMemberType }).ToArray();
                 }
 
                 var firstResult = await base.SearchMembersAsync(criteria);
 
                 var organizations = firstResult.Results.OfType<Organization>().ToArray();
 
-                result.Results = withoutOrganizations ? firstResult.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList() : firstResult.Results.ToList();
+                result.Results = withoutOrganizations
+                    ? firstResult.Results.Where(x => orgMemberTypes?.Contains(x.MemberType) == true).ToList()
+                    : firstResult.Results.ToList();
                 result.TotalCount = result.Results.Count;
 
                 if (!organizations.IsNullOrEmpty())
@@ -82,12 +82,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             return query;
         }
 
-
-        private async Task LoadChildren(MembersSearchCriteria criteria, IEnumerable<Organization> organizations, bool withoutOrganizations, string[] orgMemberTypes, MemberSearchResult result)
+        protected virtual async Task LoadChildren(MembersSearchCriteria criteria, IEnumerable<Organization> organizations, bool withoutOrganizations, string[] orgMemberTypes, MemberSearchResult result)
         {
             foreach (var organization in organizations)
             {
-                var searchChildrenCriteria = new MembersSearchCriteria()
+                var searchChildrenCriteria = new MembersSearchCriteria
                 {
                     MemberId = organization.Id,
                     DeepSearch = true,
@@ -102,7 +101,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 var childOrganizations = searchChildrenResult.Results.OfType<Organization>().ToArray();
 
-                var childResults = withoutOrganizations ? searchChildrenResult.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList() : searchChildrenResult.Results.ToList();
+                var childResults = withoutOrganizations
+                    ? searchChildrenResult.Results.Where(x => orgMemberTypes.Contains(x.MemberType)).ToList()
+                    : searchChildrenResult.Results.ToList();
 
                 var resultIds = result.Results.Select(x => x.Id).ToArray();
                 childResults = childResults.Where(c => !resultIds.Contains(c.Id)).ToList();

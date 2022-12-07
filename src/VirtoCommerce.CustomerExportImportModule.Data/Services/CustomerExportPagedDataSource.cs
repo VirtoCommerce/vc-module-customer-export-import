@@ -6,6 +6,7 @@ using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
+using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 
@@ -15,14 +16,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     {
         private readonly IMemberService _memberService;
         private readonly IMemberSearchService _memberSearchService;
-        private readonly IStoreService _storeService;
+        private readonly ICrudService<Store> _storeService;
         private readonly ExportDataRequest _request;
 
         public CustomerExportPagedDataSource(IMemberService memberService, IMemberSearchService memberSearchService, IStoreService storeService, int pageSize, ExportDataRequest request)
         {
             _memberService = memberService;
             _memberSearchService = memberSearchService;
-            _storeService = storeService;
+            _storeService = (ICrudService<Store>)storeService;
             _request = request;
 
             PageSize = pageSize;
@@ -66,7 +67,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             var organizations = searchResult.Results.OfType<Organization>().ToArray();
 
             // Get IDs of contact & organization parent organization
-            var contactOrganizationIds = contacts.Select(contact => contact.Organizations?.OrderBy(organizationId => organizationId).FirstOrDefault()).Where(x => x != null).Distinct().ToArray();
+            var contactOrganizationIds = contacts.Select(contact => contact.Organizations?.MinBy(organizationId => organizationId)).Where(x => x != null).Distinct().ToArray();
             var parentOrganizationIds = organizations.Select(organization => organization.ParentId).Where(x => x != null).Distinct().ToArray();
 
             // Get already loaded organizations and their IDs
@@ -85,9 +86,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             var allOrganizations = loadedOrganizations.Concat(additionalOrganizations).ToDictionary(x => x.Id, x => x);
 
             // Get stores from accounts
-            var accounts = contacts.Select(contact => contact.SecurityAccounts.OrderBy(account => account.Id).FirstOrDefault()).Where(account => account != null).Distinct().ToArray();
-            var storeIds = accounts.Select(account => account.StoreId).Where(storeId => !string.IsNullOrEmpty(storeId)).Distinct().ToArray();
-            var stores = (await _storeService.GetByIdsAsync(storeIds, StoreResponseGroup.None.ToString())).ToDictionary(store => store.Id, store => store);
+            var accounts = contacts.Select(contact => contact.SecurityAccounts?.MinBy(account => account.Id)).Where(account => account != null).Distinct().ToArray();
+            var storeIds = accounts.Select(account => account.StoreId).Where(storeId => !string.IsNullOrEmpty(storeId)).Distinct().ToList();
+            var stores = (await _storeService.GetAsync(storeIds, StoreResponseGroup.None.ToString())).ToDictionary(store => store.Id, store => store);
 
             Items = searchResult.Results.Select<Member, IExportable>(member =>
             {
@@ -95,8 +96,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 {
                     case nameof(Contact):
                         var contact = (Contact)member;
-                        var organizationId = contact.Organizations?.OrderBy(organizationId => organizationId).FirstOrDefault();
-                        var account = contact.SecurityAccounts.OrderBy(securityAccount => securityAccount.Id).FirstOrDefault();
+                        var organizationId = contact.Organizations?.MinBy(organizationId => organizationId);
+                        var account = contact.SecurityAccounts?.MinBy(securityAccount => securityAccount.Id);
                         var storeId = account?.StoreId;
                         return new ExportableContact().FromModels(contact,
                             organizationId != null && allOrganizations.ContainsKey(organizationId) ? allOrganizations[organizationId] : null,

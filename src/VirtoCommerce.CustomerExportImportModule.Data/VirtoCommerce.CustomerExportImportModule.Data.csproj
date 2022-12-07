@@ -21,15 +21,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CsvHelper" Version="12.2.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
         <PackageReference Include="VirtoCommerce.AssetsModule.Core" Version="3.200.0" />
-        <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.202.3" />
-        <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.216.8" />
-        <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.216.8" />
+        <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.211.0" />
+        <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.253.0" />
+        <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.253.0" />
     </ItemGroup>
 </Project>

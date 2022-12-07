@@ -1,23 +1,16 @@
-using System;
 using System.Globalization;
-using CsvHelper;
 using CsvHelper.Configuration;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ImportConfiguration : Configuration
+    public sealed record ImportConfiguration : CsvConfiguration
     {
-        public ImportConfiguration()
-            : base(CultureInfo.InvariantCulture)
+        public ImportConfiguration() : base(CultureInfo.InvariantCulture)
         {
+            Delimiter = ";";
+            ReadingExceptionOccurred = _ => false;
+            BadDataFound = null;
+            MissingFieldFound = null;
         }
-
-        public override string Delimiter { get; set; } = ";";
-
-        public override Func<CsvHelperException, bool> ReadingExceptionOccurred { get; set; } = ex => false;
-
-        public override Action<ReadingContext> BadDataFound { get; set; } = null;
-
-        public override Action<string[], int, ReadingContext> MissingFieldFound { get; set; } = null;
     }
 }

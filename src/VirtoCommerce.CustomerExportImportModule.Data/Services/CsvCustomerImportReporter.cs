@@ -10,18 +10,17 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     public sealed class CsvCustomerImportReporter : ICsvCustomerImportReporter
     {
         private readonly IBlobStorageProvider _blobStorageProvider;
-        private readonly string _filePath;
         private readonly string _delimiter;
         private readonly StreamWriter _streamWriter;
         private const string ErrorsColumnName = "Error description";
 
-        public bool ReportIsNotEmpty { get; private set; } = false;
+        public bool ReportIsNotEmpty { get; private set; }
 
-        public string FilePath => _filePath;
+        public string FilePath { get; }
 
         public CsvCustomerImportReporter(string filePath, IBlobStorageProvider blobStorageProvider, string delimiter)
         {
-            _filePath = filePath;
+            FilePath = filePath;
             _delimiter = delimiter;
             _blobStorageProvider = blobStorageProvider;
             var stream = _blobStorageProvider.OpenWrite(filePath);
@@ -30,7 +29,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async Task WriteAsync(ImportError error)
         {
-            using (await AsyncLock.GetLockByKey(_filePath).LockAsync())
+            using (await AsyncLock.GetLockByKey(FilePath).GetReleaserAsync())
             {
                 ReportIsNotEmpty = true;
                 await _streamWriter.WriteLineAsync(GetLine(error));
@@ -39,7 +38,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async Task WriteHeaderAsync(string header)
         {
-            using (await AsyncLock.GetLockByKey(_filePath).LockAsync())
+            using (await AsyncLock.GetLockByKey(FilePath).GetReleaserAsync())
             {
                 await _streamWriter.WriteLineAsync($"{ErrorsColumnName}{_delimiter}{header}");
             }
@@ -47,14 +46,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async ValueTask DisposeAsync()
         {
-            using (await AsyncLock.GetLockByKey(_filePath).LockAsync())
+            using (await AsyncLock.GetLockByKey(FilePath).GetReleaserAsync())
             {
-                await _streamWriter.FlushAsync();
-                _streamWriter.Close();
+                await _streamWriter.DisposeAsync();
 
                 if (!ReportIsNotEmpty)
                 {
-                    await _blobStorageProvider.RemoveAsync(new[] { _filePath });
+                    await _blobStorageProvider.RemoveAsync(new[] { FilePath });
                 }
             }
         }

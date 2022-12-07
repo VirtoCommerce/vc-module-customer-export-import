@@ -1,6 +1,5 @@
 using System.Linq;
 using FluentValidation;
-using FluentValidation.Validators;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.Platform.Core.Common;
 
@@ -23,7 +22,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .ForEach(rule => rule.SetValidator(_ => new ImportEntityIsNotDuplicateValidator<T>()));
         }
 
-        private void GetDuplicates(ImportRecord<T>[] importRecords, ValidationContext<ImportRecord<T>[]> context)
+        private static void GetDuplicates(ImportRecord<T>[] importRecords, ValidationContext<ImportRecord<T>[]> context)
         {
             var duplicatesById = importRecords.Where(importRecord => !string.IsNullOrEmpty(importRecord.Record.Id))
                 .GroupBy(importRecord => importRecord.Record.Id)

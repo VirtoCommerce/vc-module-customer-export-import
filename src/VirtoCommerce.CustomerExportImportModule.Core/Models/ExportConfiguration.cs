@@ -3,14 +3,11 @@ using CsvHelper.Configuration;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
-    public sealed class ExportConfiguration : Configuration
+    public sealed record ExportConfiguration : CsvConfiguration
     {
-        public ExportConfiguration()
-            : base(CultureInfo.InvariantCulture)
+        public ExportConfiguration() : base(CultureInfo.InvariantCulture)
         {
+            Delimiter = ";";
         }
-
-        public override string Delimiter { get; set; } = ";";
-
     }
 }

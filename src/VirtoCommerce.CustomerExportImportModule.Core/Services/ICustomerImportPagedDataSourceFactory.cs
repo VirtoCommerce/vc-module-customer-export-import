@@ -6,6 +6,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Services
 {
     public interface ICustomerImportPagedDataSourceFactory
     {
-        Task<ICustomerImportPagedDataSource<TCsvCustomer>> CreateAsync<TCsvCustomer, TCustomer>(string filePath, int pageSize, Configuration configuration = null) where TCsvCustomer : CsvMember;
+        Task<ICustomerImportPagedDataSource<TCsvCustomer>> CreateAsync<TCsvCustomer, TCustomer>(string filePath, int pageSize, CsvConfiguration configuration = null) where TCsvCustomer : CsvMember;
     }
 }

@@ -66,7 +66,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 || (!ec.OuterId.IsNullOrEmpty() && ec.OuterId.EqualsInvariant(x.Record.OuterId)))
             ).ToArray();
 
-            existedOrganizations = GetReducedExistedByWrongOuterId(updateImportOrganizations, existedOrganizations).OfType<Organization>().ToArray();
+            existedOrganizations = GetReducedExistedByWrongOuterId(updateImportOrganizations, existedOrganizations).ToArray();
 
             var createImportOrganizations = importOrganizations.Except(updateImportOrganizations).ToArray();
 

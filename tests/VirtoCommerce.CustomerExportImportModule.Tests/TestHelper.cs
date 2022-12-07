@@ -29,7 +29,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         {
             var dynamicPropertySearchServiceMock = new Mock<IDynamicPropertySearchService>();
             dynamicPropertySearchServiceMock.Setup(x => x.SearchDynamicPropertiesAsync(It.IsAny<DynamicPropertySearchCriteria>()))
-                .Returns<DynamicPropertySearchCriteria>(criteria => Task.FromResult(new DynamicPropertySearchResult
+                .Returns<DynamicPropertySearchCriteria>(_ => Task.FromResult(new DynamicPropertySearchResult
                 {
                     Results = dynamicProperties,
                     TotalCount = dynamicProperties.Count

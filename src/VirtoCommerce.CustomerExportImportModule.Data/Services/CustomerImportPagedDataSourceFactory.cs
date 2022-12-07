@@ -23,9 +23,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             _dynamicPropertyDictionaryItemsSearchService = dynamicPropertyDictionaryItemsSearchService;
         }
 
-        public async Task<ICustomerImportPagedDataSource<TCsvCustomer>> CreateAsync<TCsvCustomer, TCustomer>(string filePath, int pageSize, Configuration configuration = null) where TCsvCustomer : CsvMember
+        public async Task<ICustomerImportPagedDataSource<TCsvCustomer>> CreateAsync<TCsvCustomer, TCustomer>(string filePath, int pageSize, CsvConfiguration configuration = null) where TCsvCustomer : CsvMember
         {
-            var dynamicPropertiesSearchResult = await _dynamicPropertySearchService.SearchDynamicPropertiesAsync(new DynamicPropertySearchCriteria()
+            var dynamicPropertiesSearchResult = await _dynamicPropertySearchService.SearchDynamicPropertiesAsync(new DynamicPropertySearchCriteria
             {
                 ObjectTypes = new List<string> { typeof(TCustomer).FullName },
                 Skip = 0,
@@ -42,8 +42,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
 
             configuration ??= new ImportConfiguration();
-            configuration.RegisterClassMap(new GenericClassMap<TCsvCustomer>(dynamicProperties, dynamicPropertyDictionaryItems));
-            return new CustomerImportPagedDataSource<TCsvCustomer>(filePath, _blobStorageProvider, pageSize, configuration);
+            return new CustomerImportPagedDataSource<TCsvCustomer>(filePath, _blobStorageProvider, pageSize, configuration, new GenericClassMap<TCsvCustomer>(dynamicProperties, dynamicPropertyDictionaryItems));
         }
     }
 }

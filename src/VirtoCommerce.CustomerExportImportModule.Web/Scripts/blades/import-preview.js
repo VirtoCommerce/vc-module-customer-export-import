@@ -77,8 +77,8 @@ angular.module('virtoCommerce.customerExportImportModule')
                 },
             },
             {
-                name: "priceExportImport.blades.import-preview.upload-new",
-                icon: 'fa fa-download',
+                name: "customerExportImport.blades.import-preview.close",
+                icon: 'fa fa-close',
                 canExecuteMethod: () => true,
                 executeMethod: () => {
                     bladeNavigationService.closeBlade(blade);

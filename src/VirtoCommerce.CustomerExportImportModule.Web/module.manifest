@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <id>VirtoCommerce.CustomerExportImport</id>
   <version>3.200.0</version>
@@ -7,7 +7,7 @@
   <title>Customer Export Import</title>
   <description>This module adds customers export and import functionality. Use it for customer management.</description>
   <authors>
-    <author>Solution team</author>
+    <author>Alexei Shibanov</author>
   </authors>
   <owners>
     <owner>Virto Commerce</owner>
@@ -16,7 +16,7 @@
   <iconUrl>Modules/$(VirtoCommerce.CustomerExportImport)/Content/logo.png</iconUrl>
   <requireLicenseAcceptance>false</requireLicenseAcceptance>
   <releaseNotes>First version.</releaseNotes>
-  <copyright>Copyright © 2011-2021 Virto Commerce. All rights reserved</copyright>
+  <copyright>Copyright © 2011-2023 Virto Commerce. All rights reserved</copyright>
   <tags>customer export import</tags>
   <assemblyFile>VirtoCommerce.CustomerExportImportModule.Web.dll</assemblyFile>
   <moduleType>VirtoCommerce.CustomerExportImportModule.Web.Module, VirtoCommerce.CustomerExportImportModule.Web</moduleType>

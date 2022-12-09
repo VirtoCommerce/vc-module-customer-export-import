@@ -113,8 +113,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         [Optional]
         [Name("Account Email Verified")]
-        [BooleanTrueValues("yes", "true")]
-        [BooleanFalseValues("no", "false")]
+        [BooleanTrueValues("True", "Yes")]
+        [BooleanFalseValues("False", "No")]
         public virtual bool? EmailVerified { get; set; }
     }
 }

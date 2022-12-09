@@ -63,7 +63,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(x => x.Record.DynamicProperties).CustomAsync(LoadDynamicPropertyDictionaryItems).SetValidator(record => new ImportDynamicPropertiesValidator<T>(record));
         }
 
-        private async Task LoadDynamicPropertyDictionaryItems(ICollection<DynamicObjectProperty> dynamicProperties, CustomContext context, CancellationToken cancellationToken)
+        private async Task LoadDynamicPropertyDictionaryItems(ICollection<DynamicObjectProperty> dynamicProperties, ValidationContext<ImportRecord<T>> context, CancellationToken cancellationToken)
         {
             var dynamicPropertyDictionaryItems = new List<DynamicPropertyDictionaryItem>();
 
@@ -77,12 +77,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 }
             }
 
-            context.ParentContext.RootContextData[ImportDynamicPropertyValidator<T>.DynamicPropertyDictionaryItems] = dynamicPropertyDictionaryItems;
+            context.RootContextData[ImportDynamicPropertyValidator<T>.DynamicPropertyDictionaryItems] = dynamicPropertyDictionaryItems;
         }
 
-        private async Task LoadCountriesAsync(ImportRecord<T> importRecord, CustomContext context, CancellationToken cancellationToken)
+        private async Task LoadCountriesAsync(ImportRecord<T> importRecord, ValidationContext<ImportRecord<T>> context, CancellationToken cancellationToken)
         {
-            context.ParentContext.RootContextData[ImportAddressValidator<T>.Countries] = await _countriesService.GetCountriesAsync();
+            context.RootContextData[ImportAddressValidator<T>.Countries] = await _countriesService.GetCountriesAsync();
         }
     }
 }

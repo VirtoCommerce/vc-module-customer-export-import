@@ -9,7 +9,7 @@ using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
-using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 
@@ -72,7 +72,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 || (!ec.OuterId.IsNullOrEmpty() && ec.OuterId.EqualsInvariant(x.Record.OuterId)))
             ).ToArray();
 
-            existedContacts = GetReducedExistedByWrongOuterId(updateImportContacts, existedContacts).OfType<Contact>().ToArray();
+            existedContacts = GetReducedExistedByWrongOuterId(updateImportContacts, existedContacts).ToArray();
 
             var createImportContacts = importContacts.Except(updateImportContacts).ToArray();
 
@@ -127,9 +127,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 var importContact = updateImportContacts.LastOrDefault(x => existedContact.Id.EqualsInvariant(x.Record.Id)
                                                                             || (!existedContact.OuterId.IsNullOrEmpty() && existedContact.OuterId.EqualsInvariant(x.Record.OuterId)));
 
-                var existedOrg = existedOrganizations.FirstOrDefault(o => o.Id.EqualsInvariant(importContact.Record.OrganizationId))
-                                 ?? existedOrganizations.FirstOrDefault(o =>
-                                     !o.OuterId.IsNullOrEmpty() && o.OuterId.EqualsInvariant(importContact.Record.OrganizationOuterId));
+                var existedOrg = importContact == null
+                    ? null
+                    : existedOrganizations.FirstOrDefault(o => o.Id.EqualsInvariant(importContact.Record.OrganizationId))
+                      ?? existedOrganizations.FirstOrDefault(o => !o.OuterId.IsNullOrEmpty() && o.OuterId.EqualsInvariant(importContact.Record.OrganizationOuterId));
 
                 var orgIdForNewContact = existedOrg?.Id ?? request.OrganizationId;
 

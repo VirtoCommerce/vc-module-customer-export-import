@@ -26,7 +26,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             target.Phones = string.IsNullOrEmpty(Phones) ? null : Phones.Split(',').Select(phone => phone.Trim()).ToList();
             target.BusinessCategory = BusinessCategory;
             target.Description = Description;
-            target.DynamicProperties = DynamicProperties;
+
+            PatchDynamicProperties(target);
 
             target.Addresses ??= new List<Address>();
             var isAddressSpecified = new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => !string.IsNullOrEmpty(addressField));

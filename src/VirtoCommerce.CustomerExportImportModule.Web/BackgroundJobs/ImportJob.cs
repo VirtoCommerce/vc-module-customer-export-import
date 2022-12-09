@@ -26,7 +26,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
 
         public async Task ImportBackgroundAsync(ImportDataRequest request, ImportPushNotification pushNotification, IJobCancellationToken jobCancellationToken, PerformContext context)
         {
-            ValidateParameters(request, pushNotification);
+            ValidateParameters(request);
 
             try
             {
@@ -61,13 +61,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
             _pushNotificationManager.Send(pushNotification);
         }
 
-        private void ValidateParameters(ImportDataRequest request, ImportPushNotification pushNotification)
+        private void ValidateParameters(ImportDataRequest request)
         {
-            if (pushNotification == null)
-            {
-                throw new ArgumentNullException(nameof(pushNotification));
-            }
-
             var importer = _customerDataImporters.FirstOrDefault(x => x.MemberType == request.MemberType);
 
             if (importer == null)

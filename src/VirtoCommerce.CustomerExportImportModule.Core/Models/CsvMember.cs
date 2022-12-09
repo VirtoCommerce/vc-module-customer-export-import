@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using CsvHelper.Configuration.Attributes;
+using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 
@@ -71,5 +73,26 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string ObjectType { get; set; }
 
         public ICollection<DynamicObjectProperty> DynamicProperties { get; set; }
+
+        public void PatchDynamicProperties(Member target)
+        {
+            target.DynamicProperties ??= new List<DynamicObjectProperty>();
+
+            if (DynamicProperties?.Count > 0)
+            {
+                foreach (var property in DynamicProperties)
+                {
+                    var targetProperty = target.DynamicProperties.FirstOrDefault(x => x.Name == property.Name);
+                    if (targetProperty == null)
+                    {
+                        target.DynamicProperties.Add(property);
+                    }
+                    else
+                    {
+                        targetProperty.Values = property.Values;
+                    }
+                }
+            }
+        }
     }
 }

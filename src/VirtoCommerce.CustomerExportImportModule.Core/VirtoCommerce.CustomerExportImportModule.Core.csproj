@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <noWarn>1591</noWarn>
         <IsPackable>True</IsPackable>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -10,13 +10,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="CsvHelper" Version="12.2.2" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="CsvHelper" Version="27.1.1" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
         <PackageReference Include="Nager.Country" Version="3.1.0" />
-        <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.28.0" />
-        <PackageReference Include="VirtoCommerce.FeatureManagementModule.Core" Version="3.0.0" />
-        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.65.0" />
-        <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.17.0" />
+        <PackageReference Include="VirtoCommerce.AssetsModule.Core" Version="3.200.0" />
+        <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.211.0" />
+        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.253.0" />
+        <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.206.0" />
     </ItemGroup>
 
     <ItemGroup>

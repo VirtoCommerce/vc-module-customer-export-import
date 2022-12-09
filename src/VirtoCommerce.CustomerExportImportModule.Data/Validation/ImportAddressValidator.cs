@@ -33,7 +33,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithInvalidValueCodeAndMessage("Address Type")
                         .WithImportState();
 
-                    RuleFor(x => x.Record.AddressFirstName).Cascade(CascadeMode.StopOnFirstFailure)
+                    RuleFor(x => x.Record.AddressFirstName).Cascade(CascadeMode.Stop)
                         .NotEmpty()
                         .WithMissingRequiredValueCodeAndMessage("Address First Name")
                         .WithImportState()
@@ -41,7 +41,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithExceededMaxLengthCodeAndMessage("Address First Name", 128)
                         .WithImportState();
 
-                    RuleFor(x => x.Record.AddressLastName).Cascade(CascadeMode.StopOnFirstFailure)
+                    RuleFor(x => x.Record.AddressLastName).Cascade(CascadeMode.Stop)
                         .NotEmpty()
                         .WithMissingRequiredValueCodeAndMessage("Address Last Name")
                         .WithImportState()
@@ -110,9 +110,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                 .WithExceededMaxLengthCodeAndMessage("Address Country Code", 64)
                                 .WithImportState();
                             RuleFor(x => x.Record.AddressCountryCode)
-                                .Must((importRecord, countryCode, context) =>
+                                .Must((_, countryCode, context) =>
                                 {
-                                    var countries = (IList<Country>)context.ParentContext.RootContextData[Countries];
+                                    var countries = (IList<Country>)context.RootContextData[Countries];
                                     return countries.Any(country => country.Id == countryCode);
                                 })
                                 .WithInvalidValueCodeAndMessage("Address Country Code")

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using VirtoCommerce.CustomerExportImportModule.Data.Validation;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
@@ -647,20 +647,23 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             Assert.Equal(failedEntityName, (error.CustomState as ImportValidationState<ImportableOrganization>)?.InvalidRecord.Record.OrganizationName);
         }
 
-        private ICountriesService GetCountriesService()
+        private static ICountriesService GetCountriesService()
         {
             var countriesServiceMock = new Mock<ICountriesService>();
-            countriesServiceMock.Setup(x => x.GetCountriesAsync()).ReturnsAsync(() => new List<Country>
-            {
-                new Country { Id = "RUS", Name = "Russia" }, new Country { Id = "USA", Name = "United States" }
-            });
+            countriesServiceMock
+                .Setup(x => x.GetCountriesAsync())
+                .ReturnsAsync(() => new List<Country>
+                {
+                    new Country { Id = "RUS", Name = "Russia" }, new Country { Id = "USA", Name = "United States" }
+                });
             return countriesServiceMock.Object;
         }
 
-        private IDynamicPropertyDictionaryItemsSearchService GetDynamicPropertyDictionaryItemsSearchService()
+        private static IDynamicPropertyDictionaryItemsSearchService GetDynamicPropertyDictionaryItemsSearchService()
         {
             var dynamicPropertyDictionaryItemsSearchService = new Mock<IDynamicPropertyDictionaryItemsSearchService>();
-            dynamicPropertyDictionaryItemsSearchService.Setup(x => x.SearchDictionaryItemsAsync(It.IsAny<DynamicPropertyDictionaryItemSearchCriteria>()))
+            dynamicPropertyDictionaryItemsSearchService
+                .Setup(x => x.SearchDictionaryItemsAsync(It.IsAny<DynamicPropertyDictionaryItemSearchCriteria>()))
                 .ReturnsAsync<DynamicPropertyDictionaryItemSearchCriteria, IDynamicPropertyDictionaryItemsSearchService, DynamicPropertyDictionaryItemSearchResult>(searchCriteria =>
                 {
                     var dynamicPropertyDictionaryItems = new List<DynamicPropertyDictionaryItem>
@@ -677,54 +680,56 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             return dynamicPropertyDictionaryItemsSearchService.Object;
         }
 
-        private IPasswordValidator<ApplicationUser> GetPasswordValidator()
-        {
-            return new PasswordValidator<ApplicationUser>();
-        }
+        private static IPasswordValidator<ApplicationUser> GetPasswordValidator() => new PasswordValidator<ApplicationUser>();
 
-        private SignInManager<ApplicationUser> GetSignInManager()
-        {
-            return new FakeSignInManager(new[] { new ApplicationUser { UserName = "Test1", Email = "test1@example.org", StoreId = "TestStore" } }, GetPasswordValidator(), new OptionsWrapper<IdentityOptions>(new IdentityOptions
-            {
-                Password = new PasswordOptions { RequireDigit = false, RequireLowercase = false, RequireUppercase = false, RequiredLength = 32, RequiredUniqueChars = 0, RequireNonAlphanumeric = true }
-            }));
-        }
+        private static SignInManager<ApplicationUser> GetSignInManager() =>
+            new FakeSignInManager(new[] { new ApplicationUser { UserName = "Test1", Email = "test1@example.org", StoreId = "TestStore" } }, GetPasswordValidator(),
+                new OptionsWrapper<IdentityOptions>(new IdentityOptions
+                {
+                    Password = new PasswordOptions { RequireDigit = false, RequireLowercase = false, RequireUppercase = false, RequiredLength = 32, RequiredUniqueChars = 0, RequireNonAlphanumeric = true }
+                }));
 
-        private IStoreSearchService GetStoreSearchService()
+        private static IStoreSearchService GetStoreSearchService()
         {
             var storeSearchServiceMock = new Mock<IStoreSearchService>();
-            storeSearchServiceMock.Setup(x => x.SearchStoresAsync(It.IsAny<StoreSearchCriteria>())).ReturnsAsync<StoreSearchCriteria, IStoreSearchService, StoreSearchResult>(searchCriteria =>
-            {
-                var stores = new List<Store> { new Store { Id = "TestStore", Name = "Test Store" }, new Store { Id = "TestStore2", Name = "Test Store 2" } };
-                return new StoreSearchResult { Results = stores.Where(store => searchCriteria.StoreIds.Contains(store.Id)).ToList(), TotalCount = stores.Count };
-            });
+            storeSearchServiceMock
+                .As<ISearchService<StoreSearchCriteria, StoreSearchResult, Store>>()
+                .Setup(x => x.SearchAsync(It.IsAny<StoreSearchCriteria>()))
+                .ReturnsAsync((StoreSearchCriteria criteria) =>
+                {
+                    var stores = new List<Store>
+                    {
+                        new() { Id = "TestStore", Name = "Test Store" },
+                        new() { Id = "TestStore2", Name = "Test Store 2" }
+                    };
+                    return new StoreSearchResult
+                    {
+                        Results = stores.Where(store => criteria.StoreIds.Contains(store.Id)).ToList(),
+                        TotalCount = stores.Count
+                    };
+                });
             return storeSearchServiceMock.Object;
         }
 
-        private ISettingsManager GetSettingsManager()
+        private static ISettingsManager GetSettingsManager()
         {
             var settingsManagerMock = new Mock<ISettingsManager>();
-            settingsManagerMock.Setup(x => x.GetObjectSettingAsync(It.IsAny<string>(), null, null))
-                .ReturnsAsync<string, string, string, ISettingsManager, ObjectSettingEntry>((name, _, __) =>
+            settingsManagerMock
+                .Setup(x => x.GetObjectSettingAsync(It.IsAny<string>(), null, null))
+                .ReturnsAsync<string, string, string, ISettingsManager, ObjectSettingEntry>((name, _, _) =>
                 {
                     var settings = new List<ObjectSettingEntry>
                     {
-                        new ObjectSettingEntry { Name = PlatformConstants.Settings.Security.SecurityAccountTypes.Name, AllowedValues = new object[] { "Administrator", "Customer", "Manager" } },
-                        new ObjectSettingEntry { Name = PlatformConstants.Settings.Other.AccountStatuses.Name, AllowedValues = new object[] { "Approved", "Deleted", "New", "Rejected" } }
+                        new() { Name = PlatformConstants.Settings.Security.SecurityAccountTypes.Name, AllowedValues = new object[] { "Administrator", "Customer", "Manager" } },
+                        new() { Name = PlatformConstants.Settings.Other.AccountStatuses.Name, AllowedValues = new object[] { "Approved", "Deleted", "New", "Rejected" } }
                     };
                     return settings.FirstOrDefault(setting => setting.Name == name);
                 });
             return settingsManagerMock.Object;
         }
 
-        private ImportContactsValidator GetContactsValidator()
-        {
-            return new ImportContactsValidator(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager(), GetPasswordValidator(), GetStoreSearchService(), GetSettingsManager());
-        }
+        private static ImportContactsValidator GetContactsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager(), GetPasswordValidator(), GetStoreSearchService(), GetSettingsManager());
 
-        private ImportOrganizationsValidator GetOrganizationsValidator()
-        {
-            return new ImportOrganizationsValidator(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService());
-        }
+        private static ImportOrganizationsValidator GetOrganizationsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService());
     }
 }

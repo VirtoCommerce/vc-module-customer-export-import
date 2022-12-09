@@ -45,7 +45,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                         childRules.RuleFor(dynamicPropertyValue => dynamicPropertyValue.ValueId)
                                             .Must((dynamicPropertyValue, valueId, context) =>
                                             {
-                                                var dynamicPropertyDictionaryItems = (IList<DynamicPropertyDictionaryItem>) context.ParentContext.RootContextData[DynamicPropertyDictionaryItems];
+                                                var dynamicPropertyDictionaryItems = (IList<DynamicPropertyDictionaryItem>) context.RootContextData[DynamicPropertyDictionaryItems];
                                                 return dynamicPropertyDictionaryItems.Any(dynamicPropertyDictionaryItem =>
                                                     dynamicPropertyDictionaryItem.PropertyId == dynamicPropertyValue.PropertyId && dynamicPropertyDictionaryItem.Id == valueId);
                                             })

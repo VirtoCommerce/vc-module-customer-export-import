@@ -38,7 +38,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             target.TaxPayerId = TaxPayerId;
             target.PreferredCommunication = PreferredCommunication;
             target.PreferredDelivery = PreferredDelivery;
-            target.DynamicProperties = DynamicProperties;
+
+            PatchDynamicProperties(target);
 
             target.Addresses ??= new List<Address>();
             var isAddressSpecified = new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => !string.IsNullOrEmpty(addressField));

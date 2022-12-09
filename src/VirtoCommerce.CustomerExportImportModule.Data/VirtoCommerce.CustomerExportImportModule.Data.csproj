@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <noWarn>1591</noWarn>
         <IsPackable>True</IsPackable>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -21,14 +21,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="CsvHelper" Version="12.2.2" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-        <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.28.0" />
-        <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.65.0" />
-        <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.53.0" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+        <PackageReference Include="VirtoCommerce.AssetsModule.Core" Version="3.200.0" />
+        <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.211.0" />
+        <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.253.0" />
+        <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.253.0" />
     </ItemGroup>
 </Project>

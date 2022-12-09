@@ -13,7 +13,6 @@ using VirtoCommerce.CustomerExportImportModule.Data.Repositories;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.CustomerExportImportModule.Data.Validation;
 using VirtoCommerce.CustomerModule.Core.Services;
-using VirtoCommerce.FeatureManagementModule.Core.Services;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
@@ -63,31 +62,28 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             settingsRegistrar.RegisterSettings(ModuleConstants.Settings.General.AllSettings, ModuleInfo.Id);
 
             var settingsManager = appBuilder.ApplicationServices.GetService<ISettingsManager>();
-            var priceExportOptions = appBuilder.ApplicationServices.GetService<IOptions<ExportOptions>>().Value;
+            var priceExportOptions = appBuilder.ApplicationServices.GetService<IOptions<ExportOptions>>()?.Value;
 
             settingsManager.SetValue(ModuleConstants.Settings.General.ExportLimitOfLines.Name,
-                priceExportOptions.LimitOfLines ?? ModuleConstants.Settings.General.ExportLimitOfLines.DefaultValue);
+                priceExportOptions?.LimitOfLines ?? ModuleConstants.Settings.General.ExportLimitOfLines.DefaultValue);
 
-            var priceImportOptions = appBuilder.ApplicationServices.GetService<IOptions<ImportOptions>>().Value;
+            var priceImportOptions = appBuilder.ApplicationServices.GetService<IOptions<ImportOptions>>()?.Value;
 
             settingsManager.SetValue(ModuleConstants.Settings.General.ImportLimitOfLines.Name,
-                priceImportOptions.LimitOfLines ?? ModuleConstants.Settings.General.ImportLimitOfLines.DefaultValue);
+                priceImportOptions?.LimitOfLines ?? ModuleConstants.Settings.General.ImportLimitOfLines.DefaultValue);
 
             settingsManager.SetValue(ModuleConstants.Settings.General.ImportFileMaxSize.Name,
-                priceImportOptions.FileMaxSize ?? ModuleConstants.Settings.General.ImportFileMaxSize.DefaultValue);
+                priceImportOptions?.FileMaxSize ?? ModuleConstants.Settings.General.ImportFileMaxSize.DefaultValue);
 
             // register permissions
             var permissionsProvider = appBuilder.ApplicationServices.GetRequiredService<IPermissionsRegistrar>();
             permissionsProvider.RegisterPermissions(ModuleConstants.Security.Permissions.AllPermissions.Select(x =>
-                new Permission()
+                new Permission
                 {
                     GroupName = "CustomerExportImport",
                     ModuleId = ModuleInfo.Id,
                     Name = x
                 }).ToArray());
-
-            var featureStorage = appBuilder.ApplicationServices.GetService<IFeatureStorage>();
-            featureStorage.TryAddFeatureDefinition(ModuleConstants.Features.CustomerExportImport, true);
 
             // ensure that all pending migrations are applied
             using var serviceScope = appBuilder.ApplicationServices.CreateScope();

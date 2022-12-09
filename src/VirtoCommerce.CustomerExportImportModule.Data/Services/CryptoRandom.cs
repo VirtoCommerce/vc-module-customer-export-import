@@ -9,7 +9,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     /// </summary>
     public class CryptoRandom : Random
     {
-        private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
+        private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
         private readonly byte[] _uint32Buffer = new byte[4];
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         /// </returns>
         public override int Next()
         {
-            Rng.GetBytes(_uint32Buffer);
+            _rng.GetBytes(_uint32Buffer);
             return BitConverter.ToInt32(_uint32Buffer, 0) & 0x7FFFFFFF;
         }
 
@@ -59,7 +59,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             while (true)
             {
-                Rng.GetBytes(_uint32Buffer);
+                _rng.GetBytes(_uint32Buffer);
                 var rand = BitConverter.ToUInt32(_uint32Buffer, 0);
 
                 const long max = 1 + (long)uint.MaxValue;
@@ -79,7 +79,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         /// </returns>
         public override double NextDouble()
         {
-            Rng.GetBytes(_uint32Buffer);
+            _rng.GetBytes(_uint32Buffer);
             var rand = BitConverter.ToUInt32(_uint32Buffer, 0);
             return rand / (1.0 + uint.MaxValue);
         }
@@ -93,8 +93,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         /// </exception>
         public override void NextBytes(byte[] buffer)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
-            Rng.GetBytes(buffer);
+            if (buffer == null)
+            {
+                throw new ArgumentNullException(nameof(buffer));
+            }
+
+            _rng.GetBytes(buffer);
         }
     }
 }

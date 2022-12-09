@@ -12,8 +12,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     /// </summary>
     public class PasswordGenerator : IPasswordGenerator
     {
-        private static readonly string[] RandomChars  = {
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ", // uppercase 
+        private static readonly string[] _randomChars  = {
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ", // uppercase
             "abcdefghijklmnopqrstuvwxyz", // lowercase
             "0123456789", // digits
             "!@$?_-" // non-alphanumeric
@@ -33,27 +33,27 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             if (_passwordOptions.RequireUppercase)
             {
-                chars.Insert(rand.Next(0, chars.Count), RandomChars[0][rand.Next(0, RandomChars[0].Length)]);
+                chars.Insert(rand.Next(0, chars.Count), _randomChars[0][rand.Next(0, _randomChars[0].Length)]);
             }
 
             if (_passwordOptions.RequireLowercase)
             {
-                chars.Insert(rand.Next(0, chars.Count), RandomChars[1][rand.Next(0, RandomChars[1].Length)]);
+                chars.Insert(rand.Next(0, chars.Count), _randomChars[1][rand.Next(0, _randomChars[1].Length)]);
             }
 
             if (_passwordOptions.RequireDigit)
             {
-                chars.Insert(rand.Next(0, chars.Count), RandomChars[2][rand.Next(0, RandomChars[2].Length)]);
+                chars.Insert(rand.Next(0, chars.Count), _randomChars[2][rand.Next(0, _randomChars[2].Length)]);
             }
 
             if (_passwordOptions.RequireNonAlphanumeric)
             {
-                chars.Insert(rand.Next(0, chars.Count), RandomChars[3][rand.Next(0, RandomChars[3].Length)]);
+                chars.Insert(rand.Next(0, chars.Count), _randomChars[3][rand.Next(0, _randomChars[3].Length)]);
             }
 
             for (var i = chars.Count; i < _passwordOptions.RequiredLength || chars.Distinct().Count() < _passwordOptions.RequiredUniqueChars; i++)
             {
-                var rcs = RandomChars[rand.Next(0, RandomChars.Length)];
+                var rcs = _randomChars[rand.Next(0, _randomChars.Length)];
                 chars.Insert(rand.Next(0, chars.Count), rcs[rand.Next(0, rcs.Length)]);
             }
 

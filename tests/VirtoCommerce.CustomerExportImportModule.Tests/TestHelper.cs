@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Moq;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
-using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Security;
 
@@ -29,7 +29,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         {
             var dynamicPropertySearchServiceMock = new Mock<IDynamicPropertySearchService>();
             dynamicPropertySearchServiceMock.Setup(x => x.SearchDynamicPropertiesAsync(It.IsAny<DynamicPropertySearchCriteria>()))
-                .Returns<DynamicPropertySearchCriteria>(criteria => Task.FromResult(new DynamicPropertySearchResult
+                .Returns<DynamicPropertySearchCriteria>(_ => Task.FromResult(new DynamicPropertySearchResult
                 {
                     Results = dynamicProperties,
                     TotalCount = dynamicProperties.Count

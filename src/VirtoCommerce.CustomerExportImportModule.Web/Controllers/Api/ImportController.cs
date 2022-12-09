@@ -8,7 +8,7 @@ using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs;
 using VirtoCommerce.CustomerModule.Core.Model;
-using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.PushNotifications;
 using VirtoCommerce.Platform.Core.Security;
@@ -72,8 +72,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
             switch (request.DataType)
             {
                 case nameof(Contact):
-                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<ImportableContact, Contact>(request.FilePath,
-                            10, null))
+                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<ImportableContact, Contact>(request.FilePath, 10))
                     {
                         result.TotalCount = csvDataSource.GetTotalCount();
                         await csvDataSource.FetchAsync();
@@ -81,8 +80,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
                     }
                     break;
                 case nameof(Organization):
-                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<ImportableOrganization, Organization>(request.FilePath,
-                        10, null))
+                    using (var csvDataSource = await _customerImportPagedDataSourceFactory.CreateAsync<ImportableOrganization, Organization>(request.FilePath, 10))
                     {
                         result.TotalCount = csvDataSource.GetTotalCount();
                         await csvDataSource.FetchAsync();
@@ -106,7 +104,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
 
             await _pushNotificationManager.SendAsync(notification);
 
-            notification.JobId = BackgroundJob.Enqueue<ImportJob>(importJob => importJob.ImportBackgroundAsync(request, notification, JobCancellationToken.Null, null));
+            notification.JobId = BackgroundJob.Enqueue<ImportJob>(job => job.ImportBackgroundAsync(request, notification, JobCancellationToken.Null, null));
 
             return Ok(notification);
         }

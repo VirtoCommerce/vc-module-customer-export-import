@@ -1,24 +1,25 @@
+using System.Collections.Generic;
 using System.IO;
 using CsvHelper;
 using CsvHelper.Configuration;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerExportImportModule.Data.ExportImport;
-using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
-    public sealed class ExportWriter<T> : IExportWriter<T>
+    public sealed class ExportWriter<T> : IExportWriter<T> where T : IHasDynamicProperties
     {
         private readonly StreamWriter _streamWriter;
         private readonly CsvWriter _csvWriter;
 
-        public ExportWriter(string filePath, IBlobStorageProvider blobStorageProvider, Configuration csvConfiguration, DynamicProperty[] dynamicProperties = null)
+        public ExportWriter(string filePath, IBlobStorageProvider blobStorageProvider, CsvConfiguration csvConfiguration, IList<DynamicProperty> dynamicProperties = null)
         {
             var stream = blobStorageProvider.OpenWrite(filePath);
             _streamWriter = new StreamWriter(stream);
             _csvWriter = new CsvWriter(_streamWriter, csvConfiguration);
-            _csvWriter.Configuration.RegisterClassMap(new GenericClassMap<T>(dynamicProperties));
+            _csvWriter.Context.RegisterClassMap(new GenericClassMap<T>(dynamicProperties));
         }
 
         public void WriteRecords(T[] records)
@@ -28,9 +29,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public void Dispose()
         {
-            _streamWriter.Flush();
-            _streamWriter.Close();
             _csvWriter.Dispose();
+            _streamWriter.Dispose();
         }
     }
 }

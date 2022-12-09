@@ -8,7 +8,7 @@ using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core;
-using VirtoCommerce.Platform.Core.Assets;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Exceptions;
@@ -24,9 +24,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         private readonly IBlobUrlResolver _blobUrlResolver;
         private readonly IBlobStorageProvider _blobStorageProvider;
         private readonly IDynamicPropertySearchService _dynamicPropertySearchService;
-
-
-
 
         public CustomerDataExporter(ICustomerExportPagedDataSourceFactory customerExportPagedDataSourceFactory, IExportWriterFactory exportWriterFactory, IOptions<PlatformOptions> platformOptions,
             IDynamicPropertySearchService dynamicPropertySearchService, IBlobStorageProvider blobStorageProvider, IBlobUrlResolver blobUrlResolver)
@@ -85,7 +82,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     if (!contacts.IsNullOrEmpty())
                     {
                         contactExportWriter.WriteRecords(contacts);
-                    }                    
+                    }
 
                     var organizations = dataSource.Items.OfType<ExportableOrganization>().ToArray();
 
@@ -95,8 +92,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     }
 
                     exportProgress.ProcessedCount += dataSource.Items.Length;
-                    exportProgress.Description = string.Format(exportDescription, exportProgress.ProcessedCount,
-                        exportProgress.TotalCount);
+                    exportProgress.Description = string.Format(exportDescription, exportProgress.ProcessedCount, exportProgress.TotalCount);
                     progressCallback(exportProgress);
                 }
 
@@ -117,17 +113,19 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 if (contactsFileInfo.Size > 0)
                 {
                     exportProgress.ContactsFileUrl = _blobUrlResolver.GetAbsoluteUrl(contactsFilePath);
-                } else
+                }
+                else
                 {
-                    await _blobStorageProvider.RemoveAsync(new string[] { contactsFilePath });
+                    await _blobStorageProvider.RemoveAsync(new[] { contactsFilePath });
                 }
 
                 if (organizationsFileInfo.Size > 0)
                 {
                     exportProgress.OrganizationsFileUrl = _blobUrlResolver.GetAbsoluteUrl(organizationFilePath);
-                } else
+                }
+                else
                 {
-                    await _blobStorageProvider.RemoveAsync(new string[] { organizationFilePath });
+                    await _blobStorageProvider.RemoveAsync(new[] { organizationFilePath });
                 }
             }
             finally

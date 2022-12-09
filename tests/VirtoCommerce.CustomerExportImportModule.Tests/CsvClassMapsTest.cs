@@ -19,7 +19,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
     [Trait("Category", "CI")]
     public class CsvClassMapsTest
     {
-        private static readonly List<DynamicProperty> ContactDynamicProperties = new List<DynamicProperty>
+        private static readonly List<DynamicProperty> ContactDynamicProperties = new()
         {
             new DynamicObjectProperty
             {
@@ -48,20 +48,20 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             }
         };
 
-        private static readonly Dictionary<string, IList<DynamicPropertyDictionaryItem>> ContactDynamicPropertyDictionaryItems = new Dictionary<string, IList<DynamicPropertyDictionaryItem>>
+        private static readonly Dictionary<string, IList<DynamicPropertyDictionaryItem>> ContactDynamicPropertyDictionaryItems = new()
         {
             {
                 "JobId",
                 new List<DynamicPropertyDictionaryItem>
                 {
-                    new DynamicPropertyDictionaryItem { Id = "DeveloperId", PropertyId = "JobId", Name = "Developer" },
-                    new DynamicPropertyDictionaryItem { Id = "QAId", PropertyId = "JobId", Name = "QA" },
-                    new DynamicPropertyDictionaryItem { Id = "BAId", PropertyId = "JobId", Name = "BA" }
+                    new() { Id = "DeveloperId", PropertyId = "JobId", Name = "Developer" },
+                    new() { Id = "QAId", PropertyId = "JobId", Name = "QA" },
+                    new() { Id = "BAId", PropertyId = "JobId", Name = "BA" }
                 }
             }
         };
 
-        private static readonly Contact Contact = new Contact
+        private static readonly Contact Contact = new()
         {
             Id = "contact_id",
             FirstName = "Anton",
@@ -70,7 +70,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             OuterId = "outer_id",
             SecurityAccounts = new List<ApplicationUser>
             {
-                new ApplicationUser
+                new()
                 {
                     Id = "account_id",
                     UserName = "login",
@@ -96,7 +96,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             PreferredDelivery = "pickup",
             Addresses = new List<Address>
             {
-                new Address
+                new()
                 {
                     AddressType = AddressType.Pickup,
                     FirstName = "Anton",
@@ -115,14 +115,22 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             DynamicProperties = ContactDynamicProperties.OfType<DynamicObjectProperty>().ToList()
         };
 
-        private static readonly Organization ContactOrganization = new Organization { Id = "org_id", Name = "Boroda ltd", OuterId = "org_outer_id" };
+        private static readonly Organization ContactOrganization = new()
+        {
+            Id = "org_id",
+            Name = "Boroda ltd",
+            OuterId = "org_outer_id"
+        };
 
-        private static readonly Store Store = new Store { Id = "b2b-store", Name = "b2b-store" };
+        private static readonly Store Store = new()
+        {
+            Id = "b2b-store",
+            Name = "b2b-store"
+        };
 
-        private static readonly string ContactCsvHeader =
-            "Contact Id;Contact Outer Id;Contact First Name;Contact Last Name;Contact Full Name;Organization Id;Organization Outer Id;Organization Name;Contact Status;Contact Emails;Contact Phones;Contact Salutation;Contact Birthday;Contact TimeZone;Contact Default language;Contact Taxpayer ID;Contact Preferred communication;Contact Preferred delivery;Contact Associated Organization Ids;Contact User groups;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Account Id;Account Login;Account Store Id;Account Store Name;Account Email;Account Type;Account Status;Account Email Verified;Sex;Job";
-        private static readonly string ContactCsvRecord =
-            "contact_id;outer_id;Anton;Boroda;Anton Boroda;org_id;org_outer_id;Boroda ltd;new;boroda@ya.ru;777, 555;mr;04/14/1986 00:00:00;MSK;en_US;TaxId;email;pickup;org_id1, org_id2;tag1, tag2;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;Male;Developer";
+        private const string ContactCsvHeader = "Contact Id;Contact Outer Id;Contact First Name;Contact Last Name;Contact Full Name;Organization Id;Organization Outer Id;Organization Name;Contact Status;Contact Emails;Contact Phones;Contact Salutation;Contact Birthday;Contact TimeZone;Contact Default language;Contact Taxpayer ID;Contact Preferred communication;Contact Preferred delivery;Contact Associated Organization Ids;Contact User groups;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Account Id;Account Login;Account Store Id;Account Store Name;Account Email;Account Type;Account Status;Account Email Verified;Sex;Job";
+
+        private const string ContactCsvRecord = "contact_id;outer_id;Anton;Boroda;Anton Boroda;org_id;org_outer_id;Boroda ltd;new;boroda@ya.ru;777, 555;mr;04/14/1986 00:00:00;MSK;en_US;TaxId;email;pickup;org_id1, org_id2;tag1, tag2;Pickup;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;Male;Developer";
 
         [Fact]
         public void Export_ContactWithDynamicProperty_HeaderAndValuesAreCorrect()
@@ -134,19 +142,19 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var stream = new MemoryStream();
             var streamWriter = new StreamWriter(stream, leaveOpen: true);
             var csvWriter = new CsvWriter(streamWriter, new ExportConfiguration());
-            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<ExportableContact>(ContactDynamicProperties));
+            csvWriter.Context.RegisterClassMap(new GenericClassMap<ExportableContact>(ContactDynamicProperties));
 
             // Act
             csvWriter.WriteRecords(new[] { exportableContact });
 
-            streamWriter.Dispose();
             csvWriter.Dispose();
+            streamWriter.Dispose();
 
             // Assert
             stream.Seek(0, SeekOrigin.Begin);
 
-            var sr = new StreamReader(stream);
-            var csv = sr.ReadToEnd();
+            var streamReader = new StreamReader(stream);
+            var csv = streamReader.ReadToEnd();
 
             var expectedCsv = TestHelper.GetCsv(new[] { ContactCsvRecord }, ContactCsvHeader);
 
@@ -184,7 +192,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 Groups = new List<string>(new[] { "tag1", "tag2" }),
                 Addresses = new List<Address>
                 {
-                    new Address
+                    new()
                     {
                         AddressType = AddressType.Pickup,
                         FirstName = "Anton",
@@ -209,22 +217,22 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             exportableOrganization.FromModels(organization, parent);
 
             var stream = new MemoryStream();
-            var sw = new StreamWriter(stream, leaveOpen: true);
-            var csvWriter = new CsvWriter(sw, new ExportConfiguration());
+            var streamWriter = new StreamWriter(stream, leaveOpen: true);
+            var csvWriter = new CsvWriter(streamWriter, new ExportConfiguration());
 
             //Act
-            csvWriter.Configuration.RegisterClassMap(new GenericClassMap<ExportableOrganization>(dynamicProperties));
+            csvWriter.Context.RegisterClassMap(new GenericClassMap<ExportableOrganization>(dynamicProperties));
 
             csvWriter.WriteRecords(new[] { exportableOrganization });
 
-            sw.Dispose();
             csvWriter.Dispose();
+            streamWriter.Dispose();
 
             stream.Seek(0, SeekOrigin.Begin);
 
             //Assert
-            var expected = "Organization Id;Organization Outer Id;Organization Name;Parent Organization Name;Parent Organization Id;Parent Organization Outer Id;Business category;Description;Organization Groups;Emails;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Size\r\n"
-                           + "org_id1;OuterId1;Boroda ltd;parent_outer_id;parent_otg_id;parent_outer_id;Market Place;org desc;tag1, tag2;;777, 555;BillingAndShipping;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Huge\r\n";
+            const string expected = "Organization Id;Organization Outer Id;Organization Name;Parent Organization Name;Parent Organization Id;Parent Organization Outer Id;Business category;Description;Organization Groups;Emails;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Size\r\n"
+                                    + "org_id1;OuterId1;Boroda ltd;parent_outer_id;parent_otg_id;parent_outer_id;Market Place;org desc;tag1, tag2;;777, 555;Pickup;Anton;Boroda;Russia;RUS;Kirov region;Kirov;1 st;169;610033;c@mail.com;777;Huge\r\n";
 
             var sr = new StreamReader(stream);
             var csv = sr.ReadToEnd();
@@ -241,7 +249,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             using var stream = TestHelper.GetStream(csv);
             using var streamReader = new StreamReader(stream);
             using var csvReader = new CsvReader(streamReader, new ImportConfiguration());
-            csvReader.Configuration.RegisterClassMap(new GenericClassMap<ImportableContact>(ContactDynamicProperties, ContactDynamicPropertyDictionaryItems));
+            csvReader.Context.RegisterClassMap(new GenericClassMap<ImportableContact>(ContactDynamicProperties, ContactDynamicPropertyDictionaryItems));
 
             // Act
             csvReader.Read();

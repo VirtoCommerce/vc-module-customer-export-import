@@ -56,15 +56,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             importOrganizations = importOrganizations.Except(invalidImportOrganizations).ToArray();
 
             //reduce existed set after validation
-            existedOrganizations = existedOrganizations.Where(ec => importOrganizations.Any(ic =>
-                    ec.Id.EqualsInvariant(ic.Record.Id)
-                    || !string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId)))
+            existedOrganizations = existedOrganizations
+                .Where(ec => importOrganizations.Any(ic =>
+                    ec.Id.EqualsInvariant(ic.Record.Id) || !string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId)))
                 .ToArray();
 
-            var updateImportOrganizations = importOrganizations.Where(x => existedOrganizations.Any(ec =>
-                ec.Id.EqualsInvariant(x.Record.Id)
-                || (!ec.OuterId.IsNullOrEmpty() && ec.OuterId.EqualsInvariant(x.Record.OuterId)))
-            ).ToArray();
+            var updateImportOrganizations = importOrganizations
+                .Where(ic => existedOrganizations.Any(ec =>
+                    ec.Id.EqualsInvariant(ic.Record.Id) || (!string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId))))
+                .ToArray();
 
             existedOrganizations = GetReducedExistedByWrongOuterId(updateImportOrganizations, existedOrganizations).ToArray();
 
@@ -79,6 +79,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             await _memberService.SaveChangesAsync(organizationsForSave);
 
             importProgress.CreatedCount += newOrganizations.Length;
+            importProgress.AdditionalLineCount += createImportOrganizations.Length - newOrganizations.Length;
             importProgress.UpdatedCount += existedOrganizations.Length;
         }
 
@@ -88,24 +89,26 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             foreach (var existedOrganization in existedOrganizations)
             {
                 var importOrganization = updateImportOrganizations.LastOrDefault(x => existedOrganization.Id.EqualsInvariant(x.Record.Id)
-                                                                            || (!existedOrganization.OuterId.IsNullOrEmpty() && existedOrganization.OuterId.EqualsInvariant(x.Record.OuterId)));
+                    || (!string.IsNullOrEmpty(existedOrganization.OuterId) && existedOrganization.OuterId.EqualsInvariant(x.Record.OuterId)));
 
                 importOrganization?.Record.PatchModel(existedOrganization);
             }
         }
 
-        private static Organization[] CreateNewOrganizations(ImportRecord<ImportableOrganization>[] createImportOrganizations)
-        {
-            var newOrganizations = createImportOrganizations.Select(x =>
-            {
-                var organization = AbstractTypeFactory<Organization>.TryCreateInstance();
+        private static Organization[] CreateNewOrganizations(ImportRecord<ImportableOrganization>[] createImportOrganizations) =>
+            createImportOrganizations
+                .GroupBy(x => (x.Record.Id, x.Record.OuterId, x.Record.RecordName))
+                .Where(group => group.Any(x => x.Record.AdditionalLine != true))
+                .Select(group =>
+                {
+                    var organization = AbstractTypeFactory<Organization>.TryCreateInstance();
 
-                x.Record.PatchModel(organization);
+                    foreach (var importRecord in group.OrderBy(x => x.Record.AdditionalLine == true).ThenBy(x => x.Row))
+                    {
+                        importRecord.Record.PatchModel(organization);
+                    }
 
-                return organization;
-            }).ToArray();
-
-            return newOrganizations;
-        }
+                    return organization;
+                }).ToArray();
     }
 }

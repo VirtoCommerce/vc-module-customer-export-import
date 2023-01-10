@@ -29,10 +29,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithExceededMaxLengthCodeAndMessage("Organization Name", 128)
                         .WithImportState();
                 });
-            
+
+            RuleFor(x => x.Record.ParentOrganizationOuterId)
+                .MaximumLength(128)
+                .WithExceededMaxLengthCodeAndMessage("Parent Organization Outer Id", 128)
+                .WithImportState();
+
+            RuleFor(x => x.Record.ParentOrganizationName)
+                .MaximumLength(128)
+                .WithExceededMaxLengthCodeAndMessage("Parent Organization Name", 128)
+                .WithImportState();
+
             RuleFor(x => x.Record.BusinessCategory)
                 .MaximumLength(64)
                 .WithExceededMaxLengthCodeAndMessage("Business Category", 64)
+                .WithImportState();
+
+            RuleFor(x => x.Record.OrganizationGroups)
+                .MaximumLength(64)
+                .WithExceededMaxLengthCodeAndMessage("Organization Groups", 64)
                 .WithImportState();
         }
     }

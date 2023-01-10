@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -111,7 +112,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     finally
                     {
                         importProgress.ProcessedCount = Math.Min(dataSource.CurrentPageNumber * dataSource.PageSize, importProgress.TotalCount);
-                        importProgress.ErrorCount = importProgress.ProcessedCount - importProgress.CreatedCount - importProgress.UpdatedCount;
+                        importProgress.ErrorCount = Math.Max(importProgress.ProcessedCount - importProgress.CreatedCount - importProgress.AdditionalLineCount - importProgress.UpdatedCount, 0);
                     }
 
                     if (importProgress.ProcessedCount != importProgress.TotalCount)
@@ -209,20 +210,20 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         /// <returns></returns>
         protected TMember[] GetReducedExistedByWrongOuterId(ImportRecord<TCsvMember>[] updateImportRecords, TMember[] existedMembers)
         {
-            var result = existedMembers;
+            var excepted = new List<TMember>();
 
             foreach (var importRecord in updateImportRecords.Where(x => !string.IsNullOrEmpty(x.Record.Id) && !string.IsNullOrEmpty(x.Record.OuterId)))
             {
                 var otherExisted = existedMembers.FirstOrDefault(x => !x.Id.EqualsInvariant(importRecord.Record.Id) && x.OuterId.EqualsInvariant(importRecord.Record.OuterId));
 
                 if (otherExisted != null && !updateImportRecords.Any(x =>
-                    x.Record.OuterId.EqualsInvariant(otherExisted.OuterId) && (x.Record.Id.EqualsInvariant(otherExisted.Id) || string.IsNullOrEmpty(x.Record.Id))))
+                    x.Record.OuterId.EqualsInvariant(otherExisted.OuterId) && (string.IsNullOrEmpty(x.Record.Id) || x.Record.Id.EqualsInvariant(otherExisted.Id))))
                 {
-                    result = result.Except(new[] { otherExisted }).ToArray();
+                    excepted.Add(otherExisted);
                 }
             }
 
-            return result;
+            return excepted.Count > 0 ? existedMembers.Except(excepted).ToArray() : existedMembers;
         }
 
         protected abstract Task ProcessChunkAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ImportRecord<TCsvMember>[] importRecords,
@@ -269,11 +270,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             foreach (var group in errorsGroups)
             {
-                var importPrice = group.Key;
+                var invalidRecord = group.Key;
 
                 var errorMessages = string.Join(" ", group.Select(x => x.Message).ToArray());
 
-                var importError = new ImportError { Error = errorMessages, RawRow = importPrice.RawRecord };
+                var importError = new ImportError { Error = errorMessages, RawRow = invalidRecord.RawRecord };
 
                 await importReporter.WriteAsync(importError);
             }

@@ -16,6 +16,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
         {
             public const string DuplicateError = "Duplicate";
 
+            public const string WrongAdditionalLine = "wrong-additional-line";
+
             public const string FileNotExisted = "file-not-existed";
 
             public const string NoData = "no-data";

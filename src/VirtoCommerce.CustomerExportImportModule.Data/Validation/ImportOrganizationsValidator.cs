@@ -20,6 +20,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         private void AttachValidators()
         {
             RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAreNotDuplicatesValidator<ImportableOrganization>());
+            RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAdditionalLinesValidator<ImportableOrganization>());
             RuleForEach(importRecords => importRecords).SetValidator(new ImportMemberValidator<ImportableOrganization>(_countriesService, _dynamicPropertyDictionaryItemsSearchService));
             RuleForEach(importRecords => importRecords).SetValidator(new ImportOrganizationValidator());
         }

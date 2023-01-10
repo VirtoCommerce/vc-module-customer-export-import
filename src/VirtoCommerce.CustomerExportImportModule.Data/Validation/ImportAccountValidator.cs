@@ -36,12 +36,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void AttachValidators()
         {
-            When(x => new[]
-                {
-                    x.Record.AccountType, x.Record.AccountStatus, x.Record.AccountLogin, x.Record.AccountEmail, x.Record.StoreId, x.Record.StoreName,
-                    x.Record.EmailVerified.ToString()
-                }.Any(field => !string.IsNullOrEmpty(field))
-                , () =>
+            When(x => x.Record.AdditionalLine != true
+                      && new[]
+                      {
+                          x.Record.AccountType, x.Record.AccountStatus, x.Record.AccountLogin, x.Record.AccountEmail, x.Record.StoreId, x.Record.StoreName,
+                          x.Record.EmailVerified.ToString()
+                      }.Any(field => !string.IsNullOrEmpty(field)),
+                () =>
                 {
 
                     RuleFor(x => x.Record.AccountLogin)
@@ -53,9 +54,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                             RuleFor(x => x.Record.AccountLogin)
                                 .MustAsync(async (thisRecord, userName, _) =>
                                 {
-                                    var lastRecordWithAccountLogin = _allRecords.LastOrDefault(otherRecord => userName.EqualsInvariant(otherRecord.Record.AccountLogin));
+                                    var lastRecordWithAccountLogin = _allRecords
+                                        .Where(x => x.Record.AdditionalLine != true)
+                                        .LastOrDefault(otherRecord => userName.EqualsInvariant(otherRecord.Record.AccountLogin));
                                     return await _userManager.FindByNameAsync(userName) == null &&
-                                           (_allRecords.All(otherRecord => !userName.EqualsInvariant(otherRecord.Record.AccountLogin)) || lastRecordWithAccountLogin == thisRecord);
+                                           (_allRecords
+                                               .Where(x => x.Record.AdditionalLine != true)
+                                               .All(otherRecord => !userName.EqualsInvariant(otherRecord.Record.AccountLogin))
+                                            || lastRecordWithAccountLogin == thisRecord);
                                 })
                                 .WithNotUniqueValueCodeAndMessage("Account Login")
                                 .WithImportState();
@@ -75,9 +81,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                     RuleFor(x => x.Record.AccountEmail)
                                         .MustAsync(async (thisRecord, email, _) =>
                                         {
-                                            var lastRecordWithAccountEmail = _allRecords.LastOrDefault(otherRecord => email.EqualsInvariant(otherRecord.Record.AccountEmail));
+                                            var lastRecordWithAccountEmail = _allRecords
+                                                .Where(x => x.Record.AdditionalLine != true)
+                                                .LastOrDefault(otherRecord => email.EqualsInvariant(otherRecord.Record.AccountEmail));
                                             return await _userManager.FindByEmailAsync(email) == null &&
-                                                   (_allRecords.All(otherRecord => !email.EqualsInvariant(otherRecord.Record.AccountEmail)) || lastRecordWithAccountEmail == thisRecord);
+                                                   (_allRecords
+                                                       .Where(x => x.Record.AdditionalLine != true)
+                                                       .All(otherRecord => !email.EqualsInvariant(otherRecord.Record.AccountEmail))
+                                                    || lastRecordWithAccountEmail == thisRecord);
                                         })
                                         .WithNotUniqueValueCodeAndMessage("Account Email")
                                         .WithImportState();

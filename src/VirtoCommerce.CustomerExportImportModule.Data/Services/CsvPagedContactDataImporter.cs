@@ -62,15 +62,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             importContacts = importContacts.Except(invalidImportContacts).ToArray();
 
             //reduce existed set after validation
-            existedContacts = existedContacts.Where(ec => importContacts.Any(ic =>
-                    ec.Id.EqualsInvariant(ic.Record.Id)
-                    || !string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId)))
+            existedContacts = existedContacts
+                .Where(ec => importContacts.Any(ic =>
+                    ec.Id.EqualsInvariant(ic.Record.Id) || !string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId)))
                 .ToArray();
 
-            var updateImportContacts = importContacts.Where(x => existedContacts.Any(ec =>
-                ec.Id.EqualsInvariant(x.Record.Id)
-                || (!ec.OuterId.IsNullOrEmpty() && ec.OuterId.EqualsInvariant(x.Record.OuterId)))
-            ).ToArray();
+            var updateImportContacts = importContacts
+                .Where(ic => existedContacts.Any(ec =>
+                    ec.Id.EqualsInvariant(ic.Record.Id) || (!string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId))))
+                .ToArray();
 
             existedContacts = GetReducedExistedByWrongOuterId(updateImportContacts, existedContacts).ToArray();
 
@@ -83,12 +83,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 .Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
             var existedOrganizations =
-                (await SearchMembersByIdAndOuterIdAsync(internalOrgIds, outerOrgIds,
-                    new[] { nameof(Organization) })).OfType<Organization>().ToArray();
+                (await SearchMembersByIdAndOuterIdAsync(internalOrgIds, outerOrgIds, new[] { nameof(Organization) }))
+                .OfType<Organization>().ToArray();
 
-            var newContacts = CreateNewContacts(createImportContacts, existedOrganizations, request);
+            var newContacts = CreateNewContacts(createImportContacts, existedOrganizations, request.OrganizationId);
 
-            PatchExistedContacts(existedContacts, updateImportContacts, existedOrganizations, request);
+            PatchExistedContacts(existedContacts, updateImportContacts, existedOrganizations, request.OrganizationId);
 
             var contactsForSave = newContacts.Union(existedContacts).ToArray();
 
@@ -97,6 +97,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             await CreateAccountsForContacts(contactsForSave);
 
             importProgress.CreatedCount += newContacts.Length;
+            importProgress.AdditionalLineCount += createImportContacts.Length - newContacts.Length;
             importProgress.UpdatedCount += existedContacts.Length;
         }
 
@@ -119,7 +120,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 }
         }
 
-        private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<ImportableContact>[] updateImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
+        private static void PatchExistedContacts(IEnumerable<Contact> existedContacts, ImportRecord<ImportableContact>[] updateImportContacts, Organization[] existedOrganizations, string requestOrganizationId)
 
         {
             foreach (var existedContact in existedContacts)
@@ -132,11 +133,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                     : existedOrganizations.FirstOrDefault(o => o.Id.EqualsInvariant(importContact.Record.OrganizationId))
                       ?? existedOrganizations.FirstOrDefault(o => !o.OuterId.IsNullOrEmpty() && o.OuterId.EqualsInvariant(importContact.Record.OrganizationOuterId));
 
-                var orgIdForNewContact = existedOrg?.Id ?? request.OrganizationId;
+                var orgIdForNewContact = existedOrg?.Id ?? requestOrganizationId;
 
                 importContact?.Record.PatchModel(existedContact);
 
-                if (!orgIdForNewContact.IsNullOrEmpty() && !existedContact.Organizations.Contains(orgIdForNewContact))
+                if (!string.IsNullOrEmpty(orgIdForNewContact) && !existedContact.Organizations.Contains(orgIdForNewContact))
                 {
                     existedContact.Organizations ??= new List<string>();
                     existedContact.Organizations.Add(orgIdForNewContact);
@@ -144,27 +145,30 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-        private static Contact[] CreateNewContacts(ImportRecord<ImportableContact>[] createImportContacts, Organization[] existedOrganizations, ImportDataRequest request)
-        {
-            var newContacts = createImportContacts.Select(x =>
-            {
-                var contact = AbstractTypeFactory<Contact>.TryCreateInstance<Contact>();
+        private static Contact[] CreateNewContacts(ImportRecord<ImportableContact>[] createImportContacts, Organization[] existedOrganizations, string requestOrganizationId) =>
+            createImportContacts
+                .GroupBy(x => (x.Record.Id, x.Record.OuterId, x.Record.RecordName))
+                .Where(group => group.Any(x => x.Record.AdditionalLine != true))
+                .Select(group =>
+                {
+                    var contact = AbstractTypeFactory<Contact>.TryCreateInstance<Contact>();
 
-                x.Record.PatchModel(contact);
+                    foreach (var importRecord in group.OrderBy(x => x.Record.AdditionalLine == true).ThenBy(x => x.Row))
+                    {
+                        if (importRecord.Record.AdditionalLine != true)
+                        {
+                            var existedOrg = existedOrganizations.FirstOrDefault(o => o.Id.EqualsInvariant(importRecord.Record.OrganizationId))
+                                             ?? existedOrganizations.FirstOrDefault(o => !string.IsNullOrEmpty(o.OuterId) && o.OuterId.EqualsInvariant(importRecord.Record.OrganizationOuterId));
 
-                var existedOrg = existedOrganizations.FirstOrDefault(o => o.Id == x.Record.OrganizationId)
-                                 ?? existedOrganizations.FirstOrDefault(o =>
-                                     o.OuterId == x.Record.OrganizationOuterId);
+                            var orgIdForNewContact = existedOrg?.Id ?? requestOrganizationId;
 
-                var orgIdForNewContact = existedOrg?.Id ?? request.OrganizationId;
+                            contact.Organizations = orgIdForNewContact != null ? new[] { orgIdForNewContact }.ToList() : new List<string>();
+                        }
 
-                contact.Organizations =
-                    orgIdForNewContact != null ? new[] { orgIdForNewContact }.ToList() : new List<string>();
+                        importRecord.Record.PatchModel(contact);
+                    }
 
-                return contact;
-            }).ToArray();
-
-            return newContacts;
-        }
+                    return contact;
+                }).ToArray();
     }
 }

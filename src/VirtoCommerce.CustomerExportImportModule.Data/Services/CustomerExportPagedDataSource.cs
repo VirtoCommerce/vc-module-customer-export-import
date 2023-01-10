@@ -6,6 +6,7 @@ using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
+using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
@@ -88,7 +89,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             // Get stores from accounts
             var accounts = contacts.Select(contact => contact.SecurityAccounts?.MinBy(account => account.Id)).Where(account => account != null).Distinct().ToArray();
             var storeIds = accounts.Select(account => account.StoreId).Where(storeId => !string.IsNullOrEmpty(storeId)).Distinct().ToList();
-            var stores = (await _storeService.GetAsync(storeIds, StoreResponseGroup.None.ToString())).ToDictionary(store => store.Id, store => store);
+            var stores = (await _storeService.GetAsync(storeIds, StoreResponseGroup.None.ToString())).ToDictionary(store => store.Id, store => store).WithDefaultValue(null);
 
             Items = searchResult.Results.Select<Member, IExportable>(member =>
             {
@@ -101,7 +102,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                         var storeId = account?.StoreId;
                         return new ExportableContact().FromModels(contact,
                             organizationId != null && allOrganizations.ContainsKey(organizationId) ? allOrganizations[organizationId] : null,
-                            storeId != null && stores.ContainsKey(storeId) ? stores[storeId] : null);
+                            storeId != null ? stores[storeId] : null);
                     case nameof(Organization):
                         var organization = (Organization)member;
                         var parentOrganizationId = organization.ParentId;

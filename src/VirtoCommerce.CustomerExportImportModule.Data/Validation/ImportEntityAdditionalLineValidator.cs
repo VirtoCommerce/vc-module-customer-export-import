@@ -7,10 +7,10 @@ using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
-    public sealed class ImportEntityIsNotDuplicateValidator<T>: AbstractValidator<ImportRecord<T>>
+    public sealed class ImportEntityAdditionalLineValidator<T>: AbstractValidator<ImportRecord<T>>
         where T: IEntity, IHasOuterId, IImportable
     {
-        public ImportEntityIsNotDuplicateValidator()
+        public ImportEntityAdditionalLineValidator()
         {
             AttachValidators();
         }
@@ -20,11 +20,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(importRecord => importRecord)
                 .Must((_, importRecord, context) =>
                 {
-                    var duplicates = (ImportRecord<T>[])context.RootContextData[ImportEntitiesAreNotDuplicatesValidator<T>.Duplicates];
-                    return !duplicates.Contains(importRecord);
+                    var wrongLines = (ImportRecord<T>[])context.RootContextData[ImportEntitiesAdditionalLinesValidator<T>.WrongAdditionalLines];
+                    return !wrongLines.Contains(importRecord);
                 })
-                .WithErrorCode(ModuleConstants.ValidationErrors.DuplicateError)
-                .WithMessage("This customer is a duplicate.")
+                .WithErrorCode(ModuleConstants.ValidationErrors.WrongAdditionalLine)
+                .WithMessage("This customer's additional line doesn't have corresponding main line.")
                 .WithImportState();
         }
     }

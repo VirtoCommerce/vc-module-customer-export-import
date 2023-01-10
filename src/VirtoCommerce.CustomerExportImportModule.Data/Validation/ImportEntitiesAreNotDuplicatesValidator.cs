@@ -6,7 +6,7 @@ using VirtoCommerce.Platform.Core.Common;
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
     public sealed class ImportEntitiesAreNotDuplicatesValidator<T> : AbstractValidator<ImportRecord<T>[]>
-        where T : IEntity, IHasOuterId
+        where T : IEntity, IHasOuterId, IImportable
     {
         internal const string Duplicates = nameof(Duplicates);
 
@@ -24,12 +24,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private static void GetDuplicates(ImportRecord<T>[] importRecords, ValidationContext<ImportRecord<T>[]> context)
         {
-            var duplicatesById = importRecords.Where(importRecord => !string.IsNullOrEmpty(importRecord.Record.Id))
+            var duplicatesById = importRecords
+                .Where(importRecord => !string.IsNullOrEmpty(importRecord.Record.Id) && importRecord.Record.AdditionalLine != true)
                 .GroupBy(importRecord => importRecord.Record.Id)
                 .SelectMany(group => group.Take(group.Count() - 1))
                 .ToArray();
 
-            var duplicatesByOuterId = importRecords.Where(importRecord => !string.IsNullOrEmpty(importRecord.Record.OuterId))
+            var duplicatesByOuterId = importRecords
+                .Where(importRecord => !string.IsNullOrEmpty(importRecord.Record.OuterId) && importRecord.Record.AdditionalLine != true)
                 .GroupBy(importRecord => importRecord.Record.OuterId)
                 .SelectMany(group => group.Take(group.Count() - 1))
                 .ToArray();

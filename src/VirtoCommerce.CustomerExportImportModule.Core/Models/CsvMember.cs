@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
+using Newtonsoft.Json;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
@@ -69,7 +70,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Address Phone")]
         public virtual string AddressPhone { get; set; }
 
-        [Ignore]
+        [Optional]
+        [Name("Additional Line")]
+        [BooleanTrueValues("True", "Yes")]
+        [BooleanFalseValues("False", "No")]
+        public virtual bool? AdditionalLine { get; set; }
+
+        [Ignore, JsonIgnore]
         public string ObjectType { get; set; }
 
         public ICollection<DynamicObjectProperty> DynamicProperties { get; set; }

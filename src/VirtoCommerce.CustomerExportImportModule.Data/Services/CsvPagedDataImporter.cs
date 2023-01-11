@@ -167,16 +167,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         /// </summary>
         /// <param name="importMembers"></param>
         /// <param name="existedMembers"></param>
-        protected static void SetIdToNullForNotExisted(ImportRecord<TCsvMember>[] importMembers, TMember[] existedMembers)
+        protected virtual void SetIdToNullForNotExisted(ImportRecord<TCsvMember>[] importMembers, TMember[] existedMembers)
         {
-            foreach (var importContact in importMembers)
+            foreach (var importMember in importMembers)
             {
-                var existedMember =
-                    existedMembers.FirstOrDefault(x => x.Id.EqualsInvariant(importContact.Record.Id));
-
+                var existedMember = existedMembers.FirstOrDefault(x => x.Id.EqualsInvariant(importMember.Record.Id));
                 if (existedMember == null)
                 {
-                    importContact.Record.Id = null;
+                    importMember.Record.Id = null;
                 }
             }
         }
@@ -187,16 +185,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         /// </summary>
         /// <param name="importMembers"></param>
         /// <param name="existedMembers"></param>
-        protected static void SetIdToRealForExistedOuterId(ImportRecord<TCsvMember>[] importMembers, TMember[] existedMembers)
+        protected virtual void SetIdToRealForExistedOuterId(ImportRecord<TCsvMember>[] importMembers, TMember[] existedMembers)
         {
-            foreach (var importContact in importMembers.Where(x => string.IsNullOrEmpty(x.Record.Id) && !string.IsNullOrEmpty(x.Record.OuterId)))
+            foreach (var importMember in importMembers.Where(x => string.IsNullOrEmpty(x.Record.Id) && !string.IsNullOrEmpty(x.Record.OuterId)))
             {
-                var existedMember =
-                    existedMembers.FirstOrDefault(x => !string.IsNullOrEmpty(x.OuterId) && x.OuterId.EqualsInvariant(importContact.Record.OuterId));
-
+                var existedMember = existedMembers.FirstOrDefault(x => !string.IsNullOrEmpty(x.OuterId) && x.OuterId.EqualsInvariant(importMember.Record.OuterId));
                 if (existedMember != null)
                 {
-                    importContact.Record.Id = existedMember.Id;
+                    importMember.Record.Id = existedMember.Id;
                 }
             }
         }

@@ -90,11 +90,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             PatchExistedContacts(existedContacts, updateImportContacts, existedOrganizations, request.OrganizationId);
 
-            var contactsForSave = newContacts.Union(existedContacts).ToArray();
+            var saveContacts = newContacts.Union(existedContacts).ToArray();
 
-            await _memberService.SaveChangesAsync(contactsForSave);
+            await _memberService.SaveChangesAsync(saveContacts);
 
-            await CreateAccountsForContacts(contactsForSave);
+            await CreateAccountsForContacts(saveContacts);
 
             importProgress.CreatedCount += newContacts.Length;
             importProgress.AdditionalLineCount += createImportContacts.Length - newContacts.Length;

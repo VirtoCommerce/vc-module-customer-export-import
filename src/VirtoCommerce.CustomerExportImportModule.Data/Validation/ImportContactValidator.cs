@@ -28,6 +28,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void AttachValidators()
         {
+            RuleFor(x => x.Record.Id)
+                .MaximumLength(128)
+                .WithExceededMaxLengthCodeAndMessage("Contact Id", 128)
+                .WithImportState();
+
             RuleFor(x => x.Record.OuterId)
                 .MaximumLength(128)
                 .WithExceededMaxLengthCodeAndMessage("Contact Outer Id", 128)
@@ -69,10 +74,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithImportState();
                 });
 
+            RuleFor(x => x.Record.OrganizationId)
+                .MaximumLength(128)
+                .WithExceededMaxLengthCodeAndMessage("Organization Id", 128)
+                .WithImportState();
+
             RuleFor(x => x.Record.OrganizationOuterId)
                 .MaximumLength(128)
                 .WithExceededMaxLengthCodeAndMessage("Organization Outer Id", 128)
                 .WithImportState();
+
             RuleFor(x => x.Record.OrganizationName)
                 .MaximumLength(128)
                 .WithExceededMaxLengthCodeAndMessage("Organization Name", 128)
@@ -82,26 +93,32 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .MaximumLength(64)
                 .WithExceededMaxLengthCodeAndMessage("Contact Status", 64)
                 .WithImportState();
+
             RuleFor(x => x.Record.TimeZone)
                 .MaximumLength(32)
                 .WithExceededMaxLengthCodeAndMessage("Time Zone", 32)
                 .WithImportState();
+
             RuleFor(x => x.Record.Salutation)
                 .MaximumLength(256)
                 .WithExceededMaxLengthCodeAndMessage("Salutation", 256)
                 .WithImportState();
+
             RuleFor(x => x.Record.DefaultLanguage)
                 .MaximumLength(32)
                 .WithExceededMaxLengthCodeAndMessage("Default Language", 32)
                 .WithImportState();
+
             RuleFor(x => x.Record.TaxPayerId)
                 .MaximumLength(64)
                 .WithExceededMaxLengthCodeAndMessage("Tax Payer Id", 64)
                 .WithImportState();
+
             RuleFor(x => x.Record.PreferredDelivery)
                 .MaximumLength(64)
                 .WithExceededMaxLengthCodeAndMessage("Preferred Delivery", 64)
                 .WithImportState();
+
             RuleFor(x => x.Record.PreferredCommunication)
                 .MaximumLength(64)
                 .WithExceededMaxLengthCodeAndMessage("Preferred Communication", 64)

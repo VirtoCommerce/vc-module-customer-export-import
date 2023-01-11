@@ -13,6 +13,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void AttachValidators()
         {
+            RuleFor(x => x.Record.Id)
+                .MaximumLength(128)
+                .WithExceededMaxLengthCodeAndMessage("Organization Id", 128)
+                .WithImportState();
+
             RuleFor(x => x.Record.OuterId)
                 .MaximumLength(128)
                 .WithExceededMaxLengthCodeAndMessage("Organization Outer Id", 128)
@@ -29,6 +34,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithExceededMaxLengthCodeAndMessage("Organization Name", 128)
                         .WithImportState();
                 });
+
+            RuleFor(x => x.Record.ParentOrganizationId)
+                .MaximumLength(128)
+                .WithExceededMaxLengthCodeAndMessage("Parent Organization Id", 128)
+                .WithImportState();
 
             RuleFor(x => x.Record.ParentOrganizationOuterId)
                 .MaximumLength(128)

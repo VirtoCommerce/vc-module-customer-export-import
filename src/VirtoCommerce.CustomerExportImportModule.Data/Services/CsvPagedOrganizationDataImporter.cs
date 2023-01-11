@@ -16,6 +16,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     public sealed class CsvPagedOrganizationDataImporter : CsvPagedDataImporter<ImportableOrganization, Organization>
     {
         private readonly IMemberService _memberService;
+        private const int MaxHierarchyLevel = 10;
 
         public override string MemberType => nameof(Organization);
 
@@ -32,12 +33,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             var importOrganizations = importRecords;
 
-            var internalIds = importOrganizations.Select(x => x.Record?.Id).Distinct()
+            var internalIds = importOrganizations.Select(x => x.Record?.Id)
+                .Concat(importOrganizations.Select(x => x.Record?.ParentOrganizationId))
                 .Where(x => !string.IsNullOrEmpty(x))
+                .Distinct()
                 .ToArray();
 
-            var outerIds = importOrganizations.Select(x => x.Record?.OuterId).Distinct()
+            var outerIds = importOrganizations.Select(x => x.Record?.OuterId)
+                .Concat(importOrganizations.Select(x => x.Record?.ParentOrganizationOuterId))
                 .Where(x => !string.IsNullOrEmpty(x))
+                .Distinct()
                 .ToArray();
 
             var existedOrganizations =
@@ -56,31 +61,59 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             importOrganizations = importOrganizations.Except(invalidImportOrganizations).ToArray();
 
             //reduce existed set after validation
-            existedOrganizations = existedOrganizations
+            var updatedOrganizations = existedOrganizations
                 .Where(ec => importOrganizations.Any(ic =>
-                    ec.Id.EqualsInvariant(ic.Record.Id) || !string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId)))
-                .ToArray();
-
-            var updateImportOrganizations = importOrganizations
-                .Where(ic => existedOrganizations.Any(ec =>
                     ec.Id.EqualsInvariant(ic.Record.Id) || (!string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId))))
                 .ToArray();
 
-            existedOrganizations = GetReducedExistedByWrongOuterId(updateImportOrganizations, existedOrganizations).ToArray();
+            var updateImportOrganizations = importOrganizations
+                .Where(ic => updatedOrganizations.Any(ec =>
+                    ec.Id.EqualsInvariant(ic.Record.Id) || (!string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId))))
+                .ToArray();
+
+            updatedOrganizations = GetReducedExistedByWrongOuterId(updateImportOrganizations, updatedOrganizations).ToArray();
 
             var createImportOrganizations = importOrganizations.Except(updateImportOrganizations).ToArray();
 
             var newOrganizations = CreateNewOrganizations(createImportOrganizations);
 
-            PatchExistedOrganizations(existedOrganizations, updateImportOrganizations);
+            PatchExistedOrganizations(updatedOrganizations, updateImportOrganizations);
 
-            var organizationsForSave = newOrganizations.Union(existedOrganizations).ToArray();
+            var saveOrganizations = newOrganizations.Union(updatedOrganizations).ToArray();
 
-            await _memberService.SaveChangesAsync(organizationsForSave);
+            await SaveChangesWithHierarchy(saveOrganizations, existedOrganizations, importOrganizations);
 
             importProgress.CreatedCount += newOrganizations.Length;
             importProgress.AdditionalLineCount += createImportOrganizations.Length - newOrganizations.Length;
-            importProgress.UpdatedCount += existedOrganizations.Length;
+            importProgress.UpdatedCount += updatedOrganizations.Length;
+        }
+
+        protected override void SetIdToNullForNotExisted(ImportRecord<ImportableOrganization>[] importMembers, Organization[] existedMembers)
+        {
+            base.SetIdToNullForNotExisted(importMembers, existedMembers);
+
+            foreach (var importMember in importMembers.Where(x => !string.IsNullOrEmpty(x.Record.ParentOrganizationId)))
+            {
+                var existedMember = existedMembers.FirstOrDefault(x => x.Id.EqualsInvariant(importMember.Record.ParentOrganizationId));
+                if (existedMember == null)
+                {
+                    importMember.Record.ParentOrganizationId = null;
+                }
+            }
+        }
+
+        protected override void SetIdToRealForExistedOuterId(ImportRecord<ImportableOrganization>[] importMembers, Organization[] existedMembers)
+        {
+            base.SetIdToRealForExistedOuterId(importMembers, existedMembers);
+
+            foreach (var importMember in importMembers.Where(x => string.IsNullOrEmpty(x.Record.ParentOrganizationId) && !string.IsNullOrEmpty(x.Record.ParentOrganizationOuterId)))
+            {
+                var existedMember = existedMembers.FirstOrDefault(x => !string.IsNullOrEmpty(x.OuterId) && x.OuterId.EqualsInvariant(importMember.Record.ParentOrganizationOuterId));
+                if (existedMember != null)
+                {
+                    importMember.Record.ParentOrganizationId = existedMember.Id;
+                }
+            }
         }
 
 
@@ -110,5 +143,54 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                     return organization;
                 }).ToArray();
+
+        private async Task SaveChangesWithHierarchy(Organization[] saveOrganizations, Organization[] existedOrganizations, ImportRecord<ImportableOrganization>[] importOrganizations)
+        {
+            var existedList = existedOrganizations.ToList();
+            var saveTuples = saveOrganizations.Select(x => (Organization: x, Saved: false)).ToArray();
+            foreach (var item in saveTuples)
+            {
+                await SetParent(item.Organization, saveTuples, existedList, importOrganizations);
+            }
+
+            saveOrganizations = saveTuples.Where(x => !x.Saved).Select(x => x.Organization).ToArray();
+            await _memberService.SaveChangesAsync(saveOrganizations);
+        }
+
+        private async Task SetParent(Organization organization, (Organization Organization, bool Saved)[] saveOrganizations, ICollection<Organization> existedOrganizations, ImportRecord<ImportableOrganization>[] importOrganizations, int level = default)
+        {
+            bool IdsPredicate(Organization first, ImportableOrganization second) =>
+                (!string.IsNullOrEmpty(first.Id) && first.Id.EqualsInvariant(second.Id))
+                || (!string.IsNullOrEmpty(first.OuterId) && first.OuterId.EqualsInvariant(second.OuterId));
+
+            var importRecord = importOrganizations
+                .Where(x => x.Record.AdditionalLine != true)
+                .FirstOrDefault(x => IdsPredicate(organization, x.Record));
+            if (!string.IsNullOrEmpty(importRecord?.Record.ParentOrganizationId) || !string.IsNullOrEmpty(importRecord?.Record.ParentOrganizationOuterId))
+            {
+                var parentOrganization = existedOrganizations.FirstOrDefault(x => IdsPredicate(x, importRecord.Record));
+                if (parentOrganization != null)
+                {
+                    organization.ParentId = parentOrganization.Id;
+                }
+                else
+                {
+                    var saveTuple = saveOrganizations.FirstOrDefault(x => IdsPredicate(x.Organization, importRecord.Record));
+                    if (saveTuple.Organization != null)
+                    {
+                        parentOrganization = saveTuple.Organization;
+                        if (level < MaxHierarchyLevel)
+                        {
+                            await SetParent(parentOrganization, saveOrganizations, existedOrganizations, importOrganizations, ++level);
+                        }
+                        await _memberService.SaveChangesAsync(new[] { parentOrganization });
+                        existedOrganizations.Add(parentOrganization);
+                        saveTuple.Saved = true;
+
+                        organization.ParentId = parentOrganization.Id;
+                    }
+                }
+            }
+        }
     }
 }

@@ -7,6 +7,8 @@ using Moq;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Validation;
+using VirtoCommerce.CustomerModule.Core.Model;
+using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
@@ -654,7 +656,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 .Setup(x => x.GetCountriesAsync())
                 .ReturnsAsync(() => new List<Country>
                 {
-                    new Country { Id = "RUS", Name = "Russia" }, new Country { Id = "USA", Name = "United States" }
+                    new() { Id = "RUS", Name = "Russia" }, new Country { Id = "USA", Name = "United States" }
                 });
             return countriesServiceMock.Object;
         }
@@ -668,8 +670,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     var dynamicPropertyDictionaryItems = new List<DynamicPropertyDictionaryItem>
                     {
-                        new DynamicPropertyDictionaryItem { PropertyId = "TestDictionary", Id = "Value1", Name = "Value1" },
-                        new DynamicPropertyDictionaryItem { PropertyId = "TestDictionary", Id = "Value2", Name = "Value2" }
+                        new() { PropertyId = "TestDictionary", Id = "Value1", Name = "Value1" },
+                        new() { PropertyId = "TestDictionary", Id = "Value2", Name = "Value2" }
                     };
                     return new DynamicPropertyDictionaryItemSearchResult
                     {
@@ -688,6 +690,29 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 {
                     Password = new PasswordOptions { RequireDigit = false, RequireLowercase = false, RequireUppercase = false, RequiredLength = 32, RequiredUniqueChars = 0, RequireNonAlphanumeric = true }
                 }));
+
+        private static IMemberService GetMemberService()
+        {
+            var memberServiceMock = new Mock<IMemberService>();
+            memberServiceMock
+                .Setup(x => x.GetByIdAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string memberId, string _, string memberType) =>
+                {
+                    if (memberType != nameof(Contact))
+                    {
+                        return null;
+                    }
+
+                    return new Contact
+                    {
+                        Id = memberId,
+                        FirstName = "First",
+                        LastName = "Last",
+                        FullName = "First Last"
+                    };
+                });
+            return memberServiceMock.Object;
+        }
 
         private static IStoreSearchService GetStoreSearchService()
         {
@@ -728,7 +753,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             return settingsManagerMock.Object;
         }
 
-        private static ImportContactsValidator GetContactsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager(), GetPasswordValidator(), GetStoreSearchService(), GetSettingsManager());
+        private static ImportContactsValidator GetContactsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager(), GetPasswordValidator(), GetMemberService(), GetStoreSearchService(), GetSettingsManager());
 
         private static ImportOrganizationsValidator GetOrganizationsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService());
     }

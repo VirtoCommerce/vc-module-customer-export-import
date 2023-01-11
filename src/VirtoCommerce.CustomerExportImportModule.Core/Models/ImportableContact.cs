@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
-using Address = VirtoCommerce.CustomerModule.Core.Model.Address;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
@@ -54,10 +53,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
                 PatchDynamicProperties(target);
 
-                target.SecurityAccounts = new List<ApplicationUser>();
-                var accountSpecified = new[] { AccountLogin, AccountEmail }.Any(accountField => !string.IsNullOrEmpty(accountField));
-
-                if (accountSpecified)
+                target.SecurityAccounts ??= new List<ApplicationUser>();
+                if ((!string.IsNullOrEmpty(AccountLogin) || !string.IsNullOrEmpty(AccountEmail))
+                    && !target.SecurityAccounts.Any(x => x.UserName.EqualsInvariant(AccountLogin) && x.Email.EqualsInvariant(AccountEmail)))
                 {
                     target.SecurityAccounts.Add(
                         new ApplicationUser
@@ -75,27 +73,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 }
             }
 
-            target.Addresses ??= new List<Address>();
-            var isAddressSpecified = new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressCity, AddressLine1, AddressLine2, AddressZipCode }.Any(addressField => !string.IsNullOrEmpty(addressField));
-
-            if (isAddressSpecified)
-            {
-                target.Addresses.Add(new Address
-                {
-                    AddressType = EnumUtility.SafeParse(AddressType, CoreModule.Core.Common.AddressType.BillingAndShipping),
-                    FirstName = AddressFirstName,
-                    LastName = AddressLastName,
-                    CountryName = AddressCountry,
-                    CountryCode = AddressCountryCode,
-                    RegionName = AddressRegion,
-                    City = AddressCity,
-                    Line1 = AddressLine1,
-                    Line2 = AddressLine2,
-                    PostalCode = AddressZipCode,
-                    Email = AddressEmail,
-                    Phone = AddressPhone,
-                });
-            }
+            PatchAddresses(target);
         }
 
         public Organization ToOrganization()

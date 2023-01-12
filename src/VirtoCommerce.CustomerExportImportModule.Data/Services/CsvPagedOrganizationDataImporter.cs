@@ -62,13 +62,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             //reduce existed set after validation
             var updatedOrganizations = existedOrganizations
-                .Where(ec => importOrganizations.Any(ic =>
-                    ec.Id.EqualsInvariant(ic.Record.Id) || (!string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId))))
+                .Where(ec => importOrganizations.Any(ic => ic.Record.IdsEquals(ec)))
                 .ToArray();
 
             var updateImportOrganizations = importOrganizations
-                .Where(ic => updatedOrganizations.Any(ec =>
-                    ec.Id.EqualsInvariant(ic.Record.Id) || (!string.IsNullOrEmpty(ec.OuterId) && ec.OuterId.EqualsInvariant(ic.Record.OuterId))))
+                .Where(ic => updatedOrganizations.Any(ec => ic.Record.IdsEquals(ec)))
                 .ToArray();
 
             updatedOrganizations = GetReducedExistedByWrongOuterId(updateImportOrganizations, updatedOrganizations).ToArray();
@@ -84,8 +82,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             await SaveChangesWithHierarchy(saveOrganizations, existedOrganizations, importOrganizations);
 
             importProgress.CreatedCount += newOrganizations.Length;
-            importProgress.AdditionalLineCount += createImportOrganizations.Length - newOrganizations.Length;
             importProgress.UpdatedCount += updatedOrganizations.Length;
+            importProgress.AdditionalLineCount += createImportOrganizations.Length - newOrganizations.Length + updateImportOrganizations.Length - updatedOrganizations.Length;
         }
 
         protected override void SetIdToNullForNotExisted(ImportRecord<ImportableOrganization>[] importMembers, Organization[] existedMembers)
@@ -117,14 +115,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         }
 
 
-        private static void PatchExistedOrganizations(IEnumerable<Organization> existedOrganizations, ImportRecord<ImportableOrganization>[] updateImportOrganizations)
+        private static void PatchExistedOrganizations(Organization[] existedOrganizations, ImportRecord<ImportableOrganization>[] updateImportOrganizations)
         {
-            foreach (var existedOrganization in existedOrganizations)
+            foreach (var importOrganization in updateImportOrganizations)
             {
-                var importOrganization = updateImportOrganizations.LastOrDefault(x => existedOrganization.Id.EqualsInvariant(x.Record.Id)
-                    || (!string.IsNullOrEmpty(existedOrganization.OuterId) && existedOrganization.OuterId.EqualsInvariant(x.Record.OuterId)));
-
-                importOrganization?.Record.PatchModel(existedOrganization);
+                var existedOrganization = existedOrganizations.FirstOrDefault(x => importOrganization.Record.IdsEquals(x));
+                if (existedOrganization != null)
+                {
+                    importOrganization.Record.PatchModel(existedOrganization);
+                }
             }
         }
 
@@ -159,23 +158,19 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         private async Task SetParent(Organization organization, (Organization Organization, bool Saved)[] saveOrganizations, ICollection<Organization> existedOrganizations, ImportRecord<ImportableOrganization>[] importOrganizations, int level = default)
         {
-            bool IdsPredicate(Organization first, ImportableOrganization second) =>
-                (!string.IsNullOrEmpty(first.Id) && first.Id.EqualsInvariant(second.Id))
-                || (!string.IsNullOrEmpty(first.OuterId) && first.OuterId.EqualsInvariant(second.OuterId));
-
             var importRecord = importOrganizations
                 .Where(x => x.Record.AdditionalLine != true)
-                .FirstOrDefault(x => IdsPredicate(organization, x.Record));
+                .FirstOrDefault(x => x.Record.IdsEquals(organization));
             if (!string.IsNullOrEmpty(importRecord?.Record.ParentOrganizationId) || !string.IsNullOrEmpty(importRecord?.Record.ParentOrganizationOuterId))
             {
-                var parentOrganization = existedOrganizations.FirstOrDefault(x => IdsPredicate(x, importRecord.Record));
+                var parentOrganization = existedOrganizations.FirstOrDefault(x => CsvMember.IdsEquals(importRecord.Record.ParentOrganizationId, importRecord.Record.ParentOrganizationOuterId, x));
                 if (parentOrganization != null)
                 {
                     organization.ParentId = parentOrganization.Id;
                 }
                 else
                 {
-                    var saveTuple = saveOrganizations.FirstOrDefault(x => IdsPredicate(x.Organization, importRecord.Record));
+                    var saveTuple = saveOrganizations.FirstOrDefault(x => CsvMember.IdsEquals(importRecord.Record.ParentOrganizationId, importRecord.Record.ParentOrganizationOuterId, x.Organization));
                     if (saveTuple.Organization != null)
                     {
                         parentOrganization = saveTuple.Organization;

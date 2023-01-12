@@ -82,6 +82,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         public ICollection<DynamicObjectProperty> DynamicProperties { get; set; }
 
+        public bool IdsEquals(Member member) =>
+            (!string.IsNullOrEmpty(Id) && Id.EqualsInvariant(member.Id))
+            || (!string.IsNullOrEmpty(OuterId) && OuterId.EqualsInvariant(member.OuterId));
+
+        public static bool IdsEquals(string id, string outerId, Member member) =>
+            (!string.IsNullOrEmpty(id) && id.EqualsInvariant(member.Id))
+            || (!string.IsNullOrEmpty(outerId) && outerId.EqualsInvariant(member.OuterId));
+
+
         protected void PatchDynamicProperties(Member target)
         {
             target.DynamicProperties ??= new List<DynamicObjectProperty>();
@@ -134,6 +143,5 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 target.Addresses.Add(address);
             }
         }
-
     }
 }

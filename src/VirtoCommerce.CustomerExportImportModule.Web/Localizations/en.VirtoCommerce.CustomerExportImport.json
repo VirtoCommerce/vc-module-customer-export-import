@@ -89,8 +89,8 @@
       "customer-import": {
         "title-contacts": "Import contacts",
         "title-organizations": "Import organizations",
-        "contacts": "contacts",
-        "organizations": "organizations",
+        "contacts": "lines of contacts",
+        "organizations": "lines of organizations",
         "main-text-middle": "will be imported into the",
         "root": "root",
         "current-organization": "current organization",

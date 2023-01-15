@@ -14,13 +14,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
         public MembersSearchCriteria ToSearchCriteria()
         {
-            return new MembersSearchCriteria
+            return new ExtendedMembersSearchCriteria
             {
-                Keyword = ObjectIds.IsNullOrEmpty() ? Keyword : null,//if concrete members selected there is no index searching
+                Keyword = ObjectIds.IsNullOrEmpty() ? Keyword : null, // if concrete members selected there is no index searching
                 ObjectIds = ObjectIds,
                 MemberId = OrganizationId,
                 MemberTypes = new[] { nameof(Contact), nameof(Organization) },
-                DeepSearch = true
+                DeepSearch = true,
+                ExportData = true
             };
         }
     }

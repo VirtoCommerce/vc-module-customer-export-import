@@ -20,52 +20,60 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         protected virtual int ElasticMaxTake => 10000;
         protected virtual string OrganizationMemberType => nameof(Organization);
 
-        public ExportImportMemberSearchService(Func<IMemberRepository> repositoryFactory, IMemberService memberService, IIndexedMemberSearchService indexedSearchService, IPlatformMemoryCache platformMemoryCache)
+        public ExportImportMemberSearchService(
+            Func<IMemberRepository> repositoryFactory,
+            IMemberService memberService,
+            IIndexedMemberSearchService indexedSearchService,
+            IPlatformMemoryCache platformMemoryCache)
             : base(repositoryFactory, memberService, indexedSearchService, platformMemoryCache)
         {
         }
 
-        public override async Task<MemberSearchResult> SearchMembersAsync(MembersSearchCriteria criteria)
+        public override Task<MemberSearchResult> SearchMembersAsync(MembersSearchCriteria criteria)
+        {
+            if (criteria == null || criteria is not ExtendedMembersSearchCriteria { ExportData: true }
+                || !criteria.DeepSearch || (string.IsNullOrEmpty(criteria.MemberId) && criteria.ObjectIds.IsNullOrEmpty() && string.IsNullOrEmpty(criteria.Keyword)))
+            {
+                return base.SearchMembersAsync(criteria);
+            }
+
+            return SearchMembersInternalAsync(criteria);
+        }
+
+        private async Task<MemberSearchResult> SearchMembersInternalAsync(MembersSearchCriteria criteria)
         {
             var result = new MemberSearchResult();
 
-            if (criteria == null || !criteria.DeepSearch || (criteria.MemberId == null && criteria.ObjectIds.IsNullOrEmpty() && string.IsNullOrEmpty(criteria.Keyword)))
+            var orgSkip = criteria.Skip;
+            var orgTake = criteria.Take;
+            var orgMemberTypes = criteria.MemberTypes?.Select(x => x).ToArray();
+
+            var withoutOrganizations = criteria.MemberTypes != null && !criteria.MemberTypes.Contains(OrganizationMemberType);
+
+            criteria.Skip = 0;
+            criteria.Take = criteria.Keyword.IsNullOrEmpty() ? int.MaxValue : ElasticMaxTake;
+
+            if (withoutOrganizations)
             {
-                result = await base.SearchMembersAsync(criteria);
+                criteria.MemberTypes = criteria.MemberTypes.Union(new[]{ OrganizationMemberType }).ToArray();
             }
-            else
+
+            var firstResult = await base.SearchMembersAsync(criteria);
+
+            var organizations = firstResult.Results.OfType<Organization>().ToArray();
+
+            result.Results = withoutOrganizations
+                ? firstResult.Results.Where(x => orgMemberTypes?.Contains(x.MemberType) == true).ToList()
+                : firstResult.Results.ToList();
+            result.TotalCount = result.Results.Count;
+
+            if (!organizations.IsNullOrEmpty())
             {
-                var orgSkip = criteria.Skip;
-                var orgTake = criteria.Take;
-                var orgMemberTypes = criteria.MemberTypes?.Select(x => x).ToArray();
-
-                var withoutOrganizations = criteria.MemberTypes != null && !criteria.MemberTypes.Contains(OrganizationMemberType);
-
-                criteria.Skip = 0;
-                criteria.Take = criteria.Keyword.IsNullOrEmpty() ? int.MaxValue : ElasticMaxTake;
-
-                if (withoutOrganizations)
-                {
-                    criteria.MemberTypes = criteria.MemberTypes.Union(new[]{ OrganizationMemberType }).ToArray();
-                }
-
-                var firstResult = await base.SearchMembersAsync(criteria);
-
-                var organizations = firstResult.Results.OfType<Organization>().ToArray();
-
-                result.Results = withoutOrganizations
-                    ? firstResult.Results.Where(x => orgMemberTypes?.Contains(x.MemberType) == true).ToList()
-                    : firstResult.Results.ToList();
-                result.TotalCount = result.Results.Count;
-
-                if (!organizations.IsNullOrEmpty())
-                {
-                    await LoadChildren(criteria, organizations, withoutOrganizations, orgMemberTypes, result);
-                }
-
-                //skip take as firstly
-                result.Results = result.Results.Skip(orgSkip).Take(orgTake).ToList();
+                await LoadChildren(criteria, organizations, withoutOrganizations, orgMemberTypes, result);
             }
+
+            // skip take as firstly
+            result.Results = result.Results.Skip(orgSkip).Take(orgTake).ToList();
 
             return result;
         }

@@ -81,7 +81,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 .Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
             var existedOrganizations =
-                (await SearchMembersByIdAndOuterIdAsync(internalOrgIds, outerOrgIds, new[] { nameof(Organization) }))
+                (await SearchMembersByIdAndOuterIdAsync(internalOrgIds, outerOrgIds, new[] { nameof(Organization) }, true))
                 .OfType<Organization>().ToArray();
 
             var newContacts = CreateNewContacts(createImportContacts, existedOrganizations, request.OrganizationId);

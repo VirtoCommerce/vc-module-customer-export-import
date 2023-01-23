@@ -1,10 +1,12 @@
 using System.Linq;
+using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.CustomerModule.Core.Model;
+using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.GenericCrud;
@@ -20,14 +22,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IPasswordValidator<ApplicationUser> _passwordValidator;
+        private readonly IMemberService _memberService;
         private readonly ISearchService<StoreSearchCriteria, StoreSearchResult, Store> _storeSearchService;
         private readonly ISettingsManager _settingsManager;
         private readonly ImportRecord<ImportableContact>[] _allRecords;
 
-        public ImportAccountValidator(UserManager<ApplicationUser> userManager, IPasswordValidator<ApplicationUser> passwordValidator, IStoreSearchService storeSearchService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
+        public ImportAccountValidator(UserManager<ApplicationUser> userManager, IPasswordValidator<ApplicationUser> passwordValidator, IMemberService memberService, IStoreSearchService storeSearchService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
         {
             _userManager = userManager;
             _passwordValidator = passwordValidator;
+            _memberService = memberService;
             _storeSearchService = (ISearchService<StoreSearchCriteria, StoreSearchResult, Store>)storeSearchService;
             _settingsManager = settingsManager;
             _allRecords = allRecords;
@@ -36,12 +40,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void AttachValidators()
         {
-            When(x => new[]
-                {
-                    x.Record.AccountType, x.Record.AccountStatus, x.Record.AccountLogin, x.Record.AccountEmail, x.Record.StoreId, x.Record.StoreName,
-                    x.Record.EmailVerified.ToString()
-                }.Any(field => !string.IsNullOrEmpty(field))
-                , () =>
+            When(x => x.Record.AdditionalLine != true
+                      && new[]
+                      {
+                          x.Record.AccountType, x.Record.AccountStatus, x.Record.AccountLogin, x.Record.AccountEmail, x.Record.StoreId, x.Record.StoreName,
+                          x.Record.EmailVerified.ToString()
+                      }.Any(field => !string.IsNullOrEmpty(field)),
+                () =>
                 {
 
                     RuleFor(x => x.Record.AccountLogin)
@@ -53,9 +58,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                             RuleFor(x => x.Record.AccountLogin)
                                 .MustAsync(async (thisRecord, userName, _) =>
                                 {
-                                    var lastRecordWithAccountLogin = _allRecords.LastOrDefault(otherRecord => userName.EqualsInvariant(otherRecord.Record.AccountLogin));
-                                    return await _userManager.FindByNameAsync(userName) == null &&
-                                           (_allRecords.All(otherRecord => !userName.EqualsInvariant(otherRecord.Record.AccountLogin)) || lastRecordWithAccountLogin == thisRecord);
+                                    var lastRecordWithAccountLogin = _allRecords
+                                        .Where(x => x.Record.AdditionalLine != true)
+                                        .LastOrDefault(otherRecord => userName.EqualsInvariant(otherRecord.Record.AccountLogin));
+                                    var existedAccount = await _userManager.FindByNameAsync(userName);
+                                    return (existedAccount == null || await IsSameContact(existedAccount, thisRecord.Record))
+                                        && (_allRecords
+                                               .Where(x => x.Record.AdditionalLine != true)
+                                               .All(otherRecord => !userName.EqualsInvariant(otherRecord.Record.AccountLogin))
+                                            || lastRecordWithAccountLogin == thisRecord);
                                 })
                                 .WithNotUniqueValueCodeAndMessage("Account Login")
                                 .WithImportState();
@@ -75,9 +86,15 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                     RuleFor(x => x.Record.AccountEmail)
                                         .MustAsync(async (thisRecord, email, _) =>
                                         {
-                                            var lastRecordWithAccountEmail = _allRecords.LastOrDefault(otherRecord => email.EqualsInvariant(otherRecord.Record.AccountEmail));
-                                            return await _userManager.FindByEmailAsync(email) == null &&
-                                                   (_allRecords.All(otherRecord => !email.EqualsInvariant(otherRecord.Record.AccountEmail)) || lastRecordWithAccountEmail == thisRecord);
+                                            var lastRecordWithAccountEmail = _allRecords
+                                                .Where(x => x.Record.AdditionalLine != true)
+                                                .LastOrDefault(otherRecord => email.EqualsInvariant(otherRecord.Record.AccountEmail));
+                                            var existedAccount = await _userManager.FindByEmailAsync(email);
+                                            return (existedAccount == null || await IsSameContact(existedAccount, thisRecord.Record)) &&
+                                                   (_allRecords
+                                                        .Where(x => x.Record.AdditionalLine != true)
+                                                        .All(otherRecord => !email.EqualsInvariant(otherRecord.Record.AccountEmail))
+                                                    || lastRecordWithAccountEmail == thisRecord);
                                         })
                                         .WithNotUniqueValueCodeAndMessage("Account Email")
                                         .WithImportState();
@@ -132,6 +149,19 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithInvalidValueCodeAndMessage("Account Status")
                         .WithImportState();
                 });
+        }
+
+        private async Task<bool> IsSameContact(ApplicationUser account, ImportableContact importRecord)
+        {
+            if (string.IsNullOrEmpty(account?.MemberId))
+            {
+                return false;
+            }
+
+            var contact = await _memberService.GetByIdAsync(account.MemberId, null, nameof(Contact)) as Contact;
+            return contact?.FullName.EqualsInvariant(importRecord.ContactFullName) == true
+                   && (contact.Id.EqualsInvariant(importRecord.Id)
+                       || (!string.IsNullOrEmpty(contact.OuterId) && contact.OuterId.EqualsInvariant(importRecord.OuterId)));
         }
     }
 }

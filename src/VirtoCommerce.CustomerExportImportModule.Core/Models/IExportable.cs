@@ -1,7 +1,7 @@
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
     /// <summary>
-    /// Interface to implement exportаble entities.
+    /// Interface to implement exportable entities.
     /// </summary>
     public interface IExportable
     {

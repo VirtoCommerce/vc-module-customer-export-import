@@ -34,17 +34,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithImportState();
 
                     RuleFor(x => x.Record.AddressFirstName).Cascade(CascadeMode.Stop)
-                        .NotEmpty()
-                        .WithMissingRequiredValueCodeAndMessage("Address First Name")
-                        .WithImportState()
                         .MaximumLength(128)
                         .WithExceededMaxLengthCodeAndMessage("Address First Name", 128)
                         .WithImportState();
 
                     RuleFor(x => x.Record.AddressLastName).Cascade(CascadeMode.Stop)
-                        .NotEmpty()
-                        .WithMissingRequiredValueCodeAndMessage("Address Last Name")
-                        .WithImportState()
                         .MaximumLength(128)
                         .WithExceededMaxLengthCodeAndMessage("Address Last Name", 128)
                         .WithImportState();

@@ -16,5 +16,8 @@
   },
   "webpack": {
     "stats": "verbose"
+  },
+  "dependencies": {
+    "ui-grid-auto-fit-columns": "^1.2.2"
   }
 }

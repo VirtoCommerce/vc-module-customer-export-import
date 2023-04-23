@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CsvHelper.Configuration.Attributes;
@@ -46,6 +47,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Optional]
         [Name("Address Region")]
         public virtual string AddressRegion { get; set; }
+
+        [Optional]
+        [Name("Address Region Code")]
+        public virtual string AddressRegionCode { get; set; }
 
         [Optional]
         [Name("Address City")]
@@ -113,7 +118,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         }
 
         private static readonly IEqualityComparer<Address> _addressEqualityComparer = AnonymousComparer.Create(
-            (Address x) => $"{x.AddressType:F}:{x.FirstName}:{x.LastName}:{x.CountryName}:{x.CountryCode}:{x.RegionName}:{x.City}:{x.Line1}:{x.Line2}:{x.PostalCode}:{x.Email}:{x.Phone}");
+            (Address x) => $"{x.AddressType:F}:{x.FirstName}:{x.LastName}:{x.CountryName}:{x.CountryCode}:{x.RegionName}:{x.City}:{x.Line1}:{x.Line2}:{x.PostalCode}:{x.Email}:{x.Phone}", StringComparer.OrdinalIgnoreCase);
 
         protected void PatchAddresses(Member target)
         {
@@ -131,6 +136,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             address.CountryName = AddressCountry;
             address.CountryCode = AddressCountryCode;
             address.RegionName = AddressRegion;
+            address.RegionId = AddressRegionCode;
             address.City = AddressCity;
             address.Line1 = AddressLine1;
             address.Line2 = AddressLine2;

@@ -136,7 +136,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             address.CountryName = AddressCountry;
             address.CountryCode = AddressCountryCode;
             address.RegionName = AddressRegion;
-            address.RegionId = AddressRegionCode;
+            address.RegionId = AddressRegionCode?.EmptyToNull();
             address.City = AddressCity;
             address.Line1 = AddressLine1;
             address.Line2 = AddressLine2;

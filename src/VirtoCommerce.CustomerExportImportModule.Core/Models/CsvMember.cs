@@ -118,7 +118,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         }
 
         private static readonly IEqualityComparer<Address> _addressEqualityComparer = AnonymousComparer.Create(
-            (Address x) => $"{x.AddressType:F}:{x.FirstName}:{x.LastName}:{x.CountryName}:{x.CountryCode}:{x.RegionName}:{x.City}:{x.Line1}:{x.Line2}:{x.PostalCode}:{x.Email}:{x.Phone}", StringComparer.OrdinalIgnoreCase);
+            (Address x) => $"{x.AddressType:F}:{x.FirstName}:{x.LastName}:{x.CountryCode.IfNullOrEmpty(x.CountryName)}:{x.RegionId.IfNullOrEmpty(x.RegionName)}:{x.City}:{x.Line1}:{x.Line2}:{x.PostalCode}:{x.Email}:{x.Phone}", StringComparer.OrdinalIgnoreCase);
 
         protected void PatchAddresses(Member target)
         {

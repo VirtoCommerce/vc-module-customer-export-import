@@ -15,7 +15,7 @@
         <PackageReference Include="Nager.Country" Version="3.1.0" />
         <PackageReference Include="VirtoCommerce.AssetsModule.Core" Version="3.200.0" />
         <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.219.0" />
-        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.253.0" />
+        <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.280.0" />
         <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.206.0" />
     </ItemGroup>
 

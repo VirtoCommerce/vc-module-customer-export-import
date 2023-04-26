@@ -93,47 +93,50 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public override string AddressRegion { get; set; }
 
         [Index(26)]
-        public override string AddressCity { get; set; }
+        public override string AddressRegionCode { get; set; }
 
         [Index(27)]
-        public override string AddressLine1 { get; set; }
+        public override string AddressCity { get; set; }
 
         [Index(28)]
-        public override string AddressLine2 { get; set; }
+        public override string AddressLine1 { get; set; }
 
         [Index(29)]
-        public override string AddressZipCode { get; set; }
+        public override string AddressLine2 { get; set; }
 
         [Index(30)]
-        public override string AddressEmail { get; set; }
+        public override string AddressZipCode { get; set; }
 
         [Index(31)]
-        public override string AddressPhone { get; set; }
+        public override string AddressEmail { get; set; }
 
         [Index(32)]
+        public override string AddressPhone { get; set; }
+
+        [Index(33)]
         [Optional]
         [Name("Account Id")]
         public string AccountId { get; set; }
 
-        [Index(33)]
+        [Index(34)]
         public override string AccountLogin { get; set; }
 
-        [Index(34)]
+        [Index(35)]
         public override string StoreId { get; set; }
 
-        [Index(35)]
+        [Index(36)]
         public override string StoreName { get; set; }
 
-        [Index(36)]
+        [Index(37)]
         public override string AccountEmail { get; set; }
 
-        [Index(37)]
+        [Index(38)]
         public override string AccountType { get; set; }
 
-        [Index(38)]
+        [Index(39)]
         public override string AccountStatus { get; set; }
 
-        [Index(39)]
+        [Index(40)]
         public override bool? EmailVerified { get; set; }
 
         public ExportableContact FromModels(Contact contact, Organization organization, Store store)
@@ -175,6 +178,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressCountry = address?.CountryName;
             AddressCountryCode = address?.CountryCode;
             AddressRegion = address?.RegionName;
+            AddressRegionCode = address?.RegionId;
             AddressCity = address?.City;
             AddressLine1 = address?.Line1;
             AddressLine2 = address?.Line2;

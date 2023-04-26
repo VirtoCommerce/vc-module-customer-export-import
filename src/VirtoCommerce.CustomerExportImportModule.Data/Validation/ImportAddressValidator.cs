@@ -11,10 +11,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
     public class ImportAddressValidator<T> : AbstractValidator<ImportRecord<T>>
         where T : CsvMember
     {
+        private readonly ICountriesService _countriesService;
         internal const string Countries = nameof(Countries);
 
-        public ImportAddressValidator()
+        public ImportAddressValidator(ICountriesService countriesService)
         {
+            _countriesService = countriesService;
             AttachValidators();
         }
 
@@ -22,8 +24,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         {
             When(x => new[]
                 {
-                    x.Record.AddressType, x.Record.AddressLine1, x.Record.AddressLine2, x.Record.AddressCity, x.Record.AddressRegion, x.Record.AddressCountryCode, x.Record.AddressCountry,
-                    x.Record.AddressFirstName, x.Record.AddressLastName, x.Record.AddressPhone, x.Record.AddressEmail, x.Record.AddressZipCode
+                    x.Record.AddressType, x.Record.AddressLine1, x.Record.AddressLine2, x.Record.AddressCity, x.Record.AddressRegion, x.Record.AddressRegionCode, x.Record.AddressCountryCode, x.Record.AddressCountry,
+                    x.Record.AddressFirstName, x.Record.AddressLastName, x.Record.AddressPhone, x.Record.AddressEmail, x.Record.AddressZipCode,
                 }.Any(field => !string.IsNullOrEmpty(field))
                 , () =>
                 {
@@ -93,6 +95,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .WithExceededMaxLengthCodeAndMessage("Address Region", 128)
                         .WithImportState();
 
+                    RuleFor(x => x.Record.AddressRegionCode)
+                        .MaximumLength(128)
+                        .WithExceededMaxLengthCodeAndMessage("Address Region Code", 128)
+                        .WithImportState();
+
+                    RuleFor(x => x.Record.AddressCountry)
+                        .MaximumLength(128)
+                        .WithExceededMaxLengthCodeAndMessage("Address Country", 128)
+                        .WithImportState();
+
                     RuleFor(x => x.Record.AddressCountryCode)
                         .NotEmpty()
                         .WithMissingRequiredValueCodeAndMessage("Address Country Code")
@@ -110,7 +122,23 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                     return countries.Any(country => country.Id == countryCode);
                                 })
                                 .WithInvalidValueCodeAndMessage("Address Country Code")
-                                .WithImportState();
+                                .WithImportState()
+                                .DependentRules(() =>
+                                {
+                                    RuleFor(x => x.Record.AddressRegionCode)
+                                        .MustAsync(async (importRecord, regionCode, _, _) =>
+                                        {
+                                            if (string.IsNullOrEmpty(regionCode))
+                                            {
+                                                return true;
+                                            }
+
+                                            var regions = await _countriesService.GetCountryRegionsAsync(importRecord.Record.AddressCountryCode);
+                                            return !regions.Any() || regions.Any(region => region.Id == regionCode);
+                                        })
+                                        .WithInvalidValueCodeAndMessage("Address Region Code")
+                                        .WithImportState();
+                                });
                         });
 
                     RuleFor(x => x.Record.AddressZipCode)

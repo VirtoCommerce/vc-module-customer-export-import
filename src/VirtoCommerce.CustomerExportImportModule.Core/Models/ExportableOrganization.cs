@@ -65,21 +65,24 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public override string AddressRegion { get; set; }
 
         [Index(17)]
-        public override string AddressCity { get; set; }
+        public override string AddressRegionCode { get; set; }
 
         [Index(18)]
-        public override string AddressLine1 { get; set; }
+        public override string AddressCity { get; set; }
 
         [Index(19)]
-        public override string AddressLine2 { get; set; }
+        public override string AddressLine1 { get; set; }
 
         [Index(20)]
-        public override string AddressZipCode { get; set; }
+        public override string AddressLine2 { get; set; }
 
         [Index(21)]
-        public override string AddressEmail { get; set; }
+        public override string AddressZipCode { get; set; }
 
         [Index(22)]
+        public override string AddressEmail { get; set; }
+
+        [Index(23)]
         public override string AddressPhone { get; set; }
 
 
@@ -100,6 +103,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             AddressCountry = address?.CountryName;
             AddressCountryCode = address?.CountryCode;
             AddressRegion = address?.RegionName;
+            AddressRegionCode = address?.RegionId;
             AddressCity = address?.City;
             AddressLine1 = address?.Line1;
             AddressLine2 = address?.Line2;

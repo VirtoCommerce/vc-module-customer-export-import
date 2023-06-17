@@ -111,6 +111,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     Email = "c@mail.com",
                     PostalCode = "610033",
                     Phone = "777",
+                    IsDefault = true,
                 }
             },
             DynamicProperties = ContactDynamicProperties.OfType<DynamicObjectProperty>().ToList()

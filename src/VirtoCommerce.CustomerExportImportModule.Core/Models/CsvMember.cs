@@ -144,9 +144,19 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             address.Email = AddressEmail;
             address.Phone = AddressPhone;
 
-            if (!target.Addresses.Contains(address, _addressEqualityComparer))
+            if (address.AddressType != CoreModule.Core.Common.AddressType.BillingAndShipping && !target.Addresses.Any(x => x.AddressType == address.AddressType && x.IsDefault))
+            {
+                address.IsDefault = true;
+            }
+
+            var existedAddress = target.Addresses.FirstOrDefault(x => _addressEqualityComparer.Equals(x, address));
+            if (existedAddress == null)
             {
                 target.Addresses.Add(address);
+            }
+            else if (address.IsDefault)
+            {
+                existedAddress.IsDefault = true;
             }
         }
     }

@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
-using Address = VirtoCommerce.CustomerModule.Core.Model.Address;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
@@ -154,9 +153,21 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             {
                 target.Addresses.Add(address);
             }
-            else if (address.IsDefault)
+            else
             {
-                existedAddress.IsDefault = true;
+                if (address.IsDefault)
+                {
+                    existedAddress.IsDefault = true;
+                }
+                //Due to realization of _addressEqualityComparer need to check CountryCode and RegionId
+                if (!address.CountryCode.IsNullOrEmpty() && existedAddress.CountryCode.IsNullOrEmpty())
+                {
+                    existedAddress.CountryCode = address.CountryCode;
+                }
+                if (!address.RegionId.IsNullOrEmpty() && existedAddress.RegionId.IsNullOrEmpty())
+                {
+                    existedAddress.RegionId = address.RegionId;
+                }
             }
         }
     }

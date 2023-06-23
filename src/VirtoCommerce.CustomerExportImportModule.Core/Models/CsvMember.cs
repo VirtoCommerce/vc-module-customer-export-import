@@ -155,19 +155,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             }
             else
             {
-                if (address.IsDefault)
-                {
-                    existedAddress.IsDefault = true;
-                }
-                //Due to realization of _addressEqualityComparer need to check CountryCode and RegionId
-                if (!address.CountryCode.IsNullOrEmpty() && existedAddress.CountryCode.IsNullOrEmpty())
-                {
-                    existedAddress.CountryCode = address.CountryCode;
-                }
-                if (!address.RegionId.IsNullOrEmpty() && existedAddress.RegionId.IsNullOrEmpty())
-                {
-                    existedAddress.RegionId = address.RegionId;
-                }
+                UpdateExistedAddress(address, existedAddress);
+            }
+        }
+
+        private static void UpdateExistedAddress(Address address, Address existedAddress)
+        {
+            if (address.IsDefault)
+            {
+                existedAddress.IsDefault = true;
+            }
+
+            //Due to realization of _addressEqualityComparer need to check CountryCode and RegionId
+            if (!address.CountryCode.IsNullOrEmpty() && existedAddress.CountryCode.IsNullOrEmpty())
+            {
+                existedAddress.CountryCode = address.CountryCode;
+            }
+            if (!address.RegionId.IsNullOrEmpty() && existedAddress.RegionId.IsNullOrEmpty())
+            {
+                existedAddress.RegionId = address.RegionId;
             }
         }
     }

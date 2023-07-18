@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
-using Address = VirtoCommerce.CustomerModule.Core.Model.Address;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
@@ -144,9 +143,37 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
             address.Email = AddressEmail;
             address.Phone = AddressPhone;
 
-            if (!target.Addresses.Contains(address, _addressEqualityComparer))
+            if (address.AddressType != CoreModule.Core.Common.AddressType.BillingAndShipping && !target.Addresses.Any(x => x.AddressType == address.AddressType && x.IsDefault))
+            {
+                address.IsDefault = true;
+            }
+
+            var existedAddress = target.Addresses.FirstOrDefault(x => _addressEqualityComparer.Equals(x, address));
+            if (existedAddress == null)
             {
                 target.Addresses.Add(address);
+            }
+            else
+            {
+                UpdateExistedAddress(address, existedAddress);
+            }
+        }
+
+        private static void UpdateExistedAddress(Address address, Address existedAddress)
+        {
+            if (address.IsDefault)
+            {
+                existedAddress.IsDefault = true;
+            }
+
+            //Due to realization of _addressEqualityComparer need to check CountryCode and RegionId
+            if (!address.CountryCode.IsNullOrEmpty() && existedAddress.CountryCode.IsNullOrEmpty())
+            {
+                existedAddress.CountryCode = address.CountryCode;
+            }
+            if (!address.RegionId.IsNullOrEmpty() && existedAddress.RegionId.IsNullOrEmpty())
+            {
+                existedAddress.RegionId = address.RegionId;
             }
         }
     }

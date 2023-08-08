@@ -727,8 +727,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     };
                     return new StoreSearchResult
                     {
-                        Results = stores.Where(store => criteria.StoreIds.Contains(store.Id)).ToList(),
-                        TotalCount = stores.Count
+                        Results = stores.Where(store => criteria.ObjectIds.Contains(store.Id)).ToList(),
+                        TotalCount = stores.Count,
                     };
                 });
             return storeSearchServiceMock.Object;

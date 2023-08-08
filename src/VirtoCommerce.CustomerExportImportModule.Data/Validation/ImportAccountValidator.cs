@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
@@ -33,120 +34,118 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             _storeSearchService = storeSearchService;
             _settingsManager = settingsManager;
             _allRecords = allRecords;
-            AttachValidators();
+
+            When(x => x.Record.AdditionalLine != true
+                      && Array.Exists(new[]
+                      {
+                          x.Record.AccountType, x.Record.AccountStatus, x.Record.AccountLogin,
+                          x.Record.AccountEmail, x.Record.StoreId, x.Record.StoreName,
+                          x.Record.EmailVerified.ToString(),
+                      }, field => !string.IsNullOrEmpty(field)),
+                AttachValidators);
         }
 
         private void AttachValidators()
         {
-            When(x => x.Record.AdditionalLine != true
-                      && new[]
-                      {
-                          x.Record.AccountType, x.Record.AccountStatus, x.Record.AccountLogin, x.Record.AccountEmail, x.Record.StoreId, x.Record.StoreName,
-                          x.Record.EmailVerified.ToString()
-                      }.Any(field => !string.IsNullOrEmpty(field)),
-                () =>
+            RuleFor(x => x.Record.AccountLogin)
+                .NotEmpty()
+                .WithMissingRequiredValueCodeAndMessage("Account Login")
+                .WithImportState()
+                .DependentRules(() =>
                 {
-
                     RuleFor(x => x.Record.AccountLogin)
-                        .NotEmpty()
-                        .WithMissingRequiredValueCodeAndMessage("Account Login")
-                        .WithImportState()
-                        .DependentRules(() =>
+                        .MustAsync(async (thisRecord, userName, _) =>
                         {
-                            RuleFor(x => x.Record.AccountLogin)
-                                .MustAsync(async (thisRecord, userName, _) =>
-                                {
-                                    var lastRecordWithAccountLogin = _allRecords
-                                        .Where(x => x.Record.AdditionalLine != true)
-                                        .LastOrDefault(otherRecord => userName.EqualsInvariant(otherRecord.Record.AccountLogin));
-                                    var existedAccount = await _userManager.FindByNameAsync(userName);
-                                    return (existedAccount == null || await IsSameContact(existedAccount, thisRecord.Record))
-                                        && (_allRecords
-                                               .Where(x => x.Record.AdditionalLine != true)
-                                               .All(otherRecord => !userName.EqualsInvariant(otherRecord.Record.AccountLogin))
-                                            || lastRecordWithAccountLogin == thisRecord);
-                                })
-                                .WithNotUniqueValueCodeAndMessage("Account Login")
-                                .WithImportState();
-                        });
-
-                    RuleFor(x => x.Record.AccountEmail)
-                        .NotEmpty()
-                        .WithMissingRequiredValueCodeAndMessage("Account Email")
-                        .WithImportState()
-                        .DependentRules(() =>
-                        {
-                            RuleFor(x => x.Record.AccountEmail)
-                                .EmailAddress()
-                                .WithInvalidValueCodeAndMessage("Account Email")
-                                .WithImportState().DependentRules(() =>
-                                {
-                                    RuleFor(x => x.Record.AccountEmail)
-                                        .MustAsync(async (thisRecord, email, _) =>
-                                        {
-                                            var lastRecordWithAccountEmail = _allRecords
-                                                .Where(x => x.Record.AdditionalLine != true)
-                                                .LastOrDefault(otherRecord => email.EqualsInvariant(otherRecord.Record.AccountEmail));
-                                            var existedAccount = await _userManager.FindByEmailAsync(email);
-                                            return (existedAccount == null || await IsSameContact(existedAccount, thisRecord.Record)) &&
-                                                   (_allRecords
-                                                        .Where(x => x.Record.AdditionalLine != true)
-                                                        .All(otherRecord => !email.EqualsInvariant(otherRecord.Record.AccountEmail))
-                                                    || lastRecordWithAccountEmail == thisRecord);
-                                        })
-                                        .WithNotUniqueValueCodeAndMessage("Account Email")
-                                        .WithImportState();
-                                });
-                        });
-
-                    RuleFor(x => x.Record.StoreId)
-                        .NotEmpty()
-                        .WithMissingRequiredValueCodeAndMessage("Store Id")
-                        .WithImportState()
-                        .DependentRules(() =>
-                        {
-                            RuleFor(x => x.Record.StoreId)
-                                .MustAsync(async (storeId, _) =>
-                                {
-                                    var storeSearchResult = await _storeSearchService.SearchAsync(new StoreSearchCriteria { ObjectIds = new[] { storeId }, Take = 0 }, false);
-                                    return storeSearchResult.TotalCount == 1;
-                                })
-                                .WithInvalidValueCodeAndMessage("Store Id")
-                                .WithImportState();
-                        });
-
-                    RuleFor(x => x.Record.Password)
-                        .MustAsync(async (thisRecord, password, _) =>
-                        {
-                            var contact = new Contact();
-                            thisRecord.Record.PatchModel(contact);
-                            return await _passwordValidator.ValidateAsync(_userManager, contact.SecurityAccounts.FirstOrDefault(), password) == IdentityResult.Success;
+                            var lastRecordWithAccountLogin = _allRecords
+                                .Where(x => x.Record.AdditionalLine != true)
+                                .LastOrDefault(otherRecord => userName.EqualsInvariant(otherRecord.Record.AccountLogin));
+                            var existedAccount = await _userManager.FindByNameAsync(userName);
+                            return (existedAccount == null || await IsSameContact(existedAccount, thisRecord.Record))
+                                && (_allRecords
+                                       .Where(x => x.Record.AdditionalLine != true)
+                                       .All(otherRecord => !userName.EqualsInvariant(otherRecord.Record.AccountLogin))
+                                    || lastRecordWithAccountLogin == thisRecord);
                         })
-                        .When(x => !string.IsNullOrEmpty(x.Record.Password))
-                        .WithErrorCode(ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy)
-                        .WithMessage(string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy], "Password"))
-                        .WithImportState();
-
-                    RuleFor(x => x.Record.AccountType)
-                        .MustAsync(async (accountType, _) =>
-                        {
-                            var accountTypes = await _settingsManager.GetObjectSettingAsync(PlatformConstants.Settings.Security.SecurityAccountTypes.Name);
-                            return accountTypes.AllowedValues.Contains(accountType);
-                        })
-                        .When(x => !string.IsNullOrEmpty(x.Record.AccountType))
-                        .WithInvalidValueCodeAndMessage("Account Type")
-                        .WithImportState();
-
-                    RuleFor(x => x.Record.AccountStatus)
-                        .MustAsync(async (accountStatus, _) =>
-                        {
-                            var accountStatuses = await _settingsManager.GetObjectSettingAsync(PlatformConstants.Settings.Other.AccountStatuses.Name);
-                            return accountStatuses.AllowedValues.Contains(accountStatus);
-                        })
-                        .When(x => !string.IsNullOrEmpty(x.Record.AccountStatus))
-                        .WithInvalidValueCodeAndMessage("Account Status")
+                        .WithNotUniqueValueCodeAndMessage("Account Login")
                         .WithImportState();
                 });
+
+            RuleFor(x => x.Record.AccountEmail)
+                .NotEmpty()
+                .WithMissingRequiredValueCodeAndMessage("Account Email")
+                .WithImportState()
+                .DependentRules(() =>
+                {
+                    RuleFor(x => x.Record.AccountEmail)
+                        .EmailAddress()
+                        .WithInvalidValueCodeAndMessage("Account Email")
+                        .WithImportState().DependentRules(() =>
+                        {
+                            RuleFor(x => x.Record.AccountEmail)
+                                .MustAsync(async (thisRecord, email, _) =>
+                                {
+                                    var lastRecordWithAccountEmail = _allRecords
+                                        .Where(x => x.Record.AdditionalLine != true)
+                                        .LastOrDefault(otherRecord => email.EqualsInvariant(otherRecord.Record.AccountEmail));
+                                    var existedAccount = await _userManager.FindByEmailAsync(email);
+                                    return (existedAccount == null || await IsSameContact(existedAccount, thisRecord.Record)) &&
+                                           (_allRecords
+                                                .Where(x => x.Record.AdditionalLine != true)
+                                                .All(otherRecord => !email.EqualsInvariant(otherRecord.Record.AccountEmail))
+                                            || lastRecordWithAccountEmail == thisRecord);
+                                })
+                                .WithNotUniqueValueCodeAndMessage("Account Email")
+                                .WithImportState();
+                        });
+                });
+
+            RuleFor(x => x.Record.StoreId)
+                .NotEmpty()
+                .WithMissingRequiredValueCodeAndMessage("Store Id")
+                .WithImportState()
+                .DependentRules(() =>
+                {
+                    RuleFor(x => x.Record.StoreId)
+                        .MustAsync(async (storeId, _) =>
+                        {
+                            var storeSearchResult = await _storeSearchService.SearchAsync(new StoreSearchCriteria { ObjectIds = new[] { storeId }, Take = 0 }, false);
+                            return storeSearchResult.TotalCount == 1;
+                        })
+                        .WithInvalidValueCodeAndMessage("Store Id")
+                        .WithImportState();
+                });
+
+            RuleFor(x => x.Record.Password)
+                .MustAsync(async (thisRecord, password, _) =>
+                {
+                    var contact = new Contact();
+                    thisRecord.Record.PatchModel(contact);
+                    return await _passwordValidator.ValidateAsync(_userManager, contact.SecurityAccounts.FirstOrDefault(), password) == IdentityResult.Success;
+                })
+                .When(x => !string.IsNullOrEmpty(x.Record.Password))
+                .WithErrorCode(ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy)
+                .WithMessage(string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy], "Password"))
+                .WithImportState();
+
+            RuleFor(x => x.Record.AccountType)
+                .MustAsync(async (accountType, _) =>
+                {
+                    var accountTypes = await _settingsManager.GetObjectSettingAsync(PlatformConstants.Settings.Security.SecurityAccountTypes.Name);
+                    return accountTypes.AllowedValues.Contains(accountType);
+                })
+                .When(x => !string.IsNullOrEmpty(x.Record.AccountType))
+                .WithInvalidValueCodeAndMessage("Account Type")
+                .WithImportState();
+
+            RuleFor(x => x.Record.AccountStatus)
+                .MustAsync(async (accountStatus, _) =>
+                {
+                    var accountStatuses = await _settingsManager.GetObjectSettingAsync(PlatformConstants.Settings.Other.AccountStatuses.Name);
+                    return accountStatuses.AllowedValues.Contains(accountStatus);
+                })
+                .When(x => !string.IsNullOrEmpty(x.Record.AccountStatus))
+                .WithInvalidValueCodeAndMessage("Account Status")
+                .WithImportState();
         }
 
         private async Task<bool> IsSameContact(ApplicationUser account, ImportableContact importRecord)

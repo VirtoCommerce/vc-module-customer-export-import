@@ -9,10 +9,8 @@ using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Model.Search;
 using VirtoCommerce.StoreModule.Core.Services;
 
@@ -23,7 +21,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IPasswordValidator<ApplicationUser> _passwordValidator;
         private readonly IMemberService _memberService;
-        private readonly ISearchService<StoreSearchCriteria, StoreSearchResult, Store> _storeSearchService;
+        private readonly IStoreSearchService _storeSearchService;
         private readonly ISettingsManager _settingsManager;
         private readonly ImportRecord<ImportableContact>[] _allRecords;
 
@@ -32,7 +30,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             _userManager = userManager;
             _passwordValidator = passwordValidator;
             _memberService = memberService;
-            _storeSearchService = (ISearchService<StoreSearchCriteria, StoreSearchResult, Store>)storeSearchService;
+            _storeSearchService = storeSearchService;
             _settingsManager = settingsManager;
             _allRecords = allRecords;
             AttachValidators();
@@ -110,7 +108,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                             RuleFor(x => x.Record.StoreId)
                                 .MustAsync(async (storeId, _) =>
                                 {
-                                    var storeSearchResult = await _storeSearchService.SearchAsync(new StoreSearchCriteria { StoreIds = new[] { storeId }, Take = 0 });
+                                    var storeSearchResult = await _storeSearchService.SearchAsync(new StoreSearchCriteria { ObjectIds = new[] { storeId }, Take = 0 }, false);
                                     return storeSearchResult.TotalCount == 1;
                                 })
                                 .WithInvalidValueCodeAndMessage("Store Id")

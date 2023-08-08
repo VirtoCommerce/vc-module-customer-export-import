@@ -10,7 +10,6 @@ using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Model.Search;
 using VirtoCommerce.CustomerModule.Core.Services;
-using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
@@ -45,7 +44,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             // Act
             await customerExportPagedDataSource.FetchAsync();
-            var exportedContact = (ExportableContact)customerExportPagedDataSource.Items.First();
+            var exportedContact = (ExportableContact)customerExportPagedDataSource.Items[0];
 
             // Assert
             Assert.Equal("Organization1", exportedContact.OrganizationId);
@@ -101,7 +100,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             // Act
             await customerExportPagedDataSource.FetchAsync();
-            var exportedOrganization = (ExportableOrganization)customerExportPagedDataSource.Items.First();
+            var exportedOrganization = (ExportableOrganization)customerExportPagedDataSource.Items[0];
 
             // Assert
             Assert.Equal("Organization2", exportedOrganization.ParentOrganizationId);
@@ -158,7 +157,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
             // Act
             await customerExportPagedDataSource.FetchAsync();
-            var exportedContact = (ExportableContact)customerExportPagedDataSource.Items.First();
+            var exportedContact = (ExportableContact)customerExportPagedDataSource.Items[0];
 
             // Assert
             Assert.Equal("Store", exportedContact.StoreId);
@@ -287,9 +286,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         {
             var storeServiceMock = new Mock<IStoreService>();
             storeServiceMock
-                .As<ICrudService<Store>>()
-                .Setup(service => service.GetAsync(It.IsAny<List<string>>(), It.IsAny<string>()))
-                .Returns(() => Task.FromResult<IReadOnlyCollection<Store>>(new[]
+                .Setup(service => service.GetAsync(It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .Returns(() => Task.FromResult<IList<Store>>(new[]
                 {
                     new Store { Id = "Store", Name = "Store Name" }
                 }));

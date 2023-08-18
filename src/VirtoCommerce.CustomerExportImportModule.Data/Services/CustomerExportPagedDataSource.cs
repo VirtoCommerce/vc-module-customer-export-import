@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +8,6 @@ using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 
@@ -17,14 +17,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
     {
         private readonly IMemberService _memberService;
         private readonly IMemberSearchService _memberSearchService;
-        private readonly ICrudService<Store> _storeService;
+        private readonly IStoreService _storeService;
         private readonly ExportDataRequest _request;
 
         public CustomerExportPagedDataSource(IMemberService memberService, IMemberSearchService memberSearchService, IStoreService storeService, int pageSize, ExportDataRequest request)
         {
             _memberService = memberService;
             _memberSearchService = memberSearchService;
-            _storeService = (ICrudService<Store>)storeService;
+            _storeService = storeService;
             _request = request;
 
             PageSize = pageSize;
@@ -89,32 +89,34 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             // Get stores from accounts
             var accounts = contacts.Select(contact => contact.SecurityAccounts?.MinBy(account => account.Id)).Where(account => account != null).Distinct().ToArray();
             var storeIds = accounts.Select(account => account.StoreId).Where(storeId => !string.IsNullOrEmpty(storeId)).Distinct().ToList();
-            var stores = (await _storeService.GetAsync(storeIds, StoreResponseGroup.None.ToString())).ToDictionary(store => store.Id, store => store).WithDefaultValue(null);
+            var stores = (await _storeService.GetAsync(storeIds, StoreResponseGroup.None.ToString(), false)).ToDictionary(store => store.Id, store => store).WithDefaultValue(null);
 
-            Items = searchResult.Results.Select<Member, IExportable>(member =>
-            {
-                switch (member.MemberType)
-                {
-                    case nameof(Contact):
-                        var contact = (Contact)member;
-                        var organizationId = contact.Organizations?.MinBy(organizationId => organizationId);
-                        var account = contact.SecurityAccounts?.MinBy(securityAccount => securityAccount.Id);
-                        var storeId = account?.StoreId;
-                        return new ExportableContact().FromModels(contact,
-                            organizationId != null && allOrganizations.ContainsKey(organizationId) ? allOrganizations[organizationId] : null,
-                            storeId != null ? stores[storeId] : null);
-                    case nameof(Organization):
-                        var organization = (Organization)member;
-                        var parentOrganizationId = organization.ParentId;
-                        return new ExportableOrganization().FromModels(organization, parentOrganizationId != null ? allOrganizations[parentOrganizationId] : null);
-                    default:
-                        throw new InvalidDataException();
-                }
-            }).ToArray();
+            Items = searchResult.Results.Select(member => GetExportable(member, allOrganizations, stores)).ToArray();
 
             CurrentPageNumber++;
 
             return true;
+        }
+
+        private static IExportable GetExportable(Member member, IDictionary<string, Organization> organizations, IDictionary<string, Store> stores)
+        {
+            switch (member.MemberType)
+            {
+                case nameof(Contact):
+                    var contact = (Contact)member;
+                    var organizationId = contact.Organizations?.MinBy(organizationId => organizationId);
+                    var account = contact.SecurityAccounts?.MinBy(securityAccount => securityAccount.Id);
+                    var storeId = account?.StoreId;
+                    return new ExportableContact().FromModels(contact,
+                        organizationId != null && organizations.TryGetValue(organizationId, out var foundOrganization) ? foundOrganization : null,
+                        storeId != null ? stores[storeId] : null);
+                case nameof(Organization):
+                    var organization = (Organization)member;
+                    var parentOrganizationId = organization.ParentId;
+                    return new ExportableOrganization().FromModels(organization, parentOrganizationId != null ? organizations[parentOrganizationId] : null);
+                default:
+                    throw new InvalidDataException();
+            }
         }
     }
 }

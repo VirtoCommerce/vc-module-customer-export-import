@@ -5,11 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
-using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
@@ -39,8 +39,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             var errorsList = new List<ImportDataValidationError>();
 
-            var fileMaxSize = _settingsManager.GetValue(ModuleConstants.Settings.General.ImportFileMaxSize.Name,
-                (int)ModuleConstants.Settings.General.ImportFileMaxSize.DefaultValue) * ModuleConstants.MByte;
+            var fileMaxSize = await _settingsManager.GetValueAsync<int>(ModuleConstants.Settings.General.ImportFileMaxSize) * ModuleConstants.MByte;
 
             var blobInfo = await _blobStorageProvider.GetBlobInfoAsync(filePath);
 
@@ -85,13 +84,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 ModuleConstants.ValidationErrors.NoData,
             };
 
-            if (errorsList.Any(x => notCompatibleErrors.Contains(x.ErrorCode)))
+            if (errorsList.Exists(x => notCompatibleErrors.Contains(x.ErrorCode)))
             {
                 return;
             }
 
-            var importLimitOfLines = _settingsManager.GetValue(ModuleConstants.Settings.General.ImportLimitOfLines.Name,
-                (int)ModuleConstants.Settings.General.ImportLimitOfLines.DefaultValue);
+            var importLimitOfLines = _settingsManager.GetValue<int>(ModuleConstants.Settings.General.ImportLimitOfLines);
 
             stream.Seek(0, SeekOrigin.Begin);
 
@@ -127,7 +125,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
                 ModuleConstants.ValidationErrors.NoData,
             };
 
-            if (errorsList.Any(x => notCompatibleErrors.Contains(x.ErrorCode)))
+            if (errorsList.Exists(x => notCompatibleErrors.Contains(x.ErrorCode)))
             {
                 return;
             }
@@ -176,7 +174,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
             else
             {
-                if (!(requiredColumns.Length == 1 && headerLine == requiredColumns.First()) && !headerLine.Contains(csvConfiguration.Delimiter))
+                if (!(requiredColumns.Length == 1 && headerLine == requiredColumns[0]) && !headerLine.Contains(csvConfiguration.Delimiter))
                 {
                     errorsList.Add(new ImportDataValidationError { ErrorCode = ModuleConstants.ValidationErrors.WrongDelimiter });
                 }

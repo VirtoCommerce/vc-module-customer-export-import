@@ -12,7 +12,6 @@ using VirtoCommerce.CustomerModule.Core.Services;
 using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
-using VirtoCommerce.Platform.Core.GenericCrud;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
@@ -718,9 +717,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         {
             var storeSearchServiceMock = new Mock<IStoreSearchService>();
             storeSearchServiceMock
-                .As<ISearchService<StoreSearchCriteria, StoreSearchResult, Store>>()
-                .Setup(x => x.SearchAsync(It.IsAny<StoreSearchCriteria>()))
-                .ReturnsAsync((StoreSearchCriteria criteria) =>
+                .Setup(x => x.SearchAsync(It.IsAny<StoreSearchCriteria>(), It.IsAny<bool>()))
+                .ReturnsAsync((StoreSearchCriteria criteria, bool _) =>
                 {
                     var stores = new List<Store>
                     {
@@ -729,8 +727,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     };
                     return new StoreSearchResult
                     {
-                        Results = stores.Where(store => criteria.StoreIds.Contains(store.Id)).ToList(),
-                        TotalCount = stores.Count
+                        Results = stores.Where(store => criteria.ObjectIds.Contains(store.Id)).ToList(),
+                        TotalCount = stores.Count,
                     };
                 });
             return storeSearchServiceMock.Object;
@@ -748,7 +746,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                         new() { Name = PlatformConstants.Settings.Security.SecurityAccountTypes.Name, AllowedValues = new object[] { "Administrator", "Customer", "Manager" } },
                         new() { Name = PlatformConstants.Settings.Other.AccountStatuses.Name, AllowedValues = new object[] { "Approved", "Deleted", "New", "Rejected" } }
                     };
-                    return settings.FirstOrDefault(setting => setting.Name == name);
+                    return settings.Find(setting => setting.Name == name);
                 });
             return settingsManagerMock.Object;
         }

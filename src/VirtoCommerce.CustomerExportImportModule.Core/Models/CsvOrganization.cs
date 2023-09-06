@@ -7,7 +7,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
     public abstract class CsvOrganization : CsvMember
     {
         private string _id;
-        
+
         [Optional]
         [JsonProperty("organizationId")]
         [Name("Organization Id")]
@@ -34,5 +34,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Name("Description")]
         public virtual string Description { get; set; }
 
+        [Optional]
+        [Name("Status")]
+        public virtual string Status { get; set; }
     }
 }

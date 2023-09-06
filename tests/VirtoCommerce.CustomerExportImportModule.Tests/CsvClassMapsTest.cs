@@ -84,7 +84,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             },
             Status = "new",
             AssociatedOrganizations = new List<string>(new[] { "org_id1", "org_id2" }),
-            BirthDate = new DateTime(1986, 04, 14),
+            BirthDate = new DateTime(1986, 04, 14, 0, 0, 0, DateTimeKind.Utc),
             TimeZone = "MSK",
             Phones = new List<string>(new[] { "777", "555" }),
             Emails = new List<string>(new[] { "boroda@ya.ru" }),
@@ -191,6 +191,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                 Phones = new List<string>(new[] { "777", "555" }),
                 BusinessCategory = "Market Place",
                 Description = "org desc",
+                Status = "New",
                 Groups = new List<string>(new[] { "tag1", "tag2" }),
                 Addresses = new List<Address>
                 {
@@ -233,8 +234,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             stream.Seek(0, SeekOrigin.Begin);
 
             //Assert
-            const string expected = "Organization Id;Organization Outer Id;Organization Name;Parent Organization Name;Parent Organization Id;Parent Organization Outer Id;Business category;Description;Organization Groups;Emails;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address Region Code;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Additional Line;Size\r\n"
-                                    + "org_id1;OuterId1;Boroda ltd;parent_outer_id;parent_otg_id;parent_outer_id;Market Place;org desc;tag1, tag2;;777, 555;Pickup;Anton;Boroda;Russia;RUS;Kirov region;;Kirov;1 st;169;610033;c@mail.com;777;;Huge\r\n";
+            const string expected = "Organization Id;Organization Outer Id;Organization Name;Parent Organization Name;Parent Organization Id;Parent Organization Outer Id;Business category;Description;Status;Organization Groups;Emails;Phones;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address Region Code;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Additional Line;Size\r\n"
+                                    + "org_id1;OuterId1;Boroda ltd;parent_outer_id;parent_otg_id;parent_outer_id;Market Place;org desc;New;tag1, tag2;;777, 555;Pickup;Anton;Boroda;Russia;RUS;Kirov region;;Kirov;1 st;169;610033;c@mail.com;777;;Huge\r\n";
 
             var sr = new StreamReader(stream);
             var csv = sr.ReadToEnd();

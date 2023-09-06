@@ -46,6 +46,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 target.Name = OrganizationName;
                 target.BusinessCategory = BusinessCategory;
                 target.Description = Description;
+                target.Status = Status;
 
                 const StringSplitOptions splitOptions = StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries;
                 target.Emails = string.IsNullOrEmpty(Emails) ? null : Emails.Split(',', splitOptions);

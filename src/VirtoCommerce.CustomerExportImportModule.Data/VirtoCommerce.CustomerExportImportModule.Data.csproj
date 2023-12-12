@@ -23,10 +23,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="VirtoCommerce.AssetsModule.Data" Version="3.400.0" />
+    <PackageReference Include="VirtoCommerce.AssetsModule.Data" Version="3.800.0-alpha.108-pt-14740-net8" />
     <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.800.0-alpha.802-pt-14740-net8" />
     <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.800.0-alpha.12831-net8" />
-    <PackageReference Include="VirtoCommerce.Platform.Data.SqlServer" Version="3.450.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Data.SqlServer" Version="3.800.0-alpha.12831-net8" />
     <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.800.0-alpha.12831-net8" />
   </ItemGroup>
 </Project>

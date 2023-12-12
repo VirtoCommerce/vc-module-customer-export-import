@@ -1,27 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <noWarn>1591</noWarn>
-        <OutputType>Library</OutputType>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Remove="dist\**" />
-        <Compile Remove="node_modules\**" />
-        <EmbeddedResource Remove="dist\**" />
-        <EmbeddedResource Remove="node_modules\**" />
-        <None Remove="dist\**" />
-        <None Remove="node_modules\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\VirtoCommerce.CustomerExportImportModule.Data\VirtoCommerce.CustomerExportImportModule.Data.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Content\css\" />
-      <Folder Include="Controllers\Api\" />
-      <Folder Include="Properties\" />
-      <Folder Include="Scripts\resources\" />
-    </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <noWarn>1591</noWarn>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="dist\**" />
+    <Compile Remove="node_modules\**" />
+    <EmbeddedResource Remove="dist\**" />
+    <EmbeddedResource Remove="node_modules\**" />
+    <None Remove="dist\**" />
+    <None Remove="node_modules\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VirtoCommerce.CustomerExportImportModule.Data\VirtoCommerce.CustomerExportImportModule.Data.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\css\" />
+    <Folder Include="Controllers\Api\" />
+    <Folder Include="Properties\" />
+    <Folder Include="Scripts\resources\" />
+  </ItemGroup>
 </Project>

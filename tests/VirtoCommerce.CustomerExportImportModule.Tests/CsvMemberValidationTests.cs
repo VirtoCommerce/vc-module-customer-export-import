@@ -744,7 +744,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     var settings = new List<ObjectSettingEntry>
                     {
                         new() { Name = PlatformConstants.Settings.Security.SecurityAccountTypes.Name, AllowedValues = new object[] { "Administrator", "Customer", "Manager" } },
-                        new() { Name = PlatformConstants.Settings.Other.AccountStatuses.Name, AllowedValues = new object[] { "Approved", "Deleted", "New", "Rejected" } }
+                        new() { Name = PlatformConstants.Settings.Other.AccountStatuses.Name, AllowedValues = new object[] { "Approved", "Deleted", "New", "Rejected" } },
+                        new() { Name = ModuleConstants.Settings.General.AddressRegionValidation.Name, DefaultValue = false,ValueType = SettingValueType.Boolean}
                     };
                     return settings.Find(setting => setting.Name == name);
                 });
@@ -753,6 +754,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
         private static ImportContactsValidator GetContactsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager(), GetPasswordValidator(), GetMemberService(), GetStoreSearchService(), GetSettingsManager());
 
-        private static ImportOrganizationsValidator GetOrganizationsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService());
+        private static ImportOrganizationsValidator GetOrganizationsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSettingsManager());
     }
 }

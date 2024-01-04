@@ -5,6 +5,9 @@ using VirtoCommerce.CoreModule.Core.Common;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Settings;
+using VirtoCommerce.CustomerExportImportModule.Core;
+
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
@@ -12,11 +15,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         where T : CsvMember
     {
         private readonly ICountriesService _countriesService;
+        private readonly ISettingsManager _settingsManager;
         internal const string Countries = nameof(Countries);
 
-        public ImportAddressValidator(ICountriesService countriesService)
+        public ImportAddressValidator(ICountriesService countriesService, ISettingsManager settingsManager)
         {
             _countriesService = countriesService;
+            _settingsManager = settingsManager;
             AttachValidators();
         }
 
@@ -90,15 +95,43 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                 .WithImportState();
                         });
 
-                    RuleFor(x => x.Record.AddressRegion)
+                    RuleFor(x => x.Record.AddressRegion)                        
                         .MaximumLength(128)
                         .WithExceededMaxLengthCodeAndMessage("Address Region", 128)
-                        .WithImportState();
+                        .WithImportState()
+                        .MustAsync(async (importRecord, region, _, _) =>
+                        {
+                            var regionValidation = _settingsManager.GetValue<bool>(ModuleConstants.Settings.General.AddressRegionValidation);
+
+                            if (!regionValidation)
+                            {
+                                return true;
+                            }
+
+                            var regions = await _countriesService.GetCountryRegionsAsync(importRecord.Record.AddressCountryCode);
+                            var regionResult = regions.FirstOrDefault(r => r.Name.ToLower().Trim() == region.ToLower().Trim());
+
+                            return regionResult is not null;
+                        })
+                        .WithInvalidValueCodeAndMessage("Address Region");
 
                     RuleFor(x => x.Record.AddressRegionCode)
                         .MaximumLength(128)
                         .WithExceededMaxLengthCodeAndMessage("Address Region Code", 128)
-                        .WithImportState();
+                        .WithImportState()
+                        .MustAsync((importRecord, regionCode, _, _) =>
+                        {
+                            var regionValidation = _settingsManager.GetValue<bool>(ModuleConstants.Settings.General.AddressRegionValidation);
+
+                            if (!regionValidation)
+                            {
+                                return System.Threading.Tasks.Task.FromResult(true);
+                            }
+
+                            return System.Threading.Tasks.Task.FromResult(!string.IsNullOrEmpty(regionCode));
+                        })
+                        .WithMissingRequiredValueCodeAndMessage("Address Region code");
+                    ;
 
                     RuleFor(x => x.Record.AddressCountry)
                         .MaximumLength(128)

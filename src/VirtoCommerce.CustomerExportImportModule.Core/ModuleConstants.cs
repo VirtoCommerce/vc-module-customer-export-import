@@ -103,6 +103,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
                     DefaultValue = 1 // MB
                 };
 
+                public static SettingDescriptor AddressRegionValidation { get; } = new SettingDescriptor
+                {
+                    Name = "CustomerExportImport.Import.AddressRegionValidation",
+                    GroupName = "CustomerExportImport|Import",
+                    ValueType = SettingValueType.Boolean,                    
+                    DefaultValue = false
+                };
+
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
@@ -111,7 +119,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
                         {
                             ExportLimitOfLines,
                             ImportLimitOfLines,
-                            ImportFileMaxSize
+                            ImportFileMaxSize,
+                            AddressRegionValidation
                         };
                     }
                 }

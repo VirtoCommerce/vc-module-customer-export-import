@@ -113,7 +113,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
                             return regionResult is not null;
                         })
-                        .WithInvalidValueCodeAndMessage("Address Region");
+                        .WithInvalidValueCodeAndMessage("Address Region")
+                        .WithImportState(); ;
 
                     RuleFor(x => x.Record.AddressRegionCode)
                         .MaximumLength(128)
@@ -130,7 +131,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
                             return System.Threading.Tasks.Task.FromResult(!string.IsNullOrEmpty(regionCode));
                         })
-                        .WithMissingRequiredValueCodeAndMessage("Address Region code");
+                        .WithMissingRequiredValueCodeAndMessage("Address Region code")
+                        .WithImportState(); 
                     ;
 
                     RuleFor(x => x.Record.AddressCountry)

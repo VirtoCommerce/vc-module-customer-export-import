@@ -136,20 +136,24 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                             RuleFor(x => x.Record.AddressRegionCode)
                                                 .NotEmpty()
                                                 .WithMissingRequiredValueCodeAndMessage("Address Region Code")
-                                                .WithImportState();
-                                            RuleFor(x => x.Record.AddressRegion)
-                                                .MustAsync(async (importRecord, regionName, _, _) =>
+                                                .WithImportState()
+                                                .DependentRules(() =>
                                                 {
-                                                    if (string.IsNullOrEmpty(regionName))
-                                                    {
-                                                        return true;
-                                                    }
+                                                    RuleFor(x => x.Record.AddressRegion)
+                                                        .MustAsync(async (importRecord, regionName, _, _) =>
+                                                        {
+                                                            if (string.IsNullOrEmpty(regionName))
+                                                            {
+                                                                // The region name will be set in MemberService when the address is saved
+                                                                return true;
+                                                            }
 
-                                                    var regions = await _countriesService.GetCountryRegionsAsync(importRecord.Record.AddressCountryCode);
-                                                    return !regions.Any() || regions.Any(region => region.Name.EqualsInvariant(regionName));
-                                                })
-                                                .WithInvalidValueCodeAndMessage("Address Region")
-                                                .WithImportState();
+                                                            var regions = await _countriesService.GetCountryRegionsAsync(importRecord.Record.AddressCountryCode);
+                                                            return !regions.Any() || regions.Any(region => region.Name.EqualsInvariant(regionName) && region.Id == importRecord.Record.AddressRegionCode);
+                                                        })
+                                                        .WithInvalidValueCodeAndMessage("Address Region")
+                                                        .WithImportState();
+                                                });
                                         });
                                     RuleFor(x => x.Record.AddressRegionCode)
                                         .MustAsync(async (importRecord, regionCode, _, _) =>

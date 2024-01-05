@@ -43,7 +43,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
             public const string PasswordDoesntMeetSecurityPolicy = "password-doesnt-meet-security-policy";
         }
 
-        public static readonly ReadOnlyDictionary<string, string> ValidationMessages = new  ReadOnlyDictionary<string, string>(new Dictionary<string, string>
+        public static readonly ReadOnlyDictionary<string, string> ValidationMessages = new(new Dictionary<string, string>
         {
             { ValidationErrors.MissingRequiredValues, "The required value in column '{0}' is missing." },
             { ValidationErrors.ExceedingMaxLength, "Value in column '{0}' may have maximum {1} characters." },
@@ -76,7 +76,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
 
             public static class General
             {
-                public static SettingDescriptor ExportLimitOfLines { get; } = new SettingDescriptor
+                public static SettingDescriptor ExportLimitOfLines { get; } = new()
                 {
                     Name = "CustomerExportImport.Export.LimitOfLines",
                     GroupName = "CustomerExportImport|Export",
@@ -85,7 +85,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
                     DefaultValue = 10000
                 };
 
-                public static SettingDescriptor ImportLimitOfLines { get; } = new SettingDescriptor
+                public static SettingDescriptor ImportLimitOfLines { get; } = new()
                 {
                     Name = "CustomerExportImport.Import.LimitOfLines",
                     GroupName = "CustomerExportImport|Import",
@@ -94,7 +94,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
                     DefaultValue = 10000
                 };
 
-                public static SettingDescriptor ImportFileMaxSize { get; } = new SettingDescriptor
+                public static SettingDescriptor ImportFileMaxSize { get; } = new()
                 {
                     Name = "CustomerExportImport.Import.FileMaxSize",
                     GroupName = "CustomerExportImport|Import",
@@ -103,25 +103,22 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
                     DefaultValue = 1 // MB
                 };
 
-                public static SettingDescriptor AddressRegionValidation { get; } = new SettingDescriptor
+                public static SettingDescriptor AddressRegionStrongValidation { get; } = new()
                 {
-                    Name = "CustomerExportImport.Import.AddressRegionValidation",
-                    GroupName = "CustomerExportImport|Import",
-                    ValueType = SettingValueType.Boolean,                    
-                    DefaultValue = false
+                    Name = "CustomerExportImport.Import.AddressRegionStrongValidation",
+                    GroupName = "Customer|Import",
+                    ValueType = SettingValueType.Boolean,
+                    DefaultValue = false,
                 };
 
                 public static IEnumerable<SettingDescriptor> AllSettings
                 {
                     get
                     {
-                        return new List<SettingDescriptor>
-                        {
-                            ExportLimitOfLines,
-                            ImportLimitOfLines,
-                            ImportFileMaxSize,
-                            AddressRegionValidation
-                        };
+                        yield return ExportLimitOfLines;
+                        yield return ImportLimitOfLines;
+                        yield return ImportFileMaxSize;
+                        yield return AddressRegionStrongValidation;
                     }
                 }
             }

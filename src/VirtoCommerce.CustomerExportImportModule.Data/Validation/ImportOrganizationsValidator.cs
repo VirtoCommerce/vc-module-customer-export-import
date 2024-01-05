@@ -3,7 +3,6 @@ using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.Platform.Data.Settings;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
@@ -12,11 +11,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         private readonly ICountriesService _countriesService;
         private readonly IDynamicPropertyDictionaryItemsSearchService _dynamicPropertyDictionaryItemsSearchService;
         private readonly ISettingsManager _settingsManager;
+
         public ImportOrganizationsValidator(ICountriesService countriesService, IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService, ISettingsManager settingsManager)
         {
             _countriesService = countriesService;
-            _settingsManager = settingsManager;
             _dynamicPropertyDictionaryItemsSearchService = dynamicPropertyDictionaryItemsSearchService;
+            _settingsManager = settingsManager;
             AttachValidators();
         }
 

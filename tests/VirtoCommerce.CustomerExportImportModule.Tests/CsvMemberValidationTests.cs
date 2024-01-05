@@ -745,7 +745,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     {
                         new() { Name = PlatformConstants.Settings.Security.SecurityAccountTypes.Name, AllowedValues = new object[] { "Administrator", "Customer", "Manager" } },
                         new() { Name = PlatformConstants.Settings.Other.AccountStatuses.Name, AllowedValues = new object[] { "Approved", "Deleted", "New", "Rejected" } },
-                        new() { Name = ModuleConstants.Settings.General.AddressRegionValidation.Name, DefaultValue = false,ValueType = SettingValueType.Boolean}
+                        new() { Name = ModuleConstants.Settings.General.AddressRegionStrongValidation.Name, DefaultValue = false, ValueType = SettingValueType.Boolean },
                     };
                     return settings.Find(setting => setting.Name == name);
                 });

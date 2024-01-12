@@ -4,9 +4,9 @@ using System.IO;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
-using VirtoCommerce.AssetsModule.Core.Assets;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 {
@@ -26,8 +26,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             _streamReader = new StreamReader(stream);
 
             _configuration = configuration;
-            _configuration.LeaveOpen = true;
-            _csvReader = new CsvReader(_streamReader, configuration);
+            _csvReader = new CsvReader(_streamReader, configuration, true);
             _csvReader.Context.RegisterClassMap(map);
 
             PageSize = pageSize;

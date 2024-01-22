@@ -119,10 +119,10 @@
   },
   "settings": {
     "CustomerExportImport": {
-      "Import": {
-        "AddressRegionStrongValidation": {
-          "title": "Enable strong validation of address region",
-          "description": "If enabled, the address region will be validated against the list of regions for the country. If the region is not found, the validation will fail."
+      "Import": {        
+        "AddressStrongValidation": {
+          "title": "Enable strong validation of address",
+          "description": "If enabled, the address region will be validated against the list of regions for the country. If the region is not found, the validation will fail. The city will be validated to be no more than 50 characters and the zip code to be a maximum of 11 characters."
         }
       }
     }

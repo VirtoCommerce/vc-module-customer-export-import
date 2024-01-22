@@ -103,9 +103,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
                     DefaultValue = 1 // MB
                 };
 
-                public static SettingDescriptor AddressRegionStrongValidation { get; } = new()
+                public static SettingDescriptor AddressStrongValidation { get; } = new()
                 {
-                    Name = "CustomerExportImport.Import.AddressRegionStrongValidation",
+                    Name = "CustomerExportImport.Import.AddressStrongValidation",
                     GroupName = "Customer|Import",
                     ValueType = SettingValueType.Boolean,
                     DefaultValue = false,
@@ -117,8 +117,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core
                     {
                         yield return ExportLimitOfLines;
                         yield return ImportLimitOfLines;
-                        yield return ImportFileMaxSize;
-                        yield return AddressRegionStrongValidation;
+                        yield return ImportFileMaxSize;                        
+                        yield return AddressStrongValidation;
                     }
                 }
             }

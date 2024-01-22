@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
 using VirtoCommerce.CoreModule.Core.Common;
+using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
@@ -12,21 +15,23 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         where T : CsvMember
     {
         private readonly ICountriesService _countriesService;
+        private readonly ISettingsManager _settingsManager;
         internal const string Countries = nameof(Countries);
 
-        public ImportAddressValidator(ICountriesService countriesService)
+        public ImportAddressValidator(ICountriesService countriesService, ISettingsManager settingsManager)
         {
             _countriesService = countriesService;
+            _settingsManager = settingsManager;
             AttachValidators();
         }
 
         private void AttachValidators()
         {
-            When(x => new[]
+            When(x => Array.Exists(new[]
                 {
                     x.Record.AddressType, x.Record.AddressLine1, x.Record.AddressLine2, x.Record.AddressCity, x.Record.AddressRegion, x.Record.AddressRegionCode, x.Record.AddressCountryCode, x.Record.AddressCountry,
                     x.Record.AddressFirstName, x.Record.AddressLastName, x.Record.AddressPhone, x.Record.AddressEmail, x.Record.AddressZipCode,
-                }.Any(field => !string.IsNullOrEmpty(field))
+                }, field => !string.IsNullOrEmpty(field))
                 , () =>
                 {
                     RuleFor(x => x.Record.AddressType)
@@ -125,6 +130,31 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                 .WithImportState()
                                 .DependentRules(() =>
                                 {
+                                    WhenAsync((_, _) => _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.AddressRegionStrongValidation),
+                                        () =>
+                                        {
+                                            RuleFor(x => x.Record.AddressRegionCode)
+                                                .NotEmpty()
+                                                .WithMissingRequiredValueCodeAndMessage("Address Region Code")
+                                                .WithImportState()
+                                                .DependentRules(() =>
+                                                {
+                                                    RuleFor(x => x.Record.AddressRegion)
+                                                        .MustAsync(async (importRecord, regionName, _, _) =>
+                                                        {
+                                                            if (string.IsNullOrEmpty(regionName))
+                                                            {
+                                                                // The region name will be set in MemberService when the address is saved
+                                                                return true;
+                                                            }
+
+                                                            var regions = await _countriesService.GetCountryRegionsAsync(importRecord.Record.AddressCountryCode);
+                                                            return !regions.Any() || regions.Any(region => region.Name.EqualsInvariant(regionName) && region.Id == importRecord.Record.AddressRegionCode);
+                                                        })
+                                                        .WithInvalidValueCodeAndMessage("Address Region")
+                                                        .WithImportState();
+                                                });
+                                        });
                                     RuleFor(x => x.Record.AddressRegionCode)
                                         .MustAsync(async (importRecord, regionCode, _, _) =>
                                         {

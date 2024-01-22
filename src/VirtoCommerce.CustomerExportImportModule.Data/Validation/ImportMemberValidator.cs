@@ -9,6 +9,7 @@ using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
@@ -16,12 +17,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         where T: CsvMember
     {
         private readonly ICountriesService _countriesService;
+        private readonly ISettingsManager _settingsManager;
         private readonly IDynamicPropertyDictionaryItemsSearchService _dynamicPropertyDictionaryItemsSearchService;
 
-        public ImportMemberValidator(ICountriesService countriesService, IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService)
+        public ImportMemberValidator(ICountriesService countriesService, IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService, ISettingsManager settingsManager)
         {
             _countriesService = countriesService;
             _dynamicPropertyDictionaryItemsSearchService = dynamicPropertyDictionaryItemsSearchService;
+            _settingsManager = settingsManager;
             AttachValidators();
         }
 
@@ -58,7 +61,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .WithMessage(string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength], "Phones", 64))
                 .WithImportState();
 
-            RuleFor(x => x).CustomAsync(LoadCountriesAsync).SetValidator(_ => new ImportAddressValidator<T>(_countriesService));
+            RuleFor(x => x).CustomAsync(LoadCountriesAsync).SetValidator(_ => new ImportAddressValidator<T>(_countriesService,_settingsManager));
 
             RuleFor(x => x.Record.DynamicProperties).CustomAsync(LoadDynamicPropertyDictionaryItems).SetValidator(record => new ImportDynamicPropertiesValidator<T>(record));
         }

@@ -98,10 +98,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                      WhenAsync((_, _) => _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.AddressStrongValidation),
                                          () =>
                                          {
-                                             RuleFor(x => x.Record.AddressCity)
-                                                 .MaximumLength(50)
-                                                 .WithExceededMaxLengthCodeAndMessage("Address City", 50)
-                                                 .WithImportState();
+                                             RuleFor(x => x.Record.AddressCity).Must((importRecord, addressCity) =>
+                                             {
+                                                 return addressCity?.Length <= 50;
+                                             })
+                                            .WithExceededMaxLengthCodeAndMessage("Address City", 50)
+                                            .WithImportState();
                                          });
                                  });
                         });
@@ -196,10 +198,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                     WhenAsync((_, _) => _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.AddressStrongValidation),
                                         () =>
                                         {
-                                            RuleFor(x => x.Record.AddressZipCode)
-                                                .MaximumLength(11)
-                                                .WithExceededMaxLengthCodeAndMessage("Address Zip Code", 11)
-                                                .WithImportState();
+                                            RuleFor(x => x.Record.AddressZipCode).Must((importRecord, zipCode) =>
+                                            {
+                                                return zipCode?.Length <= 11;
+                                            })
+                                            .WithExceededMaxLengthCodeAndMessage("Address Zip Code",11)
+                                            .WithImportState();
                                         });
                                 });
                         });

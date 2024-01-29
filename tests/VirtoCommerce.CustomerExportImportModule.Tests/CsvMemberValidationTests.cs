@@ -745,15 +745,23 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     {
                         new() { Name = PlatformConstants.Settings.Security.SecurityAccountTypes.Name, AllowedValues = new object[] { "Administrator", "Customer", "Manager" } },
                         new() { Name = PlatformConstants.Settings.Other.AccountStatuses.Name, AllowedValues = new object[] { "Approved", "Deleted", "New", "Rejected" } },
-                        new() { Name = ModuleConstants.Settings.General.AddressStrongValidation.Name, DefaultValue = false, ValueType = SettingValueType.Boolean },
+                        new() { Name = ModuleConstants.Settings.General.AddressRegionStrongValidation.Name, DefaultValue = false, ValueType = SettingValueType.Boolean },
                     };
                     return settings.Find(setting => setting.Name == name);
                 });
             return settingsManagerMock.Object;
         }
 
-        private static ImportContactsValidator GetContactsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager(), GetPasswordValidator(), GetMemberService(), GetStoreSearchService(), GetSettingsManager());
+        private static IImportAddressValidator<ImportableContact> GetContactAddressValidator() => new ImportAddressValidator<ImportableContact>(GetCountriesService(), GetSettingsManager());
 
-        private static ImportOrganizationsValidator GetOrganizationsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSettingsManager());
+        private static IImportAddressValidator<ImportableOrganization> GetOrganizationAddressValidator() => new ImportAddressValidator<ImportableOrganization>(GetCountriesService(), GetSettingsManager());
+
+        private static IImportMemberValidator<ImportableContact> GetContactMemberValidator() => new ImportMemberValidator<ImportableContact>(GetContactAddressValidator(), GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService());
+
+        private static IImportMemberValidator<ImportableOrganization> GetOrganizationMemberValidator() => new ImportMemberValidator<ImportableOrganization>(GetOrganizationAddressValidator(), GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService());
+
+        private static ImportContactsValidator GetContactsValidator() => new(GetContactMemberValidator(), GetSignInManager(), GetPasswordValidator(), GetMemberService(), GetStoreSearchService(), GetSettingsManager());
+
+        private static ImportOrganizationsValidator GetOrganizationsValidator() => new(GetOrganizationMemberValidator());
     }
 }

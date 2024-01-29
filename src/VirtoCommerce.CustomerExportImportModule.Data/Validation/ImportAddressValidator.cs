@@ -11,7 +11,7 @@ using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
-    public class ImportAddressValidator<T> : AbstractValidator<ImportRecord<T>>
+    public class ImportAddressValidator<T> : AbstractValidator<ImportRecord<T>>, IImportAddressValidator<T>
         where T : CsvMember
     {
         private readonly ICountriesService _countriesService;
@@ -92,21 +92,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                             RuleFor(x => x.Record.AddressCity)
                                 .MaximumLength(128)
                                 .WithExceededMaxLengthCodeAndMessage("Address City", 128)
-                                .WithImportState()
-                                 .DependentRules(() =>
-                                 {
-                                     WhenAsync((_, _) => _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.AddressStrongValidation),
-                                         () =>
-                                         {
-                                             RuleFor(x => x.Record.AddressCity).Must((importRecord, addressCity) =>
-                                             {
-                                                 return addressCity?.Length <= 50;
-                                             })
-                                            .WithExceededMaxLengthCodeAndMessage("Address City", 50)
-                                            .WithImportState();
-                                         });
-                                 });
+                                .WithImportState();
                         });
+
                     RuleFor(x => x.Record.AddressRegion)
                         .MaximumLength(128)
                         .WithExceededMaxLengthCodeAndMessage("Address Region", 128)
@@ -142,7 +130,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                 .WithImportState()
                                 .DependentRules(() =>
                                 {
-                                    WhenAsync((_, _) => _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.AddressStrongValidation),
+                                    WhenAsync((_, _) => _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.AddressRegionStrongValidation),
                                         () =>
                                         {
                                             RuleFor(x => x.Record.AddressRegionCode)
@@ -192,20 +180,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                             RuleFor(x => x.Record.AddressZipCode)
                                 .MaximumLength(32)
                                 .WithExceededMaxLengthCodeAndMessage("Address Zip Code", 32)
-                                .WithImportState()
-                                .DependentRules(() =>
-                                {
-                                    WhenAsync((_, _) => _settingsManager.GetValueAsync<bool>(ModuleConstants.Settings.General.AddressStrongValidation),
-                                        () =>
-                                        {
-                                            RuleFor(x => x.Record.AddressZipCode).Must((importRecord, zipCode) =>
-                                            {
-                                                return zipCode?.Length <= 11;
-                                            })
-                                            .WithExceededMaxLengthCodeAndMessage("Address Zip Code",11)
-                                            .WithImportState();
-                                        });
-                                });
+                                .WithImportState();
                         });
                 });
         }

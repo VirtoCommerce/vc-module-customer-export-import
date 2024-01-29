@@ -85,9 +85,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string ObjectType { get; set; }
 
         [Ignore, JsonIgnore]
-        public bool AddressIsNotEmpty => Array.Exists(
-            new[] { AddressCountry, AddressCountryCode, AddressRegion, AddressRegionCode, AddressCity, AddressLine1, AddressLine2, AddressZipCode },
-            field => !string.IsNullOrEmpty(field));
+        public bool AddressIsNotEmpty => Array.Exists(new[]
+            {
+                AddressType, AddressFirstName, AddressLastName, AddressCountry, AddressCountryCode, AddressRegion, AddressRegionCode,
+                AddressCity, AddressLine1, AddressLine2, AddressZipCode, AddressEmail, AddressPhone,
+            }, field => !string.IsNullOrEmpty(field));
 
         public ICollection<DynamicObjectProperty> DynamicProperties { get; set; }
 

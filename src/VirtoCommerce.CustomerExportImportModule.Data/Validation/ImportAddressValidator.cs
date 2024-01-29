@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
@@ -27,12 +26,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void AttachValidators()
         {
-            When(x => Array.Exists(new[]
-                {
-                    x.Record.AddressType, x.Record.AddressLine1, x.Record.AddressLine2, x.Record.AddressCity, x.Record.AddressRegion, x.Record.AddressRegionCode, x.Record.AddressCountryCode, x.Record.AddressCountry,
-                    x.Record.AddressFirstName, x.Record.AddressLastName, x.Record.AddressPhone, x.Record.AddressEmail, x.Record.AddressZipCode,
-                }, field => !string.IsNullOrEmpty(field))
-                , () =>
+            When(x => x.Record.AddressIsNotEmpty,
+                () =>
                 {
                     RuleFor(x => x.Record.AddressType)
                         .IsEnumName(typeof(AddressType))

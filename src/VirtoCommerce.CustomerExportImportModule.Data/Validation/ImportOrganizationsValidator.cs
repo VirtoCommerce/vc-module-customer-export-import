@@ -1,22 +1,15 @@
 using FluentValidation;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
-using VirtoCommerce.Platform.Core.Common;
-using VirtoCommerce.Platform.Core.DynamicProperties;
-using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
     public sealed class ImportOrganizationsValidator : AbstractValidator<ImportRecord<ImportableOrganization>[]>
     {
-        private readonly ICountriesService _countriesService;
-        private readonly IDynamicPropertyDictionaryItemsSearchService _dynamicPropertyDictionaryItemsSearchService;
-        private readonly ISettingsManager _settingsManager;
+        private readonly IImportMemberValidator<ImportableOrganization> _memberValidator;
 
-        public ImportOrganizationsValidator(ICountriesService countriesService, IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService, ISettingsManager settingsManager)
+        public ImportOrganizationsValidator(IImportMemberValidator<ImportableOrganization> memberValidator)
         {
-            _countriesService = countriesService;
-            _dynamicPropertyDictionaryItemsSearchService = dynamicPropertyDictionaryItemsSearchService;
-            _settingsManager = settingsManager;
+            _memberValidator = memberValidator;
             AttachValidators();
         }
 
@@ -24,7 +17,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         {
             RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAreNotDuplicatesValidator<ImportableOrganization>());
             RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAdditionalLinesValidator<ImportableOrganization>());
-            RuleForEach(importRecords => importRecords).SetValidator(new ImportMemberValidator<ImportableOrganization>(_countriesService, _dynamicPropertyDictionaryItemsSearchService, _settingsManager));
+            RuleForEach(importRecords => importRecords).SetValidator(_memberValidator);
             RuleForEach(importRecords => importRecords).SetValidator(new ImportOrganizationValidator());
         }
     }

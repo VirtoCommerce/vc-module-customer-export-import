@@ -1,30 +1,32 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
-using FluentValidation.Validators;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
-using VirtoCommerce.Platform.Core.Settings;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
-    public class ImportMemberValidator<T>: AbstractValidator<ImportRecord<T>>
-        where T: CsvMember
+    public class ImportMemberValidator<T> : AbstractValidator<ImportRecord<T>>, IImportMemberValidator<T>
+        where T : CsvMember
     {
+        private readonly IImportAddressValidator<T> _addressValidator;
         private readonly ICountriesService _countriesService;
-        private readonly ISettingsManager _settingsManager;
         private readonly IDynamicPropertyDictionaryItemsSearchService _dynamicPropertyDictionaryItemsSearchService;
 
-        public ImportMemberValidator(ICountriesService countriesService, IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService, ISettingsManager settingsManager)
+        public ImportMemberValidator(
+            IImportAddressValidator<T> addressValidator,
+            ICountriesService countriesService,
+            IDynamicPropertyDictionaryItemsSearchService dynamicPropertyDictionaryItemsSearchService)
         {
+            _addressValidator = addressValidator;
             _countriesService = countriesService;
             _dynamicPropertyDictionaryItemsSearchService = dynamicPropertyDictionaryItemsSearchService;
-            _settingsManager = settingsManager;
             AttachValidators();
         }
 
@@ -33,9 +35,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(x => x.Record.Emails)
                 .Must(emailsColumnValue =>
                 {
-                    var emails = string.IsNullOrEmpty(emailsColumnValue) ? null : emailsColumnValue.Split(',').Select(email => email.Trim()).ToList();
+                    if (string.IsNullOrEmpty(emailsColumnValue))
+                    {
+                        return true;
+                    }
+
+                    var emails = emailsColumnValue.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
                     var emailValidator = new EmailValidator();
-                    return emails == null || emails.All(email => emailValidator.Validate(email).IsValid);
+                    return Array.TrueForAll(emails, email => emailValidator.Validate(email).IsValid);
                 })
                 .WithInvalidValueCodeAndMessage("Emails")
                 .WithImportState()
@@ -43,8 +50,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                     RuleFor(x => x.Record.Emails)
                         .Must(emailsColumnValue =>
                         {
-                            var emails = string.IsNullOrEmpty(emailsColumnValue) ? null : emailsColumnValue.Split(',').Select(email => email.Trim()).ToList();
-                            return emails == null || emails.All(email => email.Length <= 254);
+                            if (string.IsNullOrEmpty(emailsColumnValue))
+                            {
+                                return true;
+                            }
+
+                            var emails = emailsColumnValue.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                            return Array.TrueForAll(emails, email => email.Length <= 254);
                         })
                         .WithErrorCode(ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength)
                         .WithMessage(string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength], "Emails", 254))
@@ -54,14 +66,19 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(x => x.Record.Phones)
                 .Must(phonesColumnValue =>
                 {
-                    var phones = string.IsNullOrEmpty(phonesColumnValue) ? null : phonesColumnValue.Split(',').Select(phone => phone.Trim()).ToList();
-                    return phones == null || phones.All(phone => phone.Length <= 64);
+                    if (string.IsNullOrEmpty(phonesColumnValue))
+                    {
+                        return true;
+                    }
+
+                    var phones = phonesColumnValue.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                    return Array.TrueForAll(phones, phone => phone.Length <= 64);
                 })
                 .WithErrorCode(ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength)
                 .WithMessage(string.Format(ModuleConstants.ValidationMessages[ModuleConstants.ValidationErrors.ArrayValuesExceedingMaxLength], "Phones", 64))
                 .WithImportState();
 
-            RuleFor(x => x).CustomAsync(LoadCountriesAsync).SetValidator(_ => new ImportAddressValidator<T>(_countriesService,_settingsManager));
+            RuleFor(x => x).CustomAsync(LoadCountriesAsync).SetValidator(_addressValidator);
 
             RuleFor(x => x.Record.DynamicProperties).CustomAsync(LoadDynamicPropertyDictionaryItems).SetValidator(record => new ImportDynamicPropertiesValidator<T>(record));
         }

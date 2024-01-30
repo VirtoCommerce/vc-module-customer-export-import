@@ -752,8 +752,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             return settingsManagerMock.Object;
         }
 
-        private static ImportContactsValidator GetContactsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSignInManager(), GetPasswordValidator(), GetMemberService(), GetStoreSearchService(), GetSettingsManager());
+        private static ImportAddressValidator<ImportableContact> GetContactAddressValidator() => new(GetCountriesService(), GetSettingsManager());
 
-        private static ImportOrganizationsValidator GetOrganizationsValidator() => new(GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService(), GetSettingsManager());
+        private static ImportAddressValidator<ImportableOrganization> GetOrganizationAddressValidator() => new(GetCountriesService(), GetSettingsManager());
+
+        private static ImportMemberValidator<ImportableContact> GetContactMemberValidator() => new(GetContactAddressValidator(), GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService());
+
+        private static ImportMemberValidator<ImportableOrganization> GetOrganizationMemberValidator() => new(GetOrganizationAddressValidator(), GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService());
+
+        private static ImportContactsValidator GetContactsValidator() => new(GetContactMemberValidator(), GetSignInManager(), GetPasswordValidator(), GetMemberService(), GetStoreSearchService(), GetSettingsManager());
+
+        private static ImportOrganizationsValidator GetOrganizationsValidator() => new(GetOrganizationMemberValidator());
     }
 }

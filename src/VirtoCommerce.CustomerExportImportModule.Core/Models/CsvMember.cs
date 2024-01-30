@@ -85,11 +85,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public string ObjectType { get; set; }
 
         [Ignore, JsonIgnore]
-        public bool AddressIsNotEmpty => Array.Exists(new[]
-            {
-                AddressType, AddressFirstName, AddressLastName, AddressCountry, AddressCountryCode, AddressRegion, AddressRegionCode,
-                AddressCity, AddressLine1, AddressLine2, AddressZipCode, AddressEmail, AddressPhone,
-            }, field => !string.IsNullOrEmpty(field));
+        public bool AddressIsEmpty =>
+            string.IsNullOrEmpty(AddressType) && string.IsNullOrEmpty(AddressFirstName) && string.IsNullOrEmpty(AddressLastName) &&
+            string.IsNullOrEmpty(AddressCountry) && string.IsNullOrEmpty(AddressCountryCode) &&
+            string.IsNullOrEmpty(AddressRegion) && string.IsNullOrEmpty(AddressRegionCode) &&
+            string.IsNullOrEmpty(AddressCity) && string.IsNullOrEmpty(AddressLine1) && string.IsNullOrEmpty(AddressLine2) &&
+            string.IsNullOrEmpty(AddressZipCode) && string.IsNullOrEmpty(AddressEmail) && string.IsNullOrEmpty(AddressPhone);
 
         public ICollection<DynamicObjectProperty> DynamicProperties { get; set; }
 
@@ -129,7 +130,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         protected void PatchAddresses(Member target)
         {
             target.Addresses ??= new List<Address>();
-            if (!AddressIsNotEmpty)
+            if (AddressIsEmpty)
             {
                 return;
             }

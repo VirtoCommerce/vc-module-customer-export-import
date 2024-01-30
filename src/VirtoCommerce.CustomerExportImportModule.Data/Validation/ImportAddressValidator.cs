@@ -26,7 +26,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 
         private void AttachValidators()
         {
-            When(x => x.Record.AddressIsNotEmpty,
+            When(x => !x.Record.AddressIsEmpty,
                 () =>
                 {
                     RuleFor(x => x.Record.AddressType)

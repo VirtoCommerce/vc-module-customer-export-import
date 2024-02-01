@@ -41,6 +41,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             serviceCollection.AddTransient<ICsvCustomerDataValidator, CsvCustomerDataValidator>();
             serviceCollection.AddTransient<IValidator<ImportRecord<ImportableContact>[]>, ImportContactsValidator>();
             serviceCollection.AddTransient<IValidator<ImportRecord<ImportableOrganization>[]>, ImportOrganizationsValidator>();
+            serviceCollection.AddTransient<IImportMemberValidator<ImportableContact>, ImportMemberValidator<ImportableContact>>();
+            serviceCollection.AddTransient<IImportMemberValidator<ImportableOrganization>, ImportMemberValidator<ImportableOrganization>>();
+            serviceCollection.AddTransient<IImportAddressValidator<ImportableContact>, ImportAddressValidator<ImportableContact>>();
+            serviceCollection.AddTransient<IImportAddressValidator<ImportableOrganization>, ImportAddressValidator<ImportableOrganization>>();
 
             serviceCollection.AddTransient<IPasswordGenerator, PasswordGenerator>();
 

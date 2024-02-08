@@ -1,7 +1,6 @@
 using System.Linq;
 using FluentValidation;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -9,7 +8,6 @@ using Nager.Country;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
-using VirtoCommerce.CustomerExportImportModule.Data.Repositories;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.CustomerExportImportModule.Data.Validation;
 using VirtoCommerce.CustomerModule.Core.Services;
@@ -27,10 +25,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
 
         public void Initialize(IServiceCollection serviceCollection)
         {
-            // database initialization
-            var connectionString = Configuration.GetConnectionString("VirtoCommerce.CustomerExportImport") ?? Configuration.GetConnectionString("VirtoCommerce");
-            serviceCollection.AddDbContext<VirtoCommerceCustomerExportImportDbContext>(options => options.UseSqlServer(connectionString));
-
             serviceCollection.AddTransient<ICustomerExportPagedDataSourceFactory, CustomerExportPagedDataSourceFactory>();
             serviceCollection.AddTransient<IExportWriterFactory, ExportWriterFactory>();
             serviceCollection.AddTransient<ICustomerDataExporter, CustomerDataExporter>();
@@ -88,12 +82,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
                     ModuleId = ModuleInfo.Id,
                     Name = x
                 }).ToArray());
-
-            // ensure that all pending migrations are applied
-            using var serviceScope = appBuilder.ApplicationServices.CreateScope();
-            using var dbContext = serviceScope.ServiceProvider.GetRequiredService<VirtoCommerceCustomerExportImportDbContext>();
-            dbContext.Database.EnsureCreated();
-            dbContext.Database.Migrate();
         }
 
         public void Uninstall()

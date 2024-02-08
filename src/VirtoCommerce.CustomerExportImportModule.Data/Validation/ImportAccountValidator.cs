@@ -140,7 +140,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(x => x.Record.AccountStatus)
                 .MustAsync(async (accountStatus, _) =>
                 {
-                    var accountStatuses = await _settingsManager.GetObjectSettingAsync(PlatformConstants.Settings.Other.AccountStatuses.Name);
+                    var accountStatuses = await _settingsManager.GetObjectSettingAsync(PlatformConstants.Settings.Security.AccountStatuses.Name);
                     return accountStatuses.AllowedValues.Contains(accountStatus);
                 })
                 .When(x => !string.IsNullOrEmpty(x.Record.AccountStatus))

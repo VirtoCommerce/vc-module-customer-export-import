@@ -15,18 +15,12 @@
     <Folder Include="Caching\" />
     <Folder Include="Handlers\" />
     <Folder Include="Models\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="VirtoCommerce.AssetsModule.Data" Version="3.800.0" />
     <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.800.0" />
     <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.800.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Data.SqlServer" Version="3.800.0" />
     <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.800.0" />
   </ItemGroup>
 </Project>

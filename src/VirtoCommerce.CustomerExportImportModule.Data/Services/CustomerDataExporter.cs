@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core;
-using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Exceptions;
@@ -52,7 +52,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             exportProgress.Description = "Fetching...";
             progressCallback(exportProgress);
 
-            var dynamicProperties = await _dynamicPropertySearchService.SearchDynamicPropertiesAsync(new DynamicPropertySearchCriteria()
+            var dynamicProperties = await _dynamicPropertySearchService.SearchAsync(new DynamicPropertySearchCriteria()
             {
                 ObjectTypes = new List<string> { typeof(Contact).FullName, typeof(Organization).FullName },
                 Skip = 0,

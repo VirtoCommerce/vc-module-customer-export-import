@@ -4,8 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Moq;
-using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.AssetsModule.Core.Assets;
+using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Security;
 
@@ -28,8 +28,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         public static IDynamicPropertySearchService GetDynamicPropertySearchService(IList<DynamicProperty> dynamicProperties)
         {
             var dynamicPropertySearchServiceMock = new Mock<IDynamicPropertySearchService>();
-            dynamicPropertySearchServiceMock.Setup(x => x.SearchDynamicPropertiesAsync(It.IsAny<DynamicPropertySearchCriteria>()))
-                .Returns<DynamicPropertySearchCriteria>(_ => Task.FromResult(new DynamicPropertySearchResult
+            dynamicPropertySearchServiceMock.Setup(x => x.SearchAsync(It.IsAny<DynamicPropertySearchCriteria>(), It.IsAny<bool>()))
+                .Returns(Task.FromResult(new DynamicPropertySearchResult
                 {
                     Results = dynamicProperties,
                     TotalCount = dynamicProperties.Count
@@ -39,8 +39,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         public static IDynamicPropertyDictionaryItemsSearchService GetDynamicPropertyDictionaryItemsSearchService(IList<DynamicProperty> dynamicProperties, Dictionary<string, IList<DynamicPropertyDictionaryItem>> dictionaryItems)
         {
             var dynamicPropertySearchServiceMock = new Mock<IDynamicPropertyDictionaryItemsSearchService>();
-            dynamicPropertySearchServiceMock.Setup(x => x.SearchDictionaryItemsAsync(It.IsAny<DynamicPropertyDictionaryItemSearchCriteria>()))
-                .Returns<DynamicPropertyDictionaryItemSearchCriteria>(criteria =>
+            dynamicPropertySearchServiceMock.Setup(x => x.SearchAsync(It.IsAny<DynamicPropertyDictionaryItemSearchCriteria>(), It.IsAny<bool>()))
+                .Returns<DynamicPropertyDictionaryItemSearchCriteria, bool>((criteria, clone) =>
                 {
                     var results = dictionaryItems.ContainsKey(criteria.PropertyId) ? dictionaryItems[criteria.PropertyId] : new List<DynamicPropertyDictionaryItem>();
                     return Task.FromResult(new DynamicPropertyDictionaryItemSearchResult { Results = results, TotalCount = results.Count });

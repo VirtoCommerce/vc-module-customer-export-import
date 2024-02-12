@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CsvHelper.Configuration;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerExportImportModule.Data.ExportImport;
-using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.DynamicProperties;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
@@ -25,7 +25,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async Task<ICustomerImportPagedDataSource<TCsvCustomer>> CreateAsync<TCsvCustomer, TCustomer>(string filePath, int pageSize, CsvConfiguration configuration = null) where TCsvCustomer : CsvMember
         {
-            var dynamicPropertiesSearchResult = await _dynamicPropertySearchService.SearchDynamicPropertiesAsync(new DynamicPropertySearchCriteria
+            var dynamicPropertiesSearchResult = await _dynamicPropertySearchService.SearchAsync(new DynamicPropertySearchCriteria
             {
                 ObjectTypes = new List<string> { typeof(TCustomer).FullName },
                 Skip = 0,
@@ -37,7 +37,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             foreach (var dynamicProperty in dynamicProperties.Where(dynamicProperty => dynamicProperty.IsDictionary))
             {
                 var dynamicPropertyDictionaryItemsSearchResult =
-                    await _dynamicPropertyDictionaryItemsSearchService.SearchDictionaryItemsAsync(new DynamicPropertyDictionaryItemSearchCriteria { PropertyId = dynamicProperty.Id });
+                    await _dynamicPropertyDictionaryItemsSearchService.SearchAsync(new DynamicPropertyDictionaryItemSearchCriteria { PropertyId = dynamicProperty.Id });
                 dynamicPropertyDictionaryItems.Add(dynamicProperty.Id, dynamicPropertyDictionaryItemsSearchResult.Results);
             }
 

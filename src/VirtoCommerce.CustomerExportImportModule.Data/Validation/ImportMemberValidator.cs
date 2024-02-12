@@ -46,7 +46,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 })
                 .WithInvalidValueCodeAndMessage("Emails")
                 .WithImportState()
-                .DependentRules(() => {
+                .DependentRules(() =>
+                {
                     RuleFor(x => x.Record.Emails)
                         .Must(emailsColumnValue =>
                         {
@@ -92,7 +93,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 foreach (var dynamicProperty in dynamicProperties.Where(dynamicProperty => dynamicProperty.IsDictionary))
                 {
                     var dynamicPropertyDictionaryItemsSearchResult =
-                        await _dynamicPropertyDictionaryItemsSearchService.SearchDictionaryItemsAsync(new DynamicPropertyDictionaryItemSearchCriteria { PropertyId = dynamicProperty.Id });
+                        await _dynamicPropertyDictionaryItemsSearchService.SearchAsync(new DynamicPropertyDictionaryItemSearchCriteria { PropertyId = dynamicProperty.Id });
                     dynamicPropertyDictionaryItems.AddRange(dynamicPropertyDictionaryItemsSearchResult.Results);
                 }
             }

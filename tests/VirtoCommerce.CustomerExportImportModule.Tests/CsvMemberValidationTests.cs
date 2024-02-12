@@ -664,19 +664,19 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
         {
             var dynamicPropertyDictionaryItemsSearchService = new Mock<IDynamicPropertyDictionaryItemsSearchService>();
             dynamicPropertyDictionaryItemsSearchService
-                .Setup(x => x.SearchDictionaryItemsAsync(It.IsAny<DynamicPropertyDictionaryItemSearchCriteria>()))
-                .ReturnsAsync<DynamicPropertyDictionaryItemSearchCriteria, IDynamicPropertyDictionaryItemsSearchService, DynamicPropertyDictionaryItemSearchResult>(searchCriteria =>
+                .Setup(x => x.SearchAsync(It.IsAny<DynamicPropertyDictionaryItemSearchCriteria>(), It.IsAny<bool>()))
+                .Returns<DynamicPropertyDictionaryItemSearchCriteria, bool>((searchCriteria, clone) =>
                 {
                     var dynamicPropertyDictionaryItems = new List<DynamicPropertyDictionaryItem>
                     {
                         new() { PropertyId = "TestDictionary", Id = "Value1", Name = "Value1" },
                         new() { PropertyId = "TestDictionary", Id = "Value2", Name = "Value2" }
                     };
-                    return new DynamicPropertyDictionaryItemSearchResult
+                    return Task.FromResult(new DynamicPropertyDictionaryItemSearchResult
                     {
                         Results = dynamicPropertyDictionaryItems.Where(dynamicPropertyDictionaryItem => dynamicPropertyDictionaryItem.PropertyId == searchCriteria.PropertyId).ToList(),
                         TotalCount = dynamicPropertyDictionaryItems.Count
-                    };
+                    });
                 });
             return dynamicPropertyDictionaryItemsSearchService.Object;
         }
@@ -744,7 +744,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                     var settings = new List<ObjectSettingEntry>
                     {
                         new() { Name = PlatformConstants.Settings.Security.SecurityAccountTypes.Name, AllowedValues = new object[] { "Administrator", "Customer", "Manager" } },
-                        new() { Name = PlatformConstants.Settings.Other.AccountStatuses.Name, AllowedValues = new object[] { "Approved", "Deleted", "New", "Rejected" } },
+                        new() { Name = PlatformConstants.Settings.Security.AccountStatuses.Name, AllowedValues = new object[] { "Approved", "Deleted", "New", "Rejected" } },
                         new() { Name = ModuleConstants.Settings.General.AddressRegionStrongValidation.Name, DefaultValue = false, ValueType = SettingValueType.Boolean },
                     };
                     return settings.Find(setting => setting.Name == name);

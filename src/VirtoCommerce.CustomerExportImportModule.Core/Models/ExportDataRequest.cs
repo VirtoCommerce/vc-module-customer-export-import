@@ -1,9 +1,11 @@
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Model.Search;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Swagger;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
+    [SwaggerSchemaId("CustomerExportDataRequest")]
     public sealed class ExportDataRequest
     {
         public string Keyword { get; set; }

@@ -1,5 +1,8 @@
+using VirtoCommerce.Platform.Core.Swagger;
+
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
+    [SwaggerSchemaId("CustomerExportProgressInfo")]
     public sealed class ExportProgressInfo
     {
         public int ProcessedCount { get; set; }

@@ -4,10 +4,12 @@ using CsvHelper.Configuration.Attributes;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.DynamicProperties;
+using VirtoCommerce.Platform.Core.Swagger;
 using VirtoCommerce.StoreModule.Core.Model;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
+    [SwaggerSchemaId("CustomerExportableContact")]
     public sealed class ExportableContact : CsvContact
     {
         [Index(0)]

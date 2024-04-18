@@ -2,9 +2,11 @@ using System.Linq;
 using CsvHelper.Configuration.Attributes;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.Platform.Core.Common;
+using VirtoCommerce.Platform.Core.Swagger;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
+    [SwaggerSchemaId("CustomerExportableOrganization")]
     public sealed class ExportableOrganization : CsvOrganization
     {
         [Index(0)]

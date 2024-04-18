@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using VirtoCommerce.Platform.Core.PushNotifications;
+using VirtoCommerce.Platform.Core.Swagger;
 
 namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 {
+    [SwaggerSchemaId("CustomerExportPushNotification")]
     public sealed class ExportPushNotification : PushNotification
     {
         public ExportPushNotification(string creator)

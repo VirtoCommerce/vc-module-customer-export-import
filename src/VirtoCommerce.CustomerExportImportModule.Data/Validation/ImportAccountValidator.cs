@@ -54,6 +54,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .DependentRules(() =>
                 {
                     RuleFor(x => x.Record.AccountLogin)
+                        .Must(userName => string.IsNullOrEmpty(_userManager.Options.User.AllowedUserNameCharacters) ||
+                                          userName.All(c => _userManager.Options.User.AllowedUserNameCharacters.Contains(c)))
+                        .WithErrorCode(ModuleConstants.ValidationErrors.InvalidValue)
+                        .WithMessage((_, userName) =>
+                            {
+                                var invalidCharacters = string.Join(null, userName.Where(c => !_userManager.Options.User.AllowedUserNameCharacters.Contains(c)));
+                                return $"This row has invalid value in the column 'Account Login'. Invalid characters: '{invalidCharacters}'";
+                            })
+                        .WithImportState();
+                    RuleFor(x => x.Record.AccountLogin)
                         .MustAsync(async (thisRecord, userName, _) =>
                         {
                             var lastRecordWithAccountLogin = _allRecords

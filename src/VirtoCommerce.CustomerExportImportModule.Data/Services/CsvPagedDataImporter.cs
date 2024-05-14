@@ -140,13 +140,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-        protected static string GetReportFilePath(string filePath)
+        public static string GetReportFilePath(string filePath)
         {
-            var fileName = Uri.EscapeDataString(Path.GetFileName(filePath));
+            var fileName = Path.GetFileName(filePath);
             var fileExtension = Path.GetExtension(fileName);
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
             var reportFileName = $"{fileNameWithoutExtension}_report{fileExtension}";
-            var result = filePath.Replace(fileName, reportFileName);
+            var result = Uri.UnescapeDataString(filePath.Replace(fileName, reportFileName));
 
             return result;
         }

@@ -7,12 +7,12 @@ using CsvHelper;
 using FluentValidation;
 using FluentValidation.Results;
 using Nager.Country;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CustomerExportImportModule.Core;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
-using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
@@ -140,8 +140,9 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             }
         }
 
-        protected static string GetReportFilePath(string filePath)
+        public static string GetReportFilePath(string filePath)
         {
+            filePath = Uri.UnescapeDataString(filePath);
             var fileName = Path.GetFileName(filePath);
             var fileExtension = Path.GetExtension(fileName);
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);

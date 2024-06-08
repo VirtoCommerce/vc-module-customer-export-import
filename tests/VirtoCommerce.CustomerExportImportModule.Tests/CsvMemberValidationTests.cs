@@ -499,7 +499,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                             }
                         }
                     },
-                    ModuleConstants.ValidationErrors.InvalidValue, "Test1"
+                    ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy, "Test1"
                 };
             }
         }
@@ -627,7 +627,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var validationResult = await validator.ValidateAsync(importRecords);
 
             // Assert
-            var error = validationResult.Errors.First(validationError => validationError.ErrorCode == errorCode);
+            var error = validationResult.Errors.Find(validationError => validationError.ErrorCode == errorCode);
             Assert.NotNull(error);
             Assert.Equal(failedEntityFullName, (error.CustomState as ImportValidationState<ImportableContact>)?.InvalidRecord.Record.ContactFullName);
         }

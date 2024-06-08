@@ -119,8 +119,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                         .MustAsync(async (storeId, _) =>
                         {
                             var storeSearchResult = await _storeSearchService.SearchAsync(new StoreSearchCriteria { ObjectIds = new[] { storeId }, Take = 1 }, false);
-
-                            return (storeSearchResult.TotalCount == 1 && storeSearchResult.Results.First().Id == storeId);
+                            //Need to check for case-sensitive equality
+                            return storeSearchResult.Results.FirstOrDefault()?.Id == storeId;
                         })
                         .WithInvalidValueCodeAndMessage("Store Id")
                         .WithImportState();
@@ -131,7 +131,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 {
                     var contact = new Contact();
                     thisRecord.Record.PatchModel(contact);
-                    return await _passwordValidator.ValidateAsync(_userManager, contact.SecurityAccounts.FirstOrDefault(), password) == IdentityResult.Success;
+                    var user = contact.SecurityAccounts?.FirstOrDefault();
+                    return user is null || await _passwordValidator.ValidateAsync(_userManager, user, password) == IdentityResult.Success;
                 })
                 .When(x => !string.IsNullOrEmpty(x.Record.Password))
                 .WithErrorCode(ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy)
@@ -166,7 +167,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 return false;
             }
 
-            var contact = await _memberService.GetByIdAsync(account.MemberId, null, nameof(Contact)) as Contact;
+            var contact = await _memberService.GetByIdAsync(account.MemberId, nameof(MemberResponseGroup.Default), nameof(Contact)) as Contact;
             return contact?.FullName.EqualsInvariant(importRecord.ContactFullName) == true
                    && (contact.Id.EqualsInvariant(importRecord.Id)
                        || (!string.IsNullOrEmpty(contact.OuterId) && contact.OuterId.EqualsInvariant(importRecord.OuterId)));

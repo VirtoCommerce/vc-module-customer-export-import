@@ -131,8 +131,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 {
                     var contact = new Contact();
                     thisRecord.Record.PatchModel(contact);
-                    var user = contact.SecurityAccounts?.FirstOrDefault();
-                    return user is null || await _passwordValidator.ValidateAsync(_userManager, user, password) == IdentityResult.Success;
+                    return await _passwordValidator.ValidateAsync(_userManager, contact.SecurityAccounts.FirstOrDefault(), password) == IdentityResult.Success;
                 })
                 .When(x => !string.IsNullOrEmpty(x.Record.Password))
                 .WithErrorCode(ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy)

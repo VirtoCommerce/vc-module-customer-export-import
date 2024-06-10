@@ -123,7 +123,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                             if (storeSearchResult.TotalCount == 0)
                             {
                                 return false;
-
                             }
 
                             //Need to check for case-sensitive equality

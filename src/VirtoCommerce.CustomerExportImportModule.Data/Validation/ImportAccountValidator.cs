@@ -116,11 +116,23 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .DependentRules(() =>
                 {
                     RuleFor(x => x.Record.StoreId)
-                        .MustAsync(async (storeId, _) =>
+                        .MustAsync(async (thisRecord, storeId, _) =>
                         {
                             var storeSearchResult = await _storeSearchService.SearchAsync(new StoreSearchCriteria { ObjectIds = new[] { storeId }, Take = 1 }, false);
+
+                            if (storeSearchResult.TotalCount == 0)
+                            {
+                                return false;
+
+                            }
+
                             //Need to check for case-sensitive equality
-                            return storeSearchResult.Results.FirstOrDefault()?.Id == storeId;
+                            if (!StringComparer.Ordinal.Equals(storeSearchResult.Results.FirstOrDefault()?.Id, storeId))
+                            {
+                                thisRecord.Record.StoreId = storeSearchResult.Results.FirstOrDefault()?.Id;
+                            }
+
+                            return true;
                         })
                         .WithInvalidValueCodeAndMessage("Store Id")
                         .WithImportState();

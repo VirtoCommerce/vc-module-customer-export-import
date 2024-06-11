@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -36,12 +37,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             _allRecords = allRecords;
 
             When(x => x.Record.AdditionalLine != true
-                      && Array.Exists(new[]
-                      {
+                      && Array.Exists([
                           x.Record.AccountType, x.Record.AccountStatus, x.Record.AccountLogin,
                           x.Record.AccountEmail, x.Record.StoreId, x.Record.StoreName,
                           x.Record.EmailVerified.ToString(),
-                      }, field => !string.IsNullOrEmpty(field)),
+                      ], field => !string.IsNullOrEmpty(field)),
                 AttachValidators);
         }
 
@@ -116,23 +116,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .DependentRules(() =>
                 {
                     RuleFor(x => x.Record.StoreId)
-                        .MustAsync(async (thisRecord, storeId, _) =>
-                        {
-                            var storeSearchResult = await _storeSearchService.SearchAsync(new StoreSearchCriteria { ObjectIds = new[] { storeId }, Take = 1 }, false);
-
-                            if (storeSearchResult.TotalCount == 0)
-                            {
-                                return false;
-                            }
-
-                            //Need to check for case-sensitive equality
-                            if (!StringComparer.Ordinal.Equals(storeSearchResult.Results.FirstOrDefault()?.Id, storeId))
-                            {
-                                thisRecord.Record.StoreId = storeSearchResult.Results.FirstOrDefault()?.Id;
-                            }
-
-                            return true;
-                        })
+                        .MustAsync(ValidateStoreAsync)
                         .WithInvalidValueCodeAndMessage("Store Id")
                         .WithImportState();
                 });
@@ -181,6 +165,24 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             return contact?.FullName.EqualsInvariant(importRecord.ContactFullName) == true
                    && (contact.Id.EqualsInvariant(importRecord.Id)
                        || (!string.IsNullOrEmpty(contact.OuterId) && contact.OuterId.EqualsInvariant(importRecord.OuterId)));
+        }
+
+        private async Task<bool> ValidateStoreAsync(ImportRecord<ImportableContact> thisRecord, string storeId, CancellationToken _)
+        {
+            var storeSearchResult = await _storeSearchService.SearchAsync(new StoreSearchCriteria { ObjectIds = new[] { storeId }, Take = 1 }, false);
+            if (storeSearchResult.TotalCount == 0)
+            {
+                return false;
+            }
+
+            //Need to check for case-sensitive equality
+            var resultId = storeSearchResult.Results.FirstOrDefault()?.Id;
+            if (resultId is not null && storeId != resultId)
+            {
+                thisRecord.Record.StoreId = resultId;
+            }
+
+            return true;
         }
     }
 }

@@ -13,7 +13,7 @@ using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.StoreModule.Core.Model.Search;
+using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
@@ -23,16 +23,16 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IPasswordValidator<ApplicationUser> _passwordValidator;
         private readonly IMemberService _memberService;
-        private readonly IStoreSearchService _storeSearchService;
+        private readonly IStoreService _storeService;
         private readonly ISettingsManager _settingsManager;
         private readonly ImportRecord<ImportableContact>[] _allRecords;
 
-        public ImportAccountValidator(UserManager<ApplicationUser> userManager, IPasswordValidator<ApplicationUser> passwordValidator, IMemberService memberService, IStoreSearchService storeSearchService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
+        public ImportAccountValidator(UserManager<ApplicationUser> userManager, IPasswordValidator<ApplicationUser> passwordValidator, IMemberService memberService, IStoreService storeService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
         {
             _userManager = userManager;
             _passwordValidator = passwordValidator;
             _memberService = memberService;
-            _storeSearchService = storeSearchService;
+            _storeService = storeService;
             _settingsManager = settingsManager;
             _allRecords = allRecords;
 
@@ -167,20 +167,17 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                        || (!string.IsNullOrEmpty(contact.OuterId) && contact.OuterId.EqualsInvariant(importRecord.OuterId)));
         }
 
-        private async Task<bool> ValidateStoreAsync(ImportRecord<ImportableContact> thisRecord, string storeId, CancellationToken _)
+        private async Task<bool> ValidateStoreAsync(ImportRecord<ImportableContact> record, string storeId, CancellationToken _)
         {
-            var storeSearchResult = await _storeSearchService.SearchAsync(new StoreSearchCriteria { ObjectIds = new[] { storeId }, Take = 1 }, false);
-            if (storeSearchResult.TotalCount == 0)
+            var store = await _storeService.GetNoCloneAsync(storeId, nameof(StoreResponseGroup.None));
+
+            if (store is null)
             {
                 return false;
             }
 
-            //Need to check for case-sensitive equality
-            var resultId = storeSearchResult.Results.FirstOrDefault()?.Id;
-            if (resultId is not null && storeId != resultId)
-            {
-                thisRecord.Record.StoreId = resultId;
-            }
+            // Fix potential case difference
+            record.Record.StoreId = store.Id;
 
             return true;
         }

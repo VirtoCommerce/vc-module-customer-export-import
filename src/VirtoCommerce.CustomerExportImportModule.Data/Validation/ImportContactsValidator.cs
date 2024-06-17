@@ -8,13 +8,13 @@ using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
-    public sealed class ImportContactsValidator: AbstractValidator<ImportRecord<ImportableContact>[]>
+    public sealed class ImportContactsValidator : AbstractValidator<ImportRecord<ImportableContact>[]>
     {
         private readonly IImportMemberValidator<ImportableContact> _memberValidator;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IPasswordValidator<ApplicationUser> _passwordValidator;
         private readonly IMemberService _memberService;
-        private readonly IStoreSearchService _storeSearchService;
+        private readonly IStoreService _storeService;
         private readonly ISettingsManager _settingsManager;
 
         public ImportContactsValidator(
@@ -22,14 +22,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             SignInManager<ApplicationUser> signInManager,
             IPasswordValidator<ApplicationUser> passwordValidator,
             IMemberService memberService,
-            IStoreSearchService storeSearchService,
+            IStoreService storeService,
             ISettingsManager settingsManager)
         {
             _memberValidator = memberValidator;
             _signInManager = signInManager;
             _passwordValidator = passwordValidator;
             _memberService = memberService;
-            _storeSearchService = storeSearchService;
+            _storeService = storeService;
             _settingsManager = settingsManager;
 
             AttachValidators();
@@ -40,7 +40,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
             RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAreNotDuplicatesValidator<ImportableContact>());
             RuleFor(importRecords => importRecords).SetValidator(_ => new ImportEntitiesAdditionalLinesValidator<ImportableContact>());
             RuleForEach(importRecords => importRecords).SetValidator(_memberValidator);
-            RuleForEach(importRecords => importRecords).SetValidator(allRecords => new ImportContactValidator(_signInManager.UserManager, _passwordValidator, _memberService, _storeSearchService, _settingsManager, allRecords));
+            RuleForEach(importRecords => importRecords).SetValidator(allRecords => new ImportContactValidator(_signInManager.UserManager, _passwordValidator, _memberService, _storeService, _settingsManager, allRecords));
         }
     }
 }

@@ -9,21 +9,21 @@ using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
 {
-    public class ImportContactValidator: AbstractValidator<ImportRecord<ImportableContact>>
+    public class ImportContactValidator : AbstractValidator<ImportRecord<ImportableContact>>
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IPasswordValidator<ApplicationUser> _passwordValidator;
         private readonly IMemberService _memberService;
-        private readonly IStoreSearchService _storeSearchService;
+        private readonly IStoreService _storeService;
         private readonly ISettingsManager _settingsManager;
         private readonly ImportRecord<ImportableContact>[] _allRecords;
 
-        public ImportContactValidator(UserManager<ApplicationUser> userManager, IPasswordValidator<ApplicationUser> passwordValidator, IMemberService memberService, IStoreSearchService storeSearchService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
+        public ImportContactValidator(UserManager<ApplicationUser> userManager, IPasswordValidator<ApplicationUser> passwordValidator, IMemberService memberService, IStoreService storeService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
         {
             _userManager = userManager;
             _passwordValidator = passwordValidator;
             _memberService = memberService;
-            _storeSearchService = storeSearchService;
+            _storeService = storeService;
             _settingsManager = settingsManager;
             _allRecords = allRecords;
             AttachValidators();
@@ -127,7 +127,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .WithExceededMaxLengthCodeAndMessage("Preferred Communication", 64)
                 .WithImportState();
 
-            RuleFor(x => x).SetValidator(_ => new ImportAccountValidator(_userManager, _passwordValidator, _memberService, _storeSearchService, _settingsManager, _allRecords));
+            RuleFor(x => x).SetValidator(_ => new ImportAccountValidator(_userManager, _passwordValidator, _memberService, _storeService, _settingsManager, _allRecords));
         }
     }
 }

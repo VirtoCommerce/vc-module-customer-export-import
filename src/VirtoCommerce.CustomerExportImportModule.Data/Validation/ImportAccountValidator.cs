@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +13,7 @@ using VirtoCommerce.Platform.Core;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
-using VirtoCommerce.StoreModule.Core.Model.Search;
+using VirtoCommerce.StoreModule.Core.Model;
 using VirtoCommerce.StoreModule.Core.Services;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
@@ -22,26 +23,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IPasswordValidator<ApplicationUser> _passwordValidator;
         private readonly IMemberService _memberService;
-        private readonly IStoreSearchService _storeSearchService;
+        private readonly IStoreService _storeService;
         private readonly ISettingsManager _settingsManager;
         private readonly ImportRecord<ImportableContact>[] _allRecords;
 
-        public ImportAccountValidator(UserManager<ApplicationUser> userManager, IPasswordValidator<ApplicationUser> passwordValidator, IMemberService memberService, IStoreSearchService storeSearchService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
+        public ImportAccountValidator(UserManager<ApplicationUser> userManager, IPasswordValidator<ApplicationUser> passwordValidator, IMemberService memberService, IStoreService storeService, ISettingsManager settingsManager, ImportRecord<ImportableContact>[] allRecords)
         {
             _userManager = userManager;
             _passwordValidator = passwordValidator;
             _memberService = memberService;
-            _storeSearchService = storeSearchService;
+            _storeService = storeService;
             _settingsManager = settingsManager;
             _allRecords = allRecords;
 
             When(x => x.Record.AdditionalLine != true
-                      && Array.Exists(new[]
-                      {
+                      && Array.Exists([
                           x.Record.AccountType, x.Record.AccountStatus, x.Record.AccountLogin,
                           x.Record.AccountEmail, x.Record.StoreId, x.Record.StoreName,
                           x.Record.EmailVerified.ToString(),
-                      }, field => !string.IsNullOrEmpty(field)),
+                      ], field => !string.IsNullOrEmpty(field)),
                 AttachValidators);
         }
 
@@ -116,11 +116,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 .DependentRules(() =>
                 {
                     RuleFor(x => x.Record.StoreId)
-                        .MustAsync(async (storeId, _) =>
-                        {
-                            var storeSearchResult = await _storeSearchService.SearchAsync(new StoreSearchCriteria { ObjectIds = new[] { storeId }, Take = 0 }, false);
-                            return storeSearchResult.TotalCount == 1;
-                        })
+                        .MustAsync(ValidateStoreAsync)
                         .WithInvalidValueCodeAndMessage("Store Id")
                         .WithImportState();
                 });
@@ -165,10 +161,25 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                 return false;
             }
 
-            var contact = await _memberService.GetByIdAsync(account.MemberId, null, nameof(Contact)) as Contact;
+            var contact = await _memberService.GetByIdAsync(account.MemberId, nameof(MemberResponseGroup.Default), nameof(Contact)) as Contact;
             return contact?.FullName.EqualsInvariant(importRecord.ContactFullName) == true
                    && (contact.Id.EqualsInvariant(importRecord.Id)
                        || (!string.IsNullOrEmpty(contact.OuterId) && contact.OuterId.EqualsInvariant(importRecord.OuterId)));
+        }
+
+        private async Task<bool> ValidateStoreAsync(ImportRecord<ImportableContact> record, string storeId, CancellationToken _)
+        {
+            var store = await _storeService.GetNoCloneAsync(storeId, nameof(StoreResponseGroup.None));
+
+            if (store is null)
+            {
+                return false;
+            }
+
+            // Fix potential case difference
+            record.Record.StoreId = store.Id;
+
+            return true;
         }
     }
 }

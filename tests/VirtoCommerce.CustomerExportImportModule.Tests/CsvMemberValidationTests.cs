@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +16,6 @@ using VirtoCommerce.Platform.Core.DynamicProperties;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
 using VirtoCommerce.StoreModule.Core.Model;
-using VirtoCommerce.StoreModule.Core.Model.Search;
 using VirtoCommerce.StoreModule.Core.Services;
 using Xunit;
 
@@ -499,7 +499,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
                             }
                         }
                     },
-                    ModuleConstants.ValidationErrors.InvalidValue, "Test1"
+                    ModuleConstants.ValidationErrors.PasswordDoesntMeetSecurityPolicy, "Test1"
                 };
             }
         }
@@ -627,7 +627,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             var validationResult = await validator.ValidateAsync(importRecords);
 
             // Assert
-            var error = validationResult.Errors.First(validationError => validationError.ErrorCode == errorCode);
+            var error = validationResult.Errors.Find(validationError => validationError.ErrorCode == errorCode);
             Assert.NotNull(error);
             Assert.Equal(failedEntityFullName, (error.CustomState as ImportValidationState<ImportableContact>)?.InvalidRecord.Record.ContactFullName);
         }
@@ -713,23 +713,19 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             return memberServiceMock.Object;
         }
 
-        private static IStoreSearchService GetStoreSearchService()
+        private static IStoreService GetStoreService()
         {
-            var storeSearchServiceMock = new Mock<IStoreSearchService>();
+            var storeSearchServiceMock = new Mock<IStoreService>();
             storeSearchServiceMock
-                .Setup(x => x.SearchAsync(It.IsAny<StoreSearchCriteria>(), It.IsAny<bool>()))
-                .ReturnsAsync((StoreSearchCriteria criteria, bool _) =>
+                .Setup(x => x.GetAsync(It.IsAny<IList<string>>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .ReturnsAsync((IList<string> ids, string _, bool _) =>
                 {
                     var stores = new List<Store>
                     {
                         new() { Id = "TestStore", Name = "Test Store" },
                         new() { Id = "TestStore2", Name = "Test Store 2" }
                     };
-                    return new StoreSearchResult
-                    {
-                        Results = stores.Where(store => criteria.ObjectIds.Contains(store.Id)).ToList(),
-                        TotalCount = stores.Count,
-                    };
+                    return stores.Where(store => ids.Contains(store.Id, StringComparer.OrdinalIgnoreCase)).ToList();
                 });
             return storeSearchServiceMock.Object;
         }
@@ -760,7 +756,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
 
         private static ImportMemberValidator<ImportableOrganization> GetOrganizationMemberValidator() => new(GetOrganizationAddressValidator(), GetCountriesService(), GetDynamicPropertyDictionaryItemsSearchService());
 
-        private static ImportContactsValidator GetContactsValidator() => new(GetContactMemberValidator(), GetSignInManager(), GetPasswordValidator(), GetMemberService(), GetStoreSearchService(), GetSettingsManager());
+        private static ImportContactsValidator GetContactsValidator() => new(GetContactMemberValidator(), GetSignInManager(), GetPasswordValidator(), GetMemberService(), GetStoreService(), GetSettingsManager());
 
         private static ImportOrganizationsValidator GetOrganizationsValidator() => new(GetOrganizationMemberValidator());
     }

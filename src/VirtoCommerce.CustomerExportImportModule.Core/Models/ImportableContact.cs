@@ -57,19 +57,17 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 if ((!string.IsNullOrEmpty(AccountLogin) || !string.IsNullOrEmpty(AccountEmail))
                     && !target.SecurityAccounts.Any(x => x.UserName.EqualsInvariant(AccountLogin) && x.Email.EqualsInvariant(AccountEmail)))
                 {
-                    target.SecurityAccounts.Add(
-                        new ApplicationUser
-                        {
-                            StoreId = StoreId,
-                            UserName = AccountLogin,
-                            Email = AccountEmail,
-                            UserType = AccountType,
-                            Status = AccountStatus,
-                            EmailConfirmed = EmailVerified ?? false,
-                            Password = Password,
-                            PasswordExpired = true,
-                        }
-                    );
+                    var user = AbstractTypeFactory<ApplicationUser>.TryCreateInstance();
+                    user.StoreId = StoreId;
+                    user.UserName = AccountLogin;
+                    user.Email = AccountEmail;
+                    user.UserType = AccountType;
+                    user.Status = AccountStatus;
+                    user.EmailConfirmed = EmailVerified ?? false;
+                    user.Password = Password;
+                    user.PasswordExpired = true;
+
+                    target.SecurityAccounts.Add(user);
                 }
             }
 

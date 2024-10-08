@@ -18,9 +18,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="VirtoCommerce.AssetsModule.Data" Version="3.800.0" />
-    <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.800.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.800.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.800.0" />
+    <PackageReference Include="VirtoCommerce.AssetsModule.Data" Version="3.808.0" />
+    <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.817.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.853.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.853.0" />
   </ItemGroup>
 </Project>

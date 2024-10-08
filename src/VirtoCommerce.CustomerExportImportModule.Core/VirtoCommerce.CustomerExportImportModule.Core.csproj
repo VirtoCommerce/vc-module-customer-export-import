@@ -9,13 +9,13 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CsvHelper" Version="30.0.1" />
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="Nager.Country" Version="4.0.0" />
-    <PackageReference Include="VirtoCommerce.AssetsModule.Core" Version="3.800.0" />
-    <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.800.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.800.0" />
-    <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.800.0" />
+    <PackageReference Include="VirtoCommerce.AssetsModule.Core" Version="3.808.0" />
+    <PackageReference Include="VirtoCommerce.CustomerModule.Core" Version="3.817.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Core" Version="3.853.0" />
+    <PackageReference Include="VirtoCommerce.StoreModule.Core" Version="3.809.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Events\" />

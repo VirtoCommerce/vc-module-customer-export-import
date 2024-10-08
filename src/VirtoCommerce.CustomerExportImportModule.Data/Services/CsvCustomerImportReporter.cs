@@ -1,8 +1,8 @@
 using System.IO;
 using System.Threading.Tasks;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
-using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 
 namespace VirtoCommerce.CustomerExportImportModule.Data.Services
@@ -29,7 +29,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async Task WriteAsync(ImportError error)
         {
-            using (await AsyncLock.GetLockByKey(FilePath).GetReleaserAsync())
+            using (await AsyncLock.GetLockByKey(FilePath).LockAsync())
             {
                 ReportIsNotEmpty = true;
                 await _streamWriter.WriteLineAsync(GetLine(error));
@@ -38,7 +38,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async Task WriteHeaderAsync(string header)
         {
-            using (await AsyncLock.GetLockByKey(FilePath).GetReleaserAsync())
+            using (await AsyncLock.GetLockByKey(FilePath).LockAsync())
             {
                 await _streamWriter.WriteLineAsync($"{ErrorsColumnName}{_delimiter}{header}");
             }
@@ -46,13 +46,13 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
         public async ValueTask DisposeAsync()
         {
-            using (await AsyncLock.GetLockByKey(FilePath).GetReleaserAsync())
+            using (await AsyncLock.GetLockByKey(FilePath).LockAsync())
             {
                 await _streamWriter.DisposeAsync();
 
                 if (!ReportIsNotEmpty)
                 {
-                    await _blobStorageProvider.RemoveAsync(new[] { FilePath });
+                    await _blobStorageProvider.RemoveAsync([FilePath]);
                 }
             }
         }

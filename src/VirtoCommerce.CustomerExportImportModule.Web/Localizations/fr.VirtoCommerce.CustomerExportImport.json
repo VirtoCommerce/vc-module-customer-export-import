@@ -1,0 +1,130 @@
+{
+  "customerExportImport": {
+    "blades": {
+      "export-processing": {
+        "title": "Progression de l'exportation",
+        "labels": {
+          "start": "Début",
+          "end": "Fin",
+          "errors": "Nombre d'erreurs",
+          "total": "Nombre total",
+          "processed": "Nombre traité",
+          "contacts-url": "Télécharger les contacts :",
+          "organizations-url": "Télécharger les organisations :",
+          "error-log": "Erreurs"
+        }
+      },
+      "file-upload": {
+        "title-root": "Importer dans la racine",
+        "title-member": "Importer dans {{member}}",
+        "subtitle": "Télécharger CSV",
+        "data-type-placeholder": "Sélectionnez le type de données à importer",
+        "data-type-description": "Sélectionnez le type de données que vous souhaitez importer",
+        "labels": {
+          "progress": "Progression",
+          "data-type": "Type de données"
+        },
+        "drag-and-drop": {
+          "placeholder": "Glissez et déposez votre fichier ici",
+          "or": "ou ",
+          "link": "parcourir vos fichiers"
+        },
+        "upload-result": {
+          "failed": "Échec du téléchargement",
+          "success": "Téléchargé",
+          "max-size-error": "La taille maximale du fichier est de {{ fileMaxSize }}. Votre fichier est trop volumineux. Essayez d'en télécharger un autre",
+          "file-type-error": "Le fichier que vous essayez de télécharger a un format invalide. Téléchargez un fichier CSV"
+        },
+        "actions": {
+          "preview": "Aperçu",
+          "delete": "Supprimer"
+        }
+      },
+      "import-preview": {
+        "title": "Aperçu",
+        "subtitle": "Aperçu du fichier CSV que vous allez télécharger",
+        "preview-legend": "Utilisez le défilement horizontal pour voir toutes les colonnes dans l'aperçu de l'importation",
+        "labels": {
+          "preview-count": "Nombre d'aperçus :"
+        },
+        "close": "Fermer"
+      },
+      "import-processing": {
+        "title": "Progression de l'importation",
+        "subtitles": {
+          "contacts": "Contacts",
+          "errors": "Erreurs"
+        },
+        "labels": {
+          "start": "Début",
+          "end": "Fin",
+          "lines-created": "Lignes créées",
+          "lines-updated": "Lignes mises à jour",
+          "error-count": "Nombre d'erreurs",
+          "errors-report": "URL pour télécharger le rapport d'erreurs :",
+          "error-log": "Erreurs"
+        }
+      }
+    },
+    "dialogs": {
+      "csv-file-delete": {
+        "title": "Supprimer le CSV",
+        "subtitle": "Êtes-vous sûr de vouloir supprimer ce fichier CSV ?"
+      },
+      "csv-file-delete-and-close-preview": {
+        "title": "Supprimer le CSV",
+        "subtitle": "Êtes-vous sûr de vouloir fermer l'aperçu et supprimer ce fichier ?"
+      },
+      "customer-export": {
+        "title": "Exporter les contacts",
+        "all": "Tous",
+        "from": "de",
+        "organization": "organisation",
+        "main-text-end": " sera exporté dans un fichier CSV",
+        "subtitle-empty-export": "Vous n'avez sélectionné aucun contact ou organisation",
+        "contacts": "contacts",
+        "organizations": "organisations",
+        "export": "Exporter"
+      },
+      "customer-import": {
+        "title-contacts": "Importer des contacts",
+        "title-organizations": "Importer des organisations",
+        "contacts": "lignes de contacts",
+        "organizations": "lignes d'organisations",
+        "main-text-middle": "sera importé dans le",
+        "root": "racine",
+        "current-organization": "organisation actuelle",
+        "import": "Importer"
+      },
+      "customer-warning": {
+        "title": "Exporter les contacts et les organisations",
+        "main-text-beginning": "Vous avez sélectionné",
+        "items": "éléments",
+        "main-text-middle": "(y compris ceux imbriqués), alors que vous ne pouvez pas exporter plus de",
+        "main-text-end": "sélectionnez un nombre valide d'éléments et réessayez."
+      }
+    },
+    "validation-errors": {
+      "file-not-existed": "Le fichier n'existe pas",
+      "exceeding-file-max-size": "La taille maximale du fichier est de {{ fileMaxSize }}. Votre fichier est trop volumineux. Essayez d'en télécharger un autre",
+      "wrong-delimiter": "Délimiteur invalide. Utilisez uniquement le point-virgule (;) comme délimiteur",
+      "exceeding-line-limits": "Nous ne pouvons pas importer votre fichier, car le nombre maximal de lignes à importer est de {{ importLimitOfLines }}. Votre fichier contient actuellement {{ linesCount }} lignes",
+      "missing-required-columns": "Nous ne pouvons pas importer votre fichier, car les colonnes requises suivantes : \\\"{{ missedColumns }}\\\" sont manquantes",
+      "no-data": "Ce fichier ne contient pas de données"
+    }
+  },
+  "permissions": {
+    "customer:simpleExport": "Exporter les données client",
+    "customer:simpleImport": "Importer les données client"
+  },
+  "settings": {
+    "CustomerExportImport": {
+      "Import": {
+        "AddressRegionStrongValidation": {
+          "title": "Validation stricte de la région d'adresse",
+          "description": "Activez pour valider la région d'adresse par rapport à la liste des régions pour le pays. Si la région n'est pas trouvée, la validation échouera"
+        }
+      }
+    }
+  }
+}

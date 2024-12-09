@@ -1,0 +1,130 @@
+{
+  "customerExportImport": {
+    "blades": {
+      "export-processing": {
+        "title": "エクスポートの進行状況",
+        "labels": {
+          "start": "開始",
+          "end": "終了",
+          "errors": "エラー数",
+          "total": "合計数",
+          "processed": "処理済み数",
+          "contacts-url": "連絡先をダウンロード:",
+          "organizations-url": "組織をダウンロード:",
+          "error-log": "エラー"
+        }
+      },
+      "file-upload": {
+        "title-root": "ルートにインポート",
+        "title-member": "{{member}}にインポート",
+        "subtitle": "CSVをアップロード",
+        "data-type-placeholder": "インポートするデータタイプを選択",
+        "data-type-description": "インポートしたいデータのタイプを選択してください",
+        "labels": {
+          "progress": "進行状況",
+          "data-type": "データタイプ"
+        },
+        "drag-and-drop": {
+          "placeholder": "ここにファイルをドラッグ＆ドロップ",
+          "or": "または",
+          "link": "ファイルを参照"
+        },
+        "upload-result": {
+          "failed": "アップロードに失敗しました",
+          "success": "アップロード完了",
+          "max-size-error": "最大ファイルサイズは{{ fileMaxSize }}です。ファイルサイズが大きすぎます。別のファイルをアップロードしてください",
+          "file-type-error": "アップロードしようとしているファイルの形式が無効です。CSVファイルをアップロードしてください"
+        },
+        "actions": {
+          "preview": "プレビュー",
+          "delete": "削除"
+        }
+      },
+      "import-preview": {
+        "title": "プレビュー",
+        "subtitle": "アップロードしようとしているCSVファイルのプレビュー",
+        "preview-legend": "インポートプレビューで全ての列を見るには、横スクロールを使用してください",
+        "labels": {
+          "preview-count": "プレビュー数:"
+        },
+        "close": "閉じる"
+      },
+      "import-processing": {
+        "title": "インポートの進行状況",
+        "subtitles": {
+          "contacts": "連絡先",
+          "errors": "エラー"
+        },
+        "labels": {
+          "start": "開始",
+          "end": "終了",
+          "lines-created": "作成された行",
+          "lines-updated": "更新された行",
+          "error-count": "エラー数",
+          "errors-report": "エラーレポートをダウンロードするURL:",
+          "error-log": "エラー"
+        }
+      }
+    },
+    "dialogs": {
+      "csv-file-delete": {
+        "title": "CSVを削除",
+        "subtitle": "このCSVファイルを削除してもよろしいですか？"
+      },
+      "csv-file-delete-and-close-preview": {
+        "title": "CSVを削除",
+        "subtitle": "プレビューを閉じてこのファイルを削除してもよろしいですか？"
+      },
+      "customer-export": {
+        "title": "連絡先をエクスポート",
+        "all": "すべて",
+        "from": "から",
+        "organization": "組織",
+        "main-text-end": "はCSVファイルにエクスポートされます",
+        "subtitle-empty-export": "連絡先または組織が選択されていません",
+        "contacts": "連絡先",
+        "organizations": "組織",
+        "export": "エクスポート"
+      },
+      "customer-import": {
+        "title-contacts": "連絡先をインポート",
+        "title-organizations": "組織をインポート",
+        "contacts": "連絡先の行",
+        "organizations": "組織の行",
+        "main-text-middle": "にインポートされます",
+        "root": "ルート",
+        "current-organization": "現在の組織",
+        "import": "インポート"
+      },
+      "customer-warning": {
+        "title": "連絡先と組織をエクスポート",
+        "main-text-beginning": "選択した項目は",
+        "items": "項目",
+        "main-text-middle": "（ネストされたものを含む）ですが、エクスポートできる最大数を超えています",
+        "main-text-end": "有効な項目数を選択して、再試行してください。"
+      }
+    },
+    "validation-errors": {
+      "file-not-existed": "ファイルが存在しません",
+      "exceeding-file-max-size": "最大ファイルサイズは{{ fileMaxSize }}です。ファイルサイズが大きすぎます。別のファイルをアップロードしてください",
+      "wrong-delimiter": "無効な区切り文字です。区切り文字にはセミコロン（;）のみを使用してください",
+      "exceeding-line-limits": "ファイルをインポートできません。インポート可能な最大行数は{{ importLimitOfLines }}です。現在のファイルには{{ linesCount }}行があります",
+      "missing-required-columns": "ファイルをインポートできません。必要な列が不足しています: \\\"{{ missedColumns }}\\\"",
+      "no-data": "このファイルにはデータがありません"
+    }
+  },
+  "permissions": {
+    "customer:simpleExport": "顧客データをエクスポート",
+    "customer:simpleImport": "顧客データをインポート"
+  },
+  "settings": {
+    "CustomerExportImport": {
+      "Import": {
+        "AddressRegionStrongValidation": {
+          "title": "住所地域の厳格な検証",
+          "description": "国の地域リストに対して住所地域を検証するために有効にします。地域が見つからない場合、検証は失敗します"
+        }
+      }
+    }
+  }
+}

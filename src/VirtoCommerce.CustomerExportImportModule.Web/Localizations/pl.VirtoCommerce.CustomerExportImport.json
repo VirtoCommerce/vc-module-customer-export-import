@@ -1,0 +1,130 @@
+{
+  "customerExportImport": {
+    "blades": {
+      "export-processing": {
+        "title": "Postęp eksportu",
+        "labels": {
+          "start": "Start",
+          "end": "Koniec",
+          "errors": "Liczba błędów",
+          "total": "Łączna liczba",
+          "processed": "Przetworzona liczba",
+          "contacts-url": "Pobierz kontakty:",
+          "organizations-url": "Pobierz organizacje:",
+          "error-log": "Błędy"
+        }
+      },
+      "file-upload": {
+        "title-root": "Importuj do głównego",
+        "title-member": "Importuj do {{member}}",
+        "subtitle": "Prześlij CSV",
+        "data-type-placeholder": "Wybierz typ danych do importu",
+        "data-type-description": "Wybierz typ danych, które chcesz zaimportować",
+        "labels": {
+          "progress": "Postęp",
+          "data-type": "Typ danych"
+        },
+        "drag-and-drop": {
+          "placeholder": "Przeciągnij i upuść swój plik tutaj",
+          "or": "lub ",
+          "link": "przeglądaj swoje pliki"
+        },
+        "upload-result": {
+          "failed": "Przesyłanie nie powiodło się",
+          "success": "Przesłano",
+          "max-size-error": "Maksymalny rozmiar pliku to {{ fileMaxSize }}. Twój plik jest za duży. Spróbuj przesłać inny",
+          "file-type-error": "Plik, który próbujesz przesłać, ma nieprawidłowy format. Prześlij plik CSV"
+        },
+        "actions": {
+          "preview": "Podgląd",
+          "delete": "Usuń"
+        }
+      },
+      "import-preview": {
+        "title": "Podgląd",
+        "subtitle": "Podgląd pliku CSV, który zamierzasz przesłać",
+        "preview-legend": "Użyj przewijania poziomego, aby zobaczyć wszystkie kolumny w podglądzie importu",
+        "labels": {
+          "preview-count": "Liczba podglądów:"
+        },
+        "close": "Zamknij"
+      },
+      "import-processing": {
+        "title": "Postęp importu",
+        "subtitles": {
+          "contacts": "Kontakty",
+          "errors": "Błędy"
+        },
+        "labels": {
+          "start": "Start",
+          "end": "Koniec",
+          "lines-created": "Utworzone linie",
+          "lines-updated": "Zaktualizowane linie",
+          "error-count": "Liczba błędów",
+          "errors-report": "URL do pobrania raportu błędów:",
+          "error-log": "Błędy"
+        }
+      }
+    },
+    "dialogs": {
+      "csv-file-delete": {
+        "title": "Usuń CSV",
+        "subtitle": "Czy na pewno chcesz usunąć ten plik CSV?"
+      },
+      "csv-file-delete-and-close-preview": {
+        "title": "Usuń CSV",
+        "subtitle": "Czy na pewno chcesz zamknąć podgląd i usunąć ten plik?"
+      },
+      "customer-export": {
+        "title": "Eksportuj kontakty",
+        "all": "Wszystkie",
+        "from": "z",
+        "organization": "organizacja",
+        "main-text-end": " zostanie wyeksportowany do pliku CSV",
+        "subtitle-empty-export": "Nie wybrałeś żadnych kontaktów ani organizacji",
+        "contacts": "kontakty",
+        "organizations": "organizacje",
+        "export": "Eksportuj"
+      },
+      "customer-import": {
+        "title-contacts": "Importuj kontakty",
+        "title-organizations": "Importuj organizacje",
+        "contacts": "linie kontaktów",
+        "organizations": "linie organizacji",
+        "main-text-middle": "zostanie zaimportowany do",
+        "root": "głównego",
+        "current-organization": "bieżąca organizacja",
+        "import": "Importuj"
+      },
+      "customer-warning": {
+        "title": "Eksportuj kontakty i organizacje",
+        "main-text-beginning": "Wybrałeś",
+        "items": "elementy",
+        "main-text-middle": "(w tym zagnieżdżone), podczas gdy nie możesz eksportować więcej niż",
+        "main-text-end": "wybierz prawidłową liczbę elementów i spróbuj ponownie."
+      }
+    },
+    "validation-errors": {
+      "file-not-existed": "Plik nie istnieje",
+      "exceeding-file-max-size": "Maksymalny rozmiar pliku to {{ fileMaxSize }}. Twój plik jest za duży. Spróbuj przesłać inny",
+      "wrong-delimiter": "Nieprawidłowy separator. Używaj tylko średnika (;) jako separatora",
+      "exceeding-line-limits": "Nie możemy zaimportować twojego pliku, ponieważ maksymalna liczba linii do importu to {{ importLimitOfLines }}. Twój plik ma obecnie {{ linesCount }} linii",
+      "missing-required-columns": "Nie możemy zaimportować twojego pliku, ponieważ brakuje następujących wymaganych kolumn: \\\"{{ missedColumns }}\\\"",
+      "no-data": "Ten plik nie zawiera danych"
+    }
+  },
+  "permissions": {
+    "customer:simpleExport": "Eksportuj dane klienta",
+    "customer:simpleImport": "Importuj dane klienta"
+  },
+  "settings": {
+    "CustomerExportImport": {
+      "Import": {
+        "AddressRegionStrongValidation": {
+          "title": "Silna walidacja regionu adresu",
+          "description": "Włącz, aby zweryfikować region adresu w stosunku do listy regionów dla kraju. Jeśli region nie zostanie znaleziony, walidacja zakończy się niepowodzeniem"
+        }
+      }
+    }
+  }
+}

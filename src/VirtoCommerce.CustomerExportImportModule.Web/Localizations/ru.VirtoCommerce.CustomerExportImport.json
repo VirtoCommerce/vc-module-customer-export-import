@@ -1,0 +1,130 @@
+{
+  "customerExportImport": {
+    "blades": {
+      "export-processing": {
+        "title": "Прогресс экспорта",
+        "labels": {
+          "start": "Начало",
+          "end": "Конец",
+          "errors": "Количество ошибок",
+          "total": "Общее количество",
+          "processed": "Обработано",
+          "contacts-url": "Скачать контакты:",
+          "organizations-url": "Скачать организации:",
+          "error-log": "Ошибки"
+        }
+      },
+      "file-upload": {
+        "title-root": "Импорт в корень",
+        "title-member": "Импорт в {{member}}",
+        "subtitle": "Загрузить CSV",
+        "data-type-placeholder": "Выберите тип данных для импорта",
+        "data-type-description": "Выберите тип данных, который вы хотите импортировать",
+        "labels": {
+          "progress": "Прогресс",
+          "data-type": "Тип данных"
+        },
+        "drag-and-drop": {
+          "placeholder": "Перетащите файл сюда",
+          "or": "или ",
+          "link": "просмотрите ваши файлы"
+        },
+        "upload-result": {
+          "failed": "Загрузка не удалась",
+          "success": "Загружено",
+          "max-size-error": "Максимальный размер файла {{ fileMaxSize }}. Ваш файл слишком большой. Попробуйте загрузить другой",
+          "file-type-error": "Файл, который вы пытаетесь загрузить, имеет недопустимый формат. Загрузите файл CSV"
+        },
+        "actions": {
+          "preview": "Предпросмотр",
+          "delete": "Удалить"
+        }
+      },
+      "import-preview": {
+        "title": "Предпросмотр",
+        "subtitle": "Предпросмотр CSV-файла, который вы собираетесь загрузить",
+        "preview-legend": "Используйте горизонтальную прокрутку, чтобы увидеть все столбцы в предварительном просмотре импорта",
+        "labels": {
+          "preview-count": "Количество предварительных просмотров:"
+        },
+        "close": "Закрыть"
+      },
+      "import-processing": {
+        "title": "Прогресс импорта",
+        "subtitles": {
+          "contacts": "Контакты",
+          "errors": "Ошибки"
+        },
+        "labels": {
+          "start": "Начало",
+          "end": "Конец",
+          "lines-created": "Созданные строки",
+          "lines-updated": "Обновленные строки",
+          "error-count": "Количество ошибок",
+          "errors-report": "URL для скачивания отчета об ошибках:",
+          "error-log": "Ошибки"
+        }
+      }
+    },
+    "dialogs": {
+      "csv-file-delete": {
+        "title": "Удалить CSV",
+        "subtitle": "Вы уверены, что хотите удалить этот CSV-файл?"
+      },
+      "csv-file-delete-and-close-preview": {
+        "title": "Удалить CSV",
+        "subtitle": "Вы уверены, что хотите закрыть предпросмотр и удалить этот файл?"
+      },
+      "customer-export": {
+        "title": "Экспорт контактов",
+        "all": "Все",
+        "from": "из",
+        "organization": "организация",
+        "main-text-end": " будет экспортировано в CSV-файл",
+        "subtitle-empty-export": "Вы не выбрали ни одного контакта или организации",
+        "contacts": "контакты",
+        "organizations": "организации",
+        "export": "Экспорт"
+      },
+      "customer-import": {
+        "title-contacts": "Импорт контактов",
+        "title-organizations": "Импорт организаций",
+        "contacts": "строки контактов",
+        "organizations": "строки организаций",
+        "main-text-middle": "будет импортировано в",
+        "root": "корень",
+        "current-organization": "текущая организация",
+        "import": "Импорт"
+      },
+      "customer-warning": {
+        "title": "Экспорт контактов и организаций",
+        "main-text-beginning": "Вы выбрали",
+        "items": "элементы",
+        "main-text-middle": "(включая вложенные), в то время как вы не можете экспортировать более",
+        "main-text-end": "выберите допустимое количество элементов и попробуйте снова."
+      }
+    },
+    "validation-errors": {
+      "file-not-existed": "Файл не существует",
+      "exceeding-file-max-size": "Максимальный размер файла {{ fileMaxSize }}. Ваш файл слишком большой. Попробуйте загрузить другой",
+      "wrong-delimiter": "Недопустимый разделитель. Используйте только точку с запятой (;) в качестве разделителя",
+      "exceeding-line-limits": "Мы не можем импортировать ваш файл, так как максимальное количество строк для импорта {{ importLimitOfLines }}. В вашем файле сейчас {{ linesCount }} строк",
+      "missing-required-columns": "Мы не можем импортировать ваш файл, так как отсутствуют следующие обязательные столбцы: \\\"{{ missedColumns }}\\\"",
+      "no-data": "Этот файл не содержит данных"
+    }
+  },
+  "permissions": {
+    "customer:simpleExport": "Экспорт данных клиента",
+    "customer:simpleImport": "Импорт данных клиента"
+  },
+  "settings": {
+    "CustomerExportImport": {
+      "Import": {
+        "AddressRegionStrongValidation": {
+          "title": "Строгая проверка региона адреса",
+          "description": "Включите, чтобы проверить регион адреса по списку регионов для страны. Если регион не найден, проверка завершится неудачей"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,130 @@
+{
+  "customerExportImport": {
+    "blades": {
+      "export-processing": {
+        "title": "导出进度",
+        "labels": {
+          "start": "开始",
+          "end": "结束",
+          "errors": "错误计数",
+          "total": "总计数",
+          "processed": "已处理计数",
+          "contacts-url": "下载联系人：",
+          "organizations-url": "下载组织：",
+          "error-log": "错误"
+        }
+      },
+      "file-upload": {
+        "title-root": "导入到根目录",
+        "title-member": "导入到{{member}}",
+        "subtitle": "上传CSV",
+        "data-type-placeholder": "选择要导入的数据类型",
+        "data-type-description": "选择您想要导入的数据类型",
+        "labels": {
+          "progress": "进度",
+          "data-type": "数据类型"
+        },
+        "drag-and-drop": {
+          "placeholder": "将文件拖放到此处",
+          "or": "或",
+          "link": "浏览您的文件"
+        },
+        "upload-result": {
+          "failed": "上传失败",
+          "success": "上传成功",
+          "max-size-error": "最大文件大小为{{ fileMaxSize }}。您的文件太大。请尝试上传另一个",
+          "file-type-error": "您尝试上传的文件格式无效。请上传CSV文件"
+        },
+        "actions": {
+          "preview": "预览",
+          "delete": "删除"
+        }
+      },
+      "import-preview": {
+        "title": "预览",
+        "subtitle": "预览您将要上传的CSV文件",
+        "preview-legend": "使用水平滚动查看导入预览中的所有列",
+        "labels": {
+          "preview-count": "预览计数："
+        },
+        "close": "关闭"
+      },
+      "import-processing": {
+        "title": "导入进度",
+        "subtitles": {
+          "contacts": "联系人",
+          "errors": "错误"
+        },
+        "labels": {
+          "start": "开始",
+          "end": "结束",
+          "lines-created": "创建的行",
+          "lines-updated": "更新的行",
+          "error-count": "错误计数",
+          "errors-report": "下载错误报告的URL：",
+          "error-log": "错误"
+        }
+      }
+    },
+    "dialogs": {
+      "csv-file-delete": {
+        "title": "删除CSV",
+        "subtitle": "您确定要删除此CSV文件吗？"
+      },
+      "csv-file-delete-and-close-preview": {
+        "title": "删除CSV",
+        "subtitle": "您确定要关闭预览并删除此文件吗？"
+      },
+      "customer-export": {
+        "title": "导出联系人",
+        "all": "全部",
+        "from": "从",
+        "organization": "组织",
+        "main-text-end": "将导出到CSV文件",
+        "subtitle-empty-export": "您尚未选择任何联系人或组织",
+        "contacts": "联系人",
+        "organizations": "组织",
+        "export": "导出"
+      },
+      "customer-import": {
+        "title-contacts": "导入联系人",
+        "title-organizations": "导入组织",
+        "contacts": "联系人的行",
+        "organizations": "组织的行",
+        "main-text-middle": "将导入到",
+        "root": "根目录",
+        "current-organization": "当前组织",
+        "import": "导入"
+      },
+      "customer-warning": {
+        "title": "导出联系人和组织",
+        "main-text-beginning": "您已选择",
+        "items": "项",
+        "main-text-middle": "（包括嵌套的），但您不能导出超过",
+        "main-text-end": "请选择有效的项数，然后重试。"
+      }
+    },
+    "validation-errors": {
+      "file-not-existed": "文件不存在",
+      "exceeding-file-max-size": "最大文件大小为{{ fileMaxSize }}。您的文件太大。请尝试上传另一个",
+      "wrong-delimiter": "无效的分隔符。仅使用分号（;）作为分隔符",
+      "exceeding-line-limits": "我们无法导入您的文件，因为最大导入行数为{{ importLimitOfLines }}。您的文件当前有{{ linesCount }}行",
+      "missing-required-columns": "我们无法导入您的文件，因为缺少以下必需列：\\\"{{ missedColumns }}\\\"",
+      "no-data": "此文件没有数据"
+    }
+  },
+  "permissions": {
+    "customer:simpleExport": "导出客户数据",
+    "customer:simpleImport": "导入客户数据"
+  },
+  "settings": {
+    "CustomerExportImport": {
+      "Import": {
+        "AddressRegionStrongValidation": {
+          "title": "地址区域的强验证",
+          "description": "启用以根据国家的区域列表验证地址区域。如果找不到该区域，验证将失败"
+        }
+      }
+    }
+  }
+}

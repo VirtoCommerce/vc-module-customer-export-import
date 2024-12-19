@@ -9,8 +9,8 @@
           "errors": "Error count",
           "total": "Total count",
           "processed": "Processed count",
-          "contacts-url": "Download Contacts:",
-          "organizations-url": "Download Organizations:",
+          "contacts-url": "Download contacts:",
+          "organizations-url": "Download organizations:",
           "error-log": "Errors"
         }
       },
@@ -32,8 +32,8 @@
         "upload-result": {
           "failed": "Upload failed",
           "success": "Uploaded",
-          "max-size-error": "The maximum file size is {{ fileMaxSize }}. Your file size is too large. Try uploading another one.",
-          "file-type-error": "The file you are trying to upload has an invalid format. Please upload a CSV file."
+          "max-size-error": "The maximum file size is {{ fileMaxSize }}. Your file size is too large. Try uploading another one",
+          "file-type-error": "The file you are trying to upload has an invalid format. Upload a CSV file"
         },
         "actions": {
           "preview": "Preview",
@@ -43,7 +43,7 @@
       "import-preview": {
         "title": "Preview",
         "subtitle": "Preview the CSV file you are going to upload",
-        "preview-legend": "Please use horizontal scrolling to see all columns in the import preview",
+        "preview-legend": "Use horizontal scrolling to see all columns in the import preview",
         "labels": {
           "preview-count": "Preview count:"
         },
@@ -80,8 +80,8 @@
         "all": "All",
         "from": "from",
         "organization": "organization",
-        "main-text-end": " will be exported to a CSV file.",
-        "subtitle-empty-export": "You have not selected any contacts or organizations.",
+        "main-text-end": " will be exported to a CSV file",
+        "subtitle-empty-export": "You have not selected any contacts or organizations",
         "contacts": "contacts",
         "organizations": "organizations",
         "export": "Export"
@@ -101,16 +101,16 @@
         "main-text-beginning": "You have selected",
         "items": "items",
         "main-text-middle": "(including the nested ones), while you cannot export more than",
-        "main-text-end": "please select a valid number of items and try again."
+        "main-text-end": "select a valid number of items and try again."
       }
     },
     "validation-errors": {
-      "file-not-existed": "The file does not exist.",
-      "exceeding-file-max-size": "The maximum file size is {{ fileMaxSize }}. Your file size is too large. Try uploading another one.",
-      "wrong-delimiter": "Invalid delimiter. Please use only semicolon (;) as a delimiter.",
-      "exceeding-line-limits": "We are unable to import your file, as the maximum number of lines to import is {{ importLimitOfLines }}. Your file currently has {{ linesCount }} lines.",
-      "missing-required-columns": "We are unable to import your file, as the following required columns: \\\"{{ missedColumns }}\\\" are missing in it.",
-      "no-data": "This file has no data."
+      "file-not-existed": "The file does not exist",
+      "exceeding-file-max-size": "The maximum file size is {{ fileMaxSize }}. Your file size is too large. Try uploading another one",
+      "wrong-delimiter": "Invalid delimiter. Use only semicolon (;) as a delimiter",
+      "exceeding-line-limits": "We are unable to import your file, as the maximum number of lines to import is {{ importLimitOfLines }}. Your file currently has {{ linesCount }} lines",
+      "missing-required-columns": "We are unable to import your file, as the following required columns: \\\"{{ missedColumns }}\\\" are missing",
+      "no-data": "This file has no data"
     }
   },
   "permissions": {
@@ -121,8 +121,8 @@
     "CustomerExportImport": {
       "Import": {
         "AddressRegionStrongValidation": {
-          "title": "Enable strong validation of address region",
-          "description": "If enabled, the address region will be validated against the list of regions for the country. If the region is not found, the validation will fail."
+          "title": "Strong validation of address region",
+          "description": "Enable to validate the address region against the list of regions for the country. If the region is not found, the validation will fail"
         }
       }
     }

@@ -1,7 +1,6 @@
-# Customer Export & Import module
+# Virto Commerce Customer Export & Import Module
 
 [![CI status](https://github.com/VirtoCommerce/vc-module-customer-export-import/workflows/Module%20CI/badge.svg?branch=dev)](https://github.com/VirtoCommerce/vc-module-customer-export-import/actions?query=workflow%3A"Module+CI")
-[![Deployment status](https://github.com/VirtoCommerce/vc-module-customer-export-import/workflows/Module%20deployment/badge.svg?branch=dev)](https://github.com/VirtoCommerce/vc-module-customer-export-import/actions?query=workflow%3A"Module+deployment")
 [![Quality gate](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-customer-export-import&metric=alert_status)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-customer-export-import)
 [![Reliability rating](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-customer-export-import&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-customer-export-import)
 [![Security rating](https://sonarcloud.io/api/project_badges/measure?project=VirtoCommerce_vc-module-customer-export-import&metric=security_rating)](https://sonarcloud.io/dashboard?id=VirtoCommerce_vc-module-customer-export-import)
@@ -14,32 +13,30 @@ The business goal for the module is to provide to non-technical not high skilled
 
 ![Main-Screen](docs/media/main-screen.png)
 
-### Note
-If you want to automated transferring information from 3rd party system, like ERP, then see API, Integration Middleware approach and Azure Logic Apps connectors.
+> **Note:**  
+> To automate the transfer of information from third-party systems like ERP, refer to the API, Integration Middleware approach, and Azure Logic Apps connectors.
 
-## Business scenarios
-* I need to export contacts to edit and to update.
-* I need to export organizations to edit and to update.
-* I need to migrate contacts from another system.
-* I need to migrate organizations from another system.
-* I need to migrate accounts from another system.
+## Key features  
 
-
+* Export and update contacts  
+* Export and update organizations  
+* Migrate contacts, organizations, and accounts from another system
 
 ## Documentation
-* [Module Documentation](https://virtocommerce.com/docs/latest/modules/customer-export-import/index/)
-* [View on GitHub](docs/index.md)
+* [Customer Export and Import module user documentation](https://docs.virtocommerce.org/platform/user-guide/customer-export-import/overview/)
+* [REST API](https://virtostart-demo-admin.govirto.com/docs/index.html?urls.primaryName=VirtoCommerce.CustomerExportImport)
+* [View on GitHub](https://github.com/VirtoCommerce/vc-module-customer-export-import/)
 
 ## Development
-    Abstractions and implementation including public API can be changed in next releases (breaking changes may be introduced).
+Abstractions and implementation including public API can be changed in next releases (breaking changes may be introduced).
 
 ## References
 
-* Deploy: https://virtocommerce.com/docs/latest/developer-guide/deploy-module-from-source-code/
-* Installation: https://www.virtocommerce.com/docs/latest/user-guide/modules/
-* Home: https://virtocommerce.com
-* Community: https://www.virtocommerce.org
-* [Download Latest Release](https://github.com/VirtoCommerce/vc-module-customer-export-import/releases/latest)
+* [Deployment](https://docs.virtocommerce.org/platform/developer-guide/Tutorials-and-How-tos/Tutorials/deploy-module-from-source-code/)
+* [Installation](https://docs.virtocommerce.org/platform/user-guide/modules-installation/)
+* [Home](https://virtocommerce.com)
+* [Community](https://www.virtocommerce.org)
+* [Download latest release](https://github.com/VirtoCommerce/vc-module-customer-export-import/releases/latest)
 
 ## License
 

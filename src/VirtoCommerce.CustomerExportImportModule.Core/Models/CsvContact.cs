@@ -44,6 +44,14 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public override string Phones { get; set; }
 
         [Optional]
+        [Name("Contact Associated Organization Ids")]
+        public virtual string AssociatedOrganizationIds { get; set; }
+
+        [Optional]
+        [Name("Contact User Groups")]
+        public virtual string UserGroups { get; set; }
+
+        [Optional]
         [Name("Contact Emails")]
         public override string Emails { get; set; }
 
@@ -74,6 +82,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Optional]
         [Name("Contact Preferred delivery")]
         public virtual string PreferredDelivery { get; set; }
+
+        [Optional]
+        [Name("Account Id")]
+        public virtual string AccountId { get; set; }
 
         [Optional]
         [Name("Organization Id")]

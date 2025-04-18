@@ -29,7 +29,7 @@
   <moduleType>VirtoCommerce.CustomerExportImportModule.Web.Module, VirtoCommerce.CustomerExportImportModule.Web</moduleType>
 
   <releaseNotes>First version.</releaseNotes>
-  <copyright>Copyright © 2011-2024 Virto Commerce. All rights reserved</copyright>
+  <copyright>Copyright © 2011-2025 Virto Commerce. All rights reserved</copyright>
   <tags>customer export import</tags>
   <useFullTypeNameInSwagger>false</useFullTypeNameInSwagger>
 </module>

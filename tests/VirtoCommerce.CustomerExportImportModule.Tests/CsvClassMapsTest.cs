@@ -130,7 +130,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             Name = "b2b-store"
         };
 
-        private const string ContactCsvHeader = "Contact Id;Contact Outer Id;Contact First Name;Contact Last Name;Contact Full Name;Organization Id;Organization Outer Id;Organization Name;Contact Status;Contact Emails;Contact Phones;Contact Salutation;Contact Birthday;Contact TimeZone;Contact Default language;Contact Taxpayer ID;Contact Preferred communication;Contact Preferred delivery;Contact Associated Organization Ids;Contact User groups;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address Region Code;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Account Id;Account Login;Account Store Id;Account Store Name;Account Email;Account Type;Account Status;Account Email Verified;Additional Line;Sex;Job";
+        private const string ContactCsvHeader = "Contact Id;Contact Outer Id;Contact First Name;Contact Last Name;Contact Full Name;Organization Id;Organization Outer Id;Organization Name;Contact Status;Contact Emails;Contact Phones;Contact Salutation;Contact Birthday;Contact TimeZone;Contact Default language;Contact Taxpayer ID;Contact Preferred communication;Contact Preferred delivery;Contact Associated Organization Ids;Contact User Groups;Address Type;Address First Name;Address Last Name;Address Country;Address Country Code;Address Region;Address Region Code;Address City;Address Line1;Address Line2;Address Zip Code;Address Email;Address Phone;Account Id;Account Login;Account Store Id;Account Store Name;Account Email;Account Type;Account Status;Account Email Verified;Additional Line;Sex;Job";
 
         private const string ContactCsvRecord = "contact_id;outer_id;Anton;Boroda;Anton Boroda;org_id;org_outer_id;Boroda ltd;new;boroda@ya.ru;777, 555;mr;04/14/1986 00:00:00;MSK;en_US;TaxId;email;pickup;org_id1, org_id2;tag1, tag2;Pickup;Anton;Boroda;Russia;RUS;Kirov region;;Kirov;1 st;169;610033;c@mail.com;777;account_id;login;b2b-store;b2b-store;c@mail.com;customer;new;True;;Male;Developer";
 
@@ -281,8 +281,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Tests
             {
                 var expectedContact = (Contact)Contact.Clone();
                 expectedContact.Id = null; // not patched
-                expectedContact.AssociatedOrganizations = null; // not imported
-                expectedContact.Groups = null; // not imported
                 expectedContact.Addresses[0].CountryName = null; // not imported. It will be set by code at import.
                 yield return new object[] { ContactCsvHeader, ContactCsvRecord, expectedContact, ContactOrganization };
                 yield return new object[]

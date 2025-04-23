@@ -50,6 +50,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                 const StringSplitOptions splitOptions = StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries;
                 target.Emails = string.IsNullOrEmpty(Emails) ? null : Emails.Split(',', splitOptions);
                 target.Phones = string.IsNullOrEmpty(Phones) ? null : Phones.Split(',', splitOptions);
+                target.AssociatedOrganizations = string.IsNullOrEmpty(AssociatedOrganizationIds) ? null : AssociatedOrganizationIds.Split(',', splitOptions);
+                target.Groups = string.IsNullOrEmpty(UserGroups) ? null : UserGroups.Split(',', splitOptions);
 
                 PatchDynamicProperties(target);
 
@@ -58,6 +60,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                     && !target.SecurityAccounts.Any(x => x.UserName.EqualsInvariant(AccountLogin) && x.Email.EqualsInvariant(AccountEmail)))
                 {
                     var user = AbstractTypeFactory<ApplicationUser>.TryCreateInstance();
+                    user.Id = AccountId;
                     user.StoreId = StoreId;
                     user.UserName = AccountLogin;
                     user.Email = AccountEmail;

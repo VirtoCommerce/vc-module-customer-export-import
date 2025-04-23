@@ -67,12 +67,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Index(18)]
         [Optional]
         [Name("Contact Associated Organization Ids")]
-        public string AssociatedOrganizationIds { get; set; }
+        public override string AssociatedOrganizationIds { get; set; }
 
         [Index(19)]
         [Optional]
-        [Name("Contact User groups")]
-        public string UserGroups { get; set; }
+        [Name("Contact User Groups")]
+        public override string UserGroups { get; set; }
 
         [Index(20)]
         public override string AddressType { get; set; }
@@ -116,7 +116,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         [Index(33)]
         [Optional]
         [Name("Account Id")]
-        public string AccountId { get; set; }
+        public override string AccountId { get; set; }
 
         [Index(34)]
         public override string AccountLogin { get; set; }

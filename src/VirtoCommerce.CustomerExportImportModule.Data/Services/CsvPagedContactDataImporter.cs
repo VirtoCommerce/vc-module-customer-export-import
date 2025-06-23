@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Nager.Country;
+using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerModule.Core.Model;
 using VirtoCommerce.CustomerModule.Core.Services;
-using VirtoCommerce.AssetsModule.Core.Assets;
 using VirtoCommerce.Platform.Core.Common;
 using VirtoCommerce.Platform.Core.Security;
 

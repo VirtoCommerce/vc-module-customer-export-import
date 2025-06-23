@@ -60,7 +60,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
                     && !target.SecurityAccounts.Any(x => x.UserName.EqualsInvariant(AccountLogin) && x.Email.EqualsInvariant(AccountEmail)))
                 {
                     var user = AbstractTypeFactory<ApplicationUser>.TryCreateInstance();
-                    user.Id = AccountId;
+
+                    if (!string.IsNullOrEmpty(AccountId))
+                    {
+                        user.Id = AccountId;
+                    }
+
                     user.StoreId = StoreId;
                     user.UserName = AccountLogin;
                     user.Email = AccountEmail;

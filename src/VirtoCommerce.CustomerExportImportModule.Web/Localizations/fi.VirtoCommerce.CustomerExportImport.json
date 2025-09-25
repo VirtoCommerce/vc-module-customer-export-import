@@ -1,0 +1,130 @@
+{
+  "customerExportImport": {
+    "blades": {
+      "export-processing": {
+        "title": "Vientiedistyminen",
+        "labels": {
+          "start": "Alku",
+          "end": "Loppu",
+          "errors": "Virheiden määrä",
+          "total": "Kokonaismäärä",
+          "processed": "Käsitelty määrä",
+          "contacts-url": "Lataa yhteystiedot:",
+          "organizations-url": "Lataa organisaatiot:",
+          "error-log": "Virheet"
+        }
+      },
+      "file-upload": {
+        "title-root": "Tuo juureen",
+        "title-member": "Tuo kohteeseen {{member}}",
+        "subtitle": "Lataa CSV",
+        "data-type-placeholder": "Valitse tuotava tietotyyppi",
+        "data-type-description": "Valitse tietotyyppi, jonka haluat tuoda",
+        "labels": {
+          "progress": "Edistyminen",
+          "data-type": "Tietotyyppi"
+        },
+        "drag-and-drop": {
+          "placeholder": "Vedä ja pudota tiedosto tähän",
+          "or": "tai ",
+          "link": "selaa tiedostojasi"
+        },
+        "upload-result": {
+          "failed": "Lataus epäonnistui",
+          "success": "Ladattu",
+          "max-size-error": "Tiedoston enimmäiskoko on {{ fileMaxSize }}. Tiedostosi on liian suuri. Kokeile ladata toista tiedostoa",
+          "file-type-error": "Yrittämäsi tiedosto on väärässä muodossa. Lataa CSV-tiedosto"
+        },
+        "actions": {
+          "preview": "Esikatselu",
+          "delete": "Poista"
+        }
+      },
+      "import-preview": {
+        "title": "Esikatselu",
+        "subtitle": "Tarkastele CSV-tiedostoa, jonka aiot ladata",
+        "preview-legend": "Käytä vaakasuuntaista vieritystä nähdäksesi kaikki sarakkeet tuonnin esikatselussa",
+        "labels": {
+          "preview-count": "Esikatselun määrä:"
+        },
+        "close": "Sulje"
+      },
+      "import-processing": {
+        "title": "Tuonnin edistyminen",
+        "subtitles": {
+          "contacts": "Yhteystiedot",
+          "errors": "Virheet"
+        },
+        "labels": {
+          "start": "Alku",
+          "end": "Loppu",
+          "lines-created": "Luodut rivit",
+          "lines-updated": "Päivitetyt rivit",
+          "error-count": "Virheiden määrä",
+          "errors-report": "URL virheraportin lataamiseen:",
+          "error-log": "Virheet"
+        }
+      }
+    },
+    "dialogs": {
+      "csv-file-delete": {
+        "title": "Poista CSV",
+        "subtitle": "Oletko varma, että haluat poistaa tämän CSV-tiedoston?"
+      },
+      "csv-file-delete-and-close-preview": {
+        "title": "Poista CSV",
+        "subtitle": "Oletko varma, että haluat sulkea esikatselun ja poistaa tämän tiedoston?"
+      },
+      "customer-export": {
+        "title": "Vie yhteystiedot",
+        "all": "Kaikki",
+        "from": "kohteesta",
+        "organization": "organisaatio",
+        "main-text-end": " viedään CSV-tiedostoon",
+        "subtitle-empty-export": "Et ole valinnut yhtään yhteystietoa tai organisaatiota",
+        "contacts": "yhteystiedot",
+        "organizations": "organisaatiot",
+        "export": "Vie"
+      },
+      "customer-import": {
+        "title-contacts": "Tuo yhteystiedot",
+        "title-organizations": "Tuo organisaatiot",
+        "contacts": "yhteystietorivejä",
+        "organizations": "organisaatiorivejä",
+        "main-text-middle": "tuodaan kohteeseen",
+        "root": "juuri",
+        "current-organization": "nykyinen organisaatio",
+        "import": "Tuo"
+      },
+      "customer-warning": {
+        "title": "Vie yhteystiedot ja organisaatiot",
+        "main-text-beginning": "Olet valinnut",
+        "items": "kohdetta",
+        "main-text-middle": "(mukaan lukien sisäkkäiset), kun et voi viedä enempää kuin",
+        "main-text-end": "valitse kelvollinen määrä kohteita ja yritä uudelleen."
+      }
+    },
+    "validation-errors": {
+      "file-not-existed": "Tiedostoa ei ole olemassa",
+      "exceeding-file-max-size": "Tiedoston enimmäiskoko on {{ fileMaxSize }}. Tiedostosi on liian suuri. Kokeile ladata toista tiedostoa",
+      "wrong-delimiter": "Virheellinen erotin. Käytä vain puolipistettä (;) erottimena",
+      "exceeding-line-limits": "Emme voi tuoda tiedostoasi, koska suurin sallittu rivimäärä on {{ importLimitOfLines }}. Tiedostossasi on tällä hetkellä {{ linesCount }} riviä",
+      "missing-required-columns": "Emme voi tuoda tiedostoasi, koska seuraavat vaaditut sarakkeet puuttuvat: \"{{ missedColumns }}\"",
+      "no-data": "Tässä tiedostossa ei ole dataa"
+    }
+  },
+  "permissions": {
+    "customer:simpleExport": "Vie asiakastietoja",
+    "customer:simpleImport": "Tuo asiakastietoja"
+  },
+  "settings": {
+    "CustomerExportImport": {
+      "Import": {
+        "AddressRegionStrongValidation": {
+          "title": "Tiukka osoitealueen validointi",
+          "description": "Ota käyttöön osoitealueen validointi maan alueiden luetteloa vastaan. Jos aluetta ei löydy, validointi epäonnistuu"
+        }
+      }
+    }
+  }
+}

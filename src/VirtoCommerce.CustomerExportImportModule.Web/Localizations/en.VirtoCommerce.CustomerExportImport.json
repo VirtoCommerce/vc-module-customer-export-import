@@ -122,7 +122,7 @@
       "Import": {
         "AddressRegionStrongValidation": {
           "title": "Strong validation of address region",
-          "description": "Enable to validate the address region against the list of regions for the country. If the region is not found, the validation will fail"
+          "description": "Enable/ disable strict validation of address regions against the list of regions for the selected country. Validation fails if the region is not found"
         }
       }
     }

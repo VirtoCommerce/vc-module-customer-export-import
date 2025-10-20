@@ -1,0 +1,130 @@
+{
+  "customerExportImport": {
+    "blades": {
+      "export-processing": {
+        "title": "Eksportfremdrift",
+        "labels": {
+          "start": "Start",
+          "end": "Slutt",
+          "errors": "Antall feil",
+          "total": "Totalt antall",
+          "processed": "Behandlet antall",
+          "contacts-url": "Last ned kontakter:",
+          "organizations-url": "Last ned organisasjoner:",
+          "error-log": "Feil"
+        }
+      },
+      "file-upload": {
+        "title-root": "Importer til roten",
+        "title-member": "Importer til {{member}}",
+        "subtitle": "Last opp CSV",
+        "data-type-placeholder": "Velg datatype å importere",
+        "data-type-description": "Velg typen data du ønsker å importere",
+        "labels": {
+          "progress": "Fremdrift",
+          "data-type": "Datatype"
+        },
+        "drag-and-drop": {
+          "placeholder": "Dra og slipp filen din her",
+          "or": "eller ",
+          "link": "bla gjennom filene dine"
+        },
+        "upload-result": {
+          "failed": "Opplasting mislyktes",
+          "success": "Opplastet",
+          "max-size-error": "Maksimal filstørrelse er {{ fileMaxSize }}. Filen din er for stor. Prøv å laste opp en annen fil",
+          "file-type-error": "Filen du prøver å laste opp har et ugyldig format. Last opp en CSV-fil"
+        },
+        "actions": {
+          "preview": "Forhåndsvisning",
+          "delete": "Slett"
+        }
+      },
+      "import-preview": {
+        "title": "Forhåndsvisning",
+        "subtitle": "Forhåndsvis CSV-filen du skal laste opp",
+        "preview-legend": "Bruk horisontal rulling for å se alle kolonner i importforhåndsvisningen",
+        "labels": {
+          "preview-count": "Forhåndsvisningsantall:"
+        },
+        "close": "Lukk"
+      },
+      "import-processing": {
+        "title": "Importfremdrift",
+        "subtitles": {
+          "contacts": "Kontakter",
+          "errors": "Feil"
+        },
+        "labels": {
+          "start": "Start",
+          "end": "Slutt",
+          "lines-created": "Rader opprettet",
+          "lines-updated": "Rader oppdatert",
+          "error-count": "Antall feil",
+          "errors-report": "URL for å laste ned feilrapport:",
+          "error-log": "Feil"
+        }
+      }
+    },
+    "dialogs": {
+      "csv-file-delete": {
+        "title": "Slett CSV",
+        "subtitle": "Er du sikker på at du vil slette denne CSV-filen?"
+      },
+      "csv-file-delete-and-close-preview": {
+        "title": "Slett CSV",
+        "subtitle": "Er du sikker på at du vil lukke forhåndsvisningen og slette denne filen?"
+      },
+      "customer-export": {
+        "title": "Eksporter kontakter",
+        "all": "Alle",
+        "from": "fra",
+        "organization": "organisasjon",
+        "main-text-end": " vil bli eksportert til en CSV-fil",
+        "subtitle-empty-export": "Du har ikke valgt noen kontakter eller organisasjoner",
+        "contacts": "kontakter",
+        "organizations": "organisasjoner",
+        "export": "Eksporter"
+      },
+      "customer-import": {
+        "title-contacts": "Importer kontakter",
+        "title-organizations": "Importer organisasjoner",
+        "contacts": "rader med kontakter",
+        "organizations": "rader med organisasjoner",
+        "main-text-middle": "vil bli importert til",
+        "root": "roten",
+        "current-organization": "nåværende organisasjon",
+        "import": "Importer"
+      },
+      "customer-warning": {
+        "title": "Eksporter kontakter og organisasjoner",
+        "main-text-beginning": "Du har valgt",
+        "items": "elementer",
+        "main-text-middle": "(inkludert de nestede), mens du ikke kan eksportere mer enn",
+        "main-text-end": "velg et gyldig antall elementer og prøv igjen."
+      }
+    },
+    "validation-errors": {
+      "file-not-existed": "Filen eksisterer ikke",
+      "exceeding-file-max-size": "Maksimal filstørrelse er {{ fileMaxSize }}. Filen din er for stor. Prøv å laste opp en annen fil",
+      "wrong-delimiter": "Ugyldig avgrenser. Bruk kun semikolon (;) som avgrenser",
+      "exceeding-line-limits": "Vi kan ikke importere filen din, da maksimalt antall rader å importere er {{ importLimitOfLines }}. Filen din har for øyeblikket {{ linesCount }} rader",
+      "missing-required-columns": "Vi kan ikke importere filen din, da følgende obligatoriske kolonner mangler: \"{{ missedColumns }}\"",
+      "no-data": "Denne filen har ingen data"
+    }
+  },
+  "permissions": {
+    "customer:simpleExport": "Eksporter kundedata",
+    "customer:simpleImport": "Importer kundedata"
+  },
+  "settings": {
+    "CustomerExportImport": {
+      "Import": {
+        "AddressRegionStrongValidation": {
+          "title": "Sterk validering av adresseområde",
+          "description": "Aktiver for å validere adresseområdet mot listen over regioner for landet. Hvis regionen ikke finnes, vil valideringen mislykkes"
+        }
+      }
+    }
+  }
+}

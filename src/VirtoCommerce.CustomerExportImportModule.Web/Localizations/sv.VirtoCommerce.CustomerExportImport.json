@@ -1,0 +1,130 @@
+{
+  "customerExportImport": {
+    "blades": {
+      "export-processing": {
+        "title": "Exportförlopp",
+        "labels": {
+          "start": "Start",
+          "end": "Slut",
+          "errors": "Antal fel",
+          "total": "Totalt antal",
+          "processed": "Bearbetat antal",
+          "contacts-url": "Ladda ner kontakter:",
+          "organizations-url": "Ladda ner organisationer:",
+          "error-log": "Fel"
+        }
+      },
+      "file-upload": {
+        "title-root": "Importera till roten",
+        "title-member": "Importera till {{member}}",
+        "subtitle": "Ladda upp CSV",
+        "data-type-placeholder": "Välj datatyp att importera",
+        "data-type-description": "Välj vilken typ av data du vill importera",
+        "labels": {
+          "progress": "Förlopp",
+          "data-type": "Datatyp"
+        },
+        "drag-and-drop": {
+          "placeholder": "Dra och släpp din fil här",
+          "or": "eller ",
+          "link": "bläddra bland dina filer"
+        },
+        "upload-result": {
+          "failed": "Uppladdning misslyckades",
+          "success": "Uppladdad",
+          "max-size-error": "Maximal filstorlek är {{ fileMaxSize }}. Din fil är för stor. Försök ladda upp en annan fil",
+          "file-type-error": "Filen du försöker ladda upp har ett ogiltigt format. Ladda upp en CSV-fil"
+        },
+        "actions": {
+          "preview": "Förhandsgranska",
+          "delete": "Radera"
+        }
+      },
+      "import-preview": {
+        "title": "Förhandsgranskning",
+        "subtitle": "Förhandsgranska CSV-filen du ska ladda upp",
+        "preview-legend": "Använd horisontell rullning för att se alla kolumner i importförhandsgranskningen",
+        "labels": {
+          "preview-count": "Antal förhandsgranskningar:"
+        },
+        "close": "Stäng"
+      },
+      "import-processing": {
+        "title": "Importförlopp",
+        "subtitles": {
+          "contacts": "Kontakter",
+          "errors": "Fel"
+        },
+        "labels": {
+          "start": "Start",
+          "end": "Slut",
+          "lines-created": "Rader skapade",
+          "lines-updated": "Rader uppdaterade",
+          "error-count": "Antal fel",
+          "errors-report": "URL för att ladda ner felrapport:",
+          "error-log": "Fel"
+        }
+      }
+    },
+    "dialogs": {
+      "csv-file-delete": {
+        "title": "Radera CSV",
+        "subtitle": "Är du säker på att du vill radera denna CSV-fil?"
+      },
+      "csv-file-delete-and-close-preview": {
+        "title": "Radera CSV",
+        "subtitle": "Är du säker på att du vill stänga förhandsgranskningen och radera denna fil?"
+      },
+      "customer-export": {
+        "title": "Exportera kontakter",
+        "all": "Alla",
+        "from": "från",
+        "organization": "organisation",
+        "main-text-end": " kommer att exporteras till en CSV-fil",
+        "subtitle-empty-export": "Du har inte valt några kontakter eller organisationer",
+        "contacts": "kontakter",
+        "organizations": "organisationer",
+        "export": "Exportera"
+      },
+      "customer-import": {
+        "title-contacts": "Importera kontakter",
+        "title-organizations": "Importera organisationer",
+        "contacts": "rader med kontakter",
+        "organizations": "rader med organisationer",
+        "main-text-middle": "kommer att importeras till",
+        "root": "roten",
+        "current-organization": "nuvarande organisation",
+        "import": "Importera"
+      },
+      "customer-warning": {
+        "title": "Exportera kontakter och organisationer",
+        "main-text-beginning": "Du har valt",
+        "items": "objekt",
+        "main-text-middle": "(inklusive de kapslade), medan du inte kan exportera fler än",
+        "main-text-end": "välj ett giltigt antal objekt och försök igen."
+      }
+    },
+    "validation-errors": {
+      "file-not-existed": "Filen finns inte",
+      "exceeding-file-max-size": "Maximal filstorlek är {{ fileMaxSize }}. Din fil är för stor. Försök ladda upp en annan fil",
+      "wrong-delimiter": "Ogiltig avgränsare. Använd endast semikolon (;) som avgränsare",
+      "exceeding-line-limits": "Vi kan inte importera din fil eftersom det maximala antalet rader att importera är {{ importLimitOfLines }}. Din fil har för närvarande {{ linesCount }} rader",
+      "missing-required-columns": "Vi kan inte importera din fil eftersom följande obligatoriska kolumner saknas: \"{{ missedColumns }}\"",
+      "no-data": "Denna fil innehåller ingen data"
+    }
+  },
+  "permissions": {
+    "customer:simpleExport": "Exportera kunddata",
+    "customer:simpleImport": "Importera kunddata"
+  },
+  "settings": {
+    "CustomerExportImport": {
+      "Import": {
+        "AddressRegionStrongValidation": {
+          "title": "Stark validering av adressregion",
+          "description": "Aktivera för att validera adressregionen mot listan över regioner för landet. Om regionen inte hittas kommer valideringen att misslyckas"
+        }
+      }
+    }
+  }
+}

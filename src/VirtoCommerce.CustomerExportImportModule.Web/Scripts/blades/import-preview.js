@@ -146,13 +146,18 @@ angular.module('virtoCommerce.customerExportImportModule')
         }
 
         function truncateId(content) {
-            if (content === null) return "";
-
-            if (content.length > 9) {
-                return content.substr(0, 3) + '...' + content.substr(content.length - 3, content.length);
+            if (content === null || content === undefined)
+            {
+                return "";
             }
 
-            return content;
+            const strContent = String(content);
+
+            if (strContent.length > 9) {
+                return strContent.substr(0, 3) + '...' + strContent.substr(strContent.length - 3, strContent.length);
+            }
+
+            return strContent;
         }
 
         function getCellTooltip(row, col) {

@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <noWarn>1591</noWarn>
     <IsPackable>True</IsPackable>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -17,10 +17,10 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="VirtoCommerce.AssetsModule.Data" Version="3.808.0" />
-    <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.817.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.853.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.853.0" />
+    
+    <PackageReference Include="VirtoCommerce.AssetsModule.Data" Version="3.1000.0" />
+    <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.1000.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.1002.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.1002.0" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using VirtoCommerce.AssetsModule.Core.Assets;
@@ -36,7 +37,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             _blobUrlResolver = blobUrlResolver;
         }
 
-        public async Task ExportAsync(ExportDataRequest request, Action<ExportProgressInfo> progressCallback, ICancellationToken cancellationToken)
+        public async Task ExportAsync(ExportDataRequest request, Action<ExportProgressInfo> progressCallback, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 

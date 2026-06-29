@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper;
 using FluentValidation;
@@ -49,7 +50,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         }
 
         public abstract string MemberType { get; }
-        public virtual async Task ImportAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
+        public virtual async Task ImportAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, CancellationToken cancellationToken)
         {
             ValidateParameters(request, progressCallback, cancellationToken);
 
@@ -367,7 +368,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             configuration.MissingFieldFound = null;
         }
 
-        private static void ValidateParameters(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, ICancellationToken cancellationToken)
+        private static void ValidateParameters(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, CancellationToken cancellationToken)
         {
             if (request == null)
             {

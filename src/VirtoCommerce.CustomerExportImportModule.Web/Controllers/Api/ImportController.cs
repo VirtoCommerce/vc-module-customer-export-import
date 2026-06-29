@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
@@ -104,7 +105,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.Controllers.Api
 
             await _pushNotificationManager.SendAsync(notification);
 
-            notification.JobId = BackgroundJob.Enqueue<ImportJob>(job => job.ImportBackgroundAsync(request, notification, JobCancellationToken.Null, null));
+            notification.JobId = BackgroundJob.Enqueue<ImportJob>(job => job.ImportBackgroundAsync(request, notification, CancellationToken.None, null));
 
             return Ok(notification);
         }

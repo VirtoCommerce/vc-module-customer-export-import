@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.Server;
@@ -9,7 +10,6 @@ using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.Platform.Core.Exceptions;
 using VirtoCommerce.Platform.Core.PushNotifications;
-using VirtoCommerce.Platform.Hangfire;
 
 namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
 {
@@ -24,7 +24,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
             _customerDataImporters = customerDataImporters;
         }
 
-        public async Task ImportBackgroundAsync(ImportDataRequest request, ImportPushNotification pushNotification, IJobCancellationToken jobCancellationToken, PerformContext context)
+        public async Task ImportBackgroundAsync(ImportDataRequest request, ImportPushNotification pushNotification, CancellationToken cancellationToken, PerformContext context)
         {
             ValidateParameters(request);
 
@@ -34,7 +34,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
 
                 await importer.ImportAsync(request,
                     progressInfo => ProgressCallback(progressInfo, pushNotification, context),
-                    new JobCancellationTokenWrapper(jobCancellationToken));
+                    cancellationToken);
             }
             catch (JobAbortedException)
             {

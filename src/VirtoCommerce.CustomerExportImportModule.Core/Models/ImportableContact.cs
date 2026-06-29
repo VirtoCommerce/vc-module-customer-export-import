@@ -57,7 +57,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
 
                 target.SecurityAccounts ??= new List<ApplicationUser>();
                 if ((!string.IsNullOrEmpty(AccountLogin) || !string.IsNullOrEmpty(AccountEmail))
-                    && !target.SecurityAccounts.Any(x => x.UserName.EqualsInvariant(AccountLogin) && x.Email.EqualsInvariant(AccountEmail)))
+                    && !target.SecurityAccounts.Any(x => x.UserName.EqualsIgnoreCase(AccountLogin) && x.Email.EqualsIgnoreCase(AccountEmail)))
                 {
                     var user = AbstractTypeFactory<ApplicationUser>.TryCreateInstance();
 

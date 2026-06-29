@@ -379,11 +379,6 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             {
                 throw new ArgumentNullException(nameof(progressCallback));
             }
-
-            if (cancellationToken == null)
-            {
-                throw new ArgumentNullException(nameof(cancellationToken));
-            }
         }
 
         private void ConvertCountryCodesToIso3(ImportRecord<TCsvMember>[] importRecords)

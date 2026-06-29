@@ -95,12 +95,12 @@ namespace VirtoCommerce.CustomerExportImportModule.Core.Models
         public ICollection<DynamicObjectProperty> DynamicProperties { get; set; }
 
         public bool IdsEquals(Member member) =>
-            (!string.IsNullOrEmpty(Id) && Id.EqualsInvariant(member.Id))
-            || (!string.IsNullOrEmpty(OuterId) && OuterId.EqualsInvariant(member.OuterId));
+            (!string.IsNullOrEmpty(Id) && Id.EqualsIgnoreCase(member.Id))
+            || (!string.IsNullOrEmpty(OuterId) && OuterId.EqualsIgnoreCase(member.OuterId));
 
         public static bool IdsEquals(string id, string outerId, Member member) =>
-            (!string.IsNullOrEmpty(id) && id.EqualsInvariant(member.Id))
-            || (!string.IsNullOrEmpty(outerId) && outerId.EqualsInvariant(member.OuterId));
+            (!string.IsNullOrEmpty(id) && id.EqualsIgnoreCase(member.Id))
+            || (!string.IsNullOrEmpty(outerId) && outerId.EqualsIgnoreCase(member.OuterId));
 
 
         protected void PatchDynamicProperties(Member target)

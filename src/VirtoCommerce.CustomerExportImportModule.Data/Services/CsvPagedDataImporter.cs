@@ -172,7 +172,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             foreach (var importMember in importMembers)
             {
-                var existedMember = existedMembers.FirstOrDefault(x => x.Id.EqualsInvariant(importMember.Record.Id));
+                var existedMember = existedMembers.FirstOrDefault(x => x.Id.EqualsIgnoreCase(importMember.Record.Id));
                 if (existedMember == null)
                 {
                     importMember.Record.Id = null;
@@ -190,7 +190,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         {
             foreach (var importMember in importMembers.Where(x => string.IsNullOrEmpty(x.Record.Id) && !string.IsNullOrEmpty(x.Record.OuterId)))
             {
-                var existedMember = existedMembers.FirstOrDefault(x => !string.IsNullOrEmpty(x.OuterId) && x.OuterId.EqualsInvariant(importMember.Record.OuterId));
+                var existedMember = existedMembers.FirstOrDefault(x => !string.IsNullOrEmpty(x.OuterId) && x.OuterId.EqualsIgnoreCase(importMember.Record.OuterId));
                 if (existedMember != null)
                 {
                     importMember.Record.Id = existedMember.Id;
@@ -211,10 +211,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             foreach (var importRecord in updateImportRecords.Where(x => !string.IsNullOrEmpty(x.Record.Id) && !string.IsNullOrEmpty(x.Record.OuterId)))
             {
-                var otherExisted = existedMembers.FirstOrDefault(x => !x.Id.EqualsInvariant(importRecord.Record.Id) && x.OuterId.EqualsInvariant(importRecord.Record.OuterId));
+                var otherExisted = existedMembers.FirstOrDefault(x => !x.Id.EqualsIgnoreCase(importRecord.Record.Id) && x.OuterId.EqualsIgnoreCase(importRecord.Record.OuterId));
 
                 if (otherExisted != null && !updateImportRecords.Any(x =>
-                    x.Record.OuterId.EqualsInvariant(otherExisted.OuterId) && (string.IsNullOrEmpty(x.Record.Id) || x.Record.Id.EqualsInvariant(otherExisted.Id))))
+                    x.Record.OuterId.EqualsIgnoreCase(otherExisted.OuterId) && (string.IsNullOrEmpty(x.Record.Id) || x.Record.Id.EqualsIgnoreCase(otherExisted.Id))))
                 {
                     excepted.Add(otherExisted);
                 }
@@ -407,7 +407,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
                 if (!string.IsNullOrEmpty(countryCode) && countryCode.Length == Iso3CodeCountryLength)
                 {
-                    var country = countries.FirstOrDefault(x => x.Id.EqualsInvariant(countryCode));
+                    var country = countries.FirstOrDefault(x => x.Id.EqualsIgnoreCase(countryCode));
                     importRecord.Record.AddressCountry = country?.Name;
                 }
                 else

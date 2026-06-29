@@ -144,7 +144,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Validation
                                                             }
 
                                                             var regions = await _countriesService.GetCountryRegionsAsync(importRecord.Record.AddressCountryCode);
-                                                            return !regions.Any() || regions.Any(region => region.Name.EqualsInvariant(regionName) && region.Id == importRecord.Record.AddressRegionCode);
+                                                            return !regions.Any() || regions.Any(region => region.Name.EqualsIgnoreCase(regionName) && region.Id == importRecord.Record.AddressRegionCode);
                                                         })
                                                         .WithInvalidValueCodeAndMessage("Address Region")
                                                         .WithImportState();

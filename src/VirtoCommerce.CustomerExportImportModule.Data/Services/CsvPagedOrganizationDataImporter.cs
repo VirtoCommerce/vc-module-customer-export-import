@@ -92,7 +92,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             foreach (var importMember in importMembers.Where(x => !string.IsNullOrEmpty(x.Record.ParentOrganizationId)))
             {
-                var existedMember = existedMembers.FirstOrDefault(x => x.Id.EqualsInvariant(importMember.Record.ParentOrganizationId));
+                var existedMember = existedMembers.FirstOrDefault(x => x.Id.EqualsIgnoreCase(importMember.Record.ParentOrganizationId));
                 if (existedMember == null)
                 {
                     importMember.Record.ParentOrganizationId = null;
@@ -106,7 +106,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
 
             foreach (var importMember in importMembers.Where(x => string.IsNullOrEmpty(x.Record.ParentOrganizationId) && !string.IsNullOrEmpty(x.Record.ParentOrganizationOuterId)))
             {
-                var existedMember = existedMembers.FirstOrDefault(x => !string.IsNullOrEmpty(x.OuterId) && x.OuterId.EqualsInvariant(importMember.Record.ParentOrganizationOuterId));
+                var existedMember = existedMembers.FirstOrDefault(x => !string.IsNullOrEmpty(x.OuterId) && x.OuterId.EqualsIgnoreCase(importMember.Record.ParentOrganizationOuterId));
                 if (existedMember != null)
                 {
                     importMember.Record.ParentOrganizationId = existedMember.Id;

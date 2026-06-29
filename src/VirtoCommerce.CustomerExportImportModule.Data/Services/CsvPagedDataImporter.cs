@@ -52,7 +52,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
         public abstract string MemberType { get; }
         public virtual async Task ImportAsync(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, CancellationToken cancellationToken)
         {
-            ValidateParameters(request, progressCallback, cancellationToken);
+            ValidateParameters(request, progressCallback);
 
             var errorsContext = new ImportErrorsContext();
 
@@ -368,7 +368,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Data.Services
             configuration.MissingFieldFound = null;
         }
 
-        private static void ValidateParameters(ImportDataRequest request, Action<ImportProgressInfo> progressCallback, CancellationToken cancellationToken)
+        private static void ValidateParameters(ImportDataRequest request, Action<ImportProgressInfo> progressCallback)
         {
             if (request == null)
             {

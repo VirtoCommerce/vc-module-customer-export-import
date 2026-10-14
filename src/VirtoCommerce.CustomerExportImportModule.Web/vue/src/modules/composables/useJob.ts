@@ -36,7 +36,7 @@ export function useJob<T extends JobNotification = JobNotification>() {
   // the most advanced snapshot wins: finished first, then the most processed
   const job = computed<T | undefined>(() => {
     const candidates = [live.value, polled.value, started.value].filter(Boolean) as T[];
-    const best = candidates.find(done) ?? candidates.sort((a, b) => (b.processedCount ?? 0) - (a.processedCount ?? 0))[0];
+    const best = candidates.find(done) ?? [...candidates].sort((a, b) => (b.processedCount ?? 0) - (a.processedCount ?? 0))[0];
     if (!best || done(best) || !deadState.value) return best;
     const error = `Background job #${best.jobId}: ${deadState.value}`;
     return { ...best, finished: new Date(), description: error, errors: [...(best.errors ?? []), error], errorCount: (best.errorCount ?? 0) + 1 };

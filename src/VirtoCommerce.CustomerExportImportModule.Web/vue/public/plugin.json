@@ -1,0 +1,4 @@
+{
+  // Customer export/import admin UI for the Admin Shell host (Module Federation remote): Import/Export on the Contacts list
+  "remote": { "name": "customerexportimport_admin", "exposed": "./Module" }
+}

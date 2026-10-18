@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "Importuj",
+      "EXPORT": "Eksportuj",
+      "START_EXPORT": "Rozpocznij eksport",
+      "CANCEL": "Anuluj",
+      "CLOSE": "Zamknij"
+    },
+    "TYPES": {
+      "Contact": "Kontakty",
+      "Organization": "Organizacje"
+    },
+    "EXPORT": {
+      "TITLE": "Eksportuj kontakty",
+      "SUMMARY": "Eksport do CSV",
+      "ALL": "Wszystkie kontakty ({contacts}) i organizacje ({organizations}) zostaną wyeksportowane do pliku CSV.",
+      "SELECTED": "Kontakty ({contacts}) i organizacje ({organizations}) zostaną wyeksportowane do pliku CSV.",
+      "FROM_ORGANIZATION": "Kontakty ({contacts}) i organizacje ({organizations}) z organizacji „{organization}” zostaną wyeksportowane do pliku CSV.",
+      "EMPTY": "Nie wybrano żadnych kontaktów ani organizacji.",
+      "TOO_MANY": "Wybrane elementy: {count} (w tym zagnieżdżone), a można wyeksportować maksymalnie {limit}: wybierz prawidłową liczbę elementów i spróbuj ponownie.",
+      "CONTACTS_FILE": "Pobierz kontakty",
+      "ORGANIZATIONS_FILE": "Pobierz organizacje"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "Importuj do katalogu głównego",
+      "TITLE_MEMBER": "Importuj do {member}",
+      "SUBTITLE": "Prześlij CSV",
+      "DATA_TYPE": "Typ danych",
+      "DATA_TYPE_PLACEHOLDER": "Wybierz typ danych do importu",
+      "DATA_TYPE_HINT": "Wybierz typ danych, które chcesz zaimportować",
+      "DROP": "Przeciągnij i upuść plik tutaj lub",
+      "BROWSE": "przeglądaj pliki",
+      "FAILED": "Przesyłanie nie powiodło się",
+      "SUCCESS": "Przesłano",
+      "MAX_SIZE_ERROR": "Maksymalny rozmiar pliku to {fileMaxSize}. Plik jest za duży. Spróbuj przesłać inny",
+      "FILE_TYPE_ERROR": "Plik, który próbujesz przesłać, ma nieprawidłowy format. Prześlij plik CSV",
+      "PREVIEW": "Podgląd",
+      "DELETE": "Usuń",
+      "DELETE_CONFIRMATION": "Czy na pewno chcesz usunąć ten plik CSV?",
+      "REPLACE_CONFIRMATION": "Czy na pewno chcesz zamknąć podgląd i usunąć ten plik? {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "Podgląd",
+      "SUBTITLE": "Podgląd pliku CSV, który zamierzasz przesłać",
+      "LEGEND": "Użyj przewijania poziomego, aby zobaczyć wszystkie kolumny w podglądzie importu",
+      "COUNT": "Liczba w podglądzie: {count} z {total}",
+      "UNPARSED": "Nie przetworzono do podglądu linii: {count} z {preview}. Sprawdź raport końcowy po imporcie.",
+      "EMPTY": "Brak danych",
+      "CONFIRM_CONTACTS": "Linie kontaktów ({count}) zostaną zaimportowane do: {target}.",
+      "CONFIRM_ORGANIZATIONS": "Linie organizacji ({count}) zostaną zaimportowane do: {target}.",
+      "ROOT": "katalog główny",
+      "CURRENT_ORGANIZATION": "bieżąca organizacja „{name}”"
+    },
+    "PROCESSING": {
+      "TITLE": "Postęp importu",
+      "CREATED": "Utworzone linie",
+      "UPDATED": "Zaktualizowane linie",
+      "REPORT": "Pobierz raport błędów",
+      "EXPORT_TITLE": "Postęp eksportu"
+    },
+    "JOB": {
+      "STARTED": "Start",
+      "FINISHED": "Koniec",
+      "ELAPSED": "Upłynęło",
+      "PROCESSED": "Przetworzono",
+      "ERRORS": "Błędy"
+    },
+    "VALIDATION": {
+      "file-not-existed": "Plik nie istnieje",
+      "exceeding-file-max-size": "Maksymalny rozmiar pliku to {fileMaxSize}. Plik jest za duży. Spróbuj przesłać inny",
+      "wrong-delimiter": "Nieprawidłowy separator. Używaj tylko średnika (;) jako separatora",
+      "exceeding-line-limits": "Nie można zaimportować pliku, ponieważ maksymalna liczba linii do importu to {importLimitOfLines}. Plik ma obecnie {linesCount} linii",
+      "missing-required-columns": "Nie można zaimportować pliku, ponieważ brakuje następujących wymaganych kolumn: „{missedColumns}”",
+      "no-data": "Ten plik nie zawiera danych"
+    }
+  }
+}

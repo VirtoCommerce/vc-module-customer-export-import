@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "Importa",
+      "EXPORT": "Esporta",
+      "START_EXPORT": "Avvia esportazione",
+      "CANCEL": "Annulla",
+      "CLOSE": "Chiudi"
+    },
+    "TYPES": {
+      "Contact": "Contatti",
+      "Organization": "Organizzazioni"
+    },
+    "EXPORT": {
+      "TITLE": "Esporta contatti",
+      "SUMMARY": "Esporta in CSV",
+      "ALL": "Tutti i {contacts} contatti e le {organizations} organizzazioni verranno esportati in un file CSV.",
+      "SELECTED": "{contacts} contatti e {organizations} organizzazioni verranno esportati in un file CSV.",
+      "FROM_ORGANIZATION": "{contacts} contatti e {organizations} organizzazioni dell'organizzazione \"{organization}\" verranno esportati in un file CSV.",
+      "EMPTY": "Non è stato selezionato alcun contatto o organizzazione.",
+      "TOO_MANY": "Sono stati selezionati {count} elementi (inclusi quelli nidificati), ma non è possibile esportare più di {limit} elementi: selezionare un numero valido di elementi e riprovare.",
+      "CONTACTS_FILE": "Scarica contatti",
+      "ORGANIZATIONS_FILE": "Scarica organizzazioni"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "Importa nella radice",
+      "TITLE_MEMBER": "Importa in {member}",
+      "SUBTITLE": "Carica CSV",
+      "DATA_TYPE": "Tipo di dati",
+      "DATA_TYPE_PLACEHOLDER": "Selezionare il tipo di dati da importare",
+      "DATA_TYPE_HINT": "Selezionare il tipo di dati che si desidera importare",
+      "DROP": "Trascinare qui il file oppure",
+      "BROWSE": "sfogliare i file",
+      "FAILED": "Caricamento non riuscito",
+      "SUCCESS": "Caricato",
+      "MAX_SIZE_ERROR": "La dimensione massima del file è {fileMaxSize}. Il file è troppo grande. Provare a caricarne un altro",
+      "FILE_TYPE_ERROR": "Il file che si sta tentando di caricare ha un formato non valido. Caricare un file CSV",
+      "PREVIEW": "Anteprima",
+      "DELETE": "Elimina",
+      "DELETE_CONFIRMATION": "Eliminare questo file CSV?",
+      "REPLACE_CONFIRMATION": "Chiudere l'anteprima ed eliminare questo file? {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "Anteprima",
+      "SUBTITLE": "Anteprima del file CSV che si sta per caricare",
+      "LEGEND": "Usare lo scorrimento orizzontale per vedere tutte le colonne nell'anteprima dell'importazione",
+      "COUNT": "Righe in anteprima: {count} di {total}",
+      "UNPARSED": "{count} righe su {preview} non sono state analizzate per l'anteprima. Controllare il rapporto finale dopo l'importazione.",
+      "EMPTY": "Nessun dato",
+      "CONFIRM_CONTACTS": "{count} righe di contatti verranno importate in {target}.",
+      "CONFIRM_ORGANIZATIONS": "{count} righe di organizzazioni verranno importate in {target}.",
+      "ROOT": "radice",
+      "CURRENT_ORGANIZATION": "organizzazione corrente \"{name}\""
+    },
+    "PROCESSING": {
+      "TITLE": "Progresso dell'importazione",
+      "CREATED": "Righe create",
+      "UPDATED": "Righe aggiornate",
+      "REPORT": "Scarica rapporto errori",
+      "EXPORT_TITLE": "Progresso dell'esportazione"
+    },
+    "JOB": {
+      "STARTED": "Inizio",
+      "FINISHED": "Fine",
+      "ELAPSED": "Tempo trascorso",
+      "PROCESSED": "Elaborati",
+      "ERRORS": "Errori"
+    },
+    "VALIDATION": {
+      "file-not-existed": "Il file non esiste",
+      "exceeding-file-max-size": "La dimensione massima del file è {fileMaxSize}. Il file è troppo grande. Provare a caricarne un altro",
+      "wrong-delimiter": "Delimitatore non valido. Usare solo il punto e virgola (;) come delimitatore",
+      "exceeding-line-limits": "Impossibile importare il file: il numero massimo di righe da importare è {importLimitOfLines}. Il file contiene attualmente {linesCount} righe",
+      "missing-required-columns": "Impossibile importare il file: mancano le seguenti colonne obbligatorie: \"{missedColumns}\"",
+      "no-data": "Questo file non contiene dati"
+    }
+  }
+}

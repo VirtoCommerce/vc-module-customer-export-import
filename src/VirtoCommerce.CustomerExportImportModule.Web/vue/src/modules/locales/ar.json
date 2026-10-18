@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "استيراد",
+      "EXPORT": "تصدير",
+      "START_EXPORT": "بدء التصدير",
+      "CANCEL": "إلغاء",
+      "CLOSE": "إغلاق"
+    },
+    "TYPES": {
+      "Contact": "جهات الاتصال",
+      "Organization": "المؤسسات"
+    },
+    "EXPORT": {
+      "TITLE": "تصدير جهات الاتصال",
+      "SUMMARY": "التصدير إلى CSV",
+      "ALL": "سيتم تصدير كل جهات الاتصال ({contacts}) وكل المؤسسات ({organizations}) إلى ملف CSV.",
+      "SELECTED": "سيتم تصدير جهات الاتصال ({contacts}) والمؤسسات ({organizations}) إلى ملف CSV.",
+      "FROM_ORGANIZATION": "سيتم تصدير جهات الاتصال ({contacts}) والمؤسسات ({organizations}) من المؤسسة «{organization}» إلى ملف CSV.",
+      "EMPTY": "لم تحدد أي جهات اتصال أو مؤسسات.",
+      "TOO_MANY": "العناصر المحددة (بما في ذلك العناصر المتداخلة): {count}، والحد الأقصى للتصدير: {limit}. حدد عددًا صالحًا من العناصر وحاول مرة أخرى.",
+      "CONTACTS_FILE": "تنزيل جهات الاتصال",
+      "ORGANIZATIONS_FILE": "تنزيل المؤسسات"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "الاستيراد إلى الجذر",
+      "TITLE_MEMBER": "الاستيراد إلى {member}",
+      "SUBTITLE": "رفع ملف CSV",
+      "DATA_TYPE": "نوع البيانات",
+      "DATA_TYPE_PLACEHOLDER": "اختر نوع البيانات المراد استيرادها",
+      "DATA_TYPE_HINT": "اختر نوع البيانات التي تريد استيرادها",
+      "DROP": "اسحب الملف وأفلته هنا أو",
+      "BROWSE": "تصفّح ملفاتك",
+      "FAILED": "فشل الرفع",
+      "SUCCESS": "تم الرفع",
+      "MAX_SIZE_ERROR": "الحد الأقصى لحجم الملف هو {fileMaxSize}. حجم ملفك كبير جدًا. جرّب رفع ملف آخر",
+      "FILE_TYPE_ERROR": "تنسيق الملف الذي تحاول رفعه غير صالح. ارفع ملف CSV",
+      "PREVIEW": "معاينة",
+      "DELETE": "حذف",
+      "DELETE_CONFIRMATION": "هل تريد بالتأكيد حذف ملف CSV هذا؟",
+      "REPLACE_CONFIRMATION": "هل تريد بالتأكيد إغلاق المعاينة وحذف هذا الملف؟ {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "معاينة",
+      "SUBTITLE": "عاين ملف CSV الذي ستقوم برفعه",
+      "LEGEND": "استخدم التمرير الأفقي لرؤية كل الأعمدة في معاينة الاستيراد",
+      "COUNT": "عدد الأسطر في المعاينة: {count} من {total}",
+      "UNPARSED": "لم يتم تحليل بعض الأسطر للمعاينة ({count} من {preview}). راجع التقرير النهائي بعد الاستيراد.",
+      "EMPTY": "لا توجد بيانات",
+      "CONFIRM_CONTACTS": "سيتم استيراد أسطر جهات الاتصال ({count}) إلى {target}.",
+      "CONFIRM_ORGANIZATIONS": "سيتم استيراد أسطر المؤسسات ({count}) إلى {target}.",
+      "ROOT": "الجذر",
+      "CURRENT_ORGANIZATION": "المؤسسة الحالية «{name}»"
+    },
+    "PROCESSING": {
+      "TITLE": "تقدم الاستيراد",
+      "CREATED": "الأسطر المنشأة",
+      "UPDATED": "الأسطر المحدّثة",
+      "REPORT": "تنزيل تقرير الأخطاء",
+      "EXPORT_TITLE": "تقدم التصدير"
+    },
+    "JOB": {
+      "STARTED": "البدء",
+      "FINISHED": "الانتهاء",
+      "ELAPSED": "الوقت المنقضي",
+      "PROCESSED": "تمت المعالجة",
+      "ERRORS": "الأخطاء"
+    },
+    "VALIDATION": {
+      "file-not-existed": "الملف غير موجود",
+      "exceeding-file-max-size": "الحد الأقصى لحجم الملف هو {fileMaxSize}. حجم ملفك كبير جدًا. جرّب رفع ملف آخر",
+      "wrong-delimiter": "فاصل غير صالح. استخدم الفاصلة المنقوطة (;) فقط كفاصل",
+      "exceeding-line-limits": "تعذّر استيراد ملفك، لأن الحد الأقصى لعدد الأسطر المسموح باستيرادها هو {importLimitOfLines}. عدد الأسطر في ملفك حاليًا: {linesCount}",
+      "missing-required-columns": "تعذّر استيراد ملفك، لأن الأعمدة المطلوبة التالية مفقودة: «{missedColumns}»",
+      "no-data": "لا يحتوي هذا الملف على بيانات"
+    }
+  }
+}

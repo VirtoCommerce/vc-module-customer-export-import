@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "customer:simpleExport": "تصدير بيانات العملاء",
+    "customer:simpleImport": "استيراد بيانات العملاء"
+  },
+  "settings": {
+    "CustomerExportImport": {
+      "Import": {
+        "AddressRegionStrongValidation": {
+          "title": "التحقق الصارم من منطقة العنوان",
+          "description": "تفعيل التحقق الصارم من مناطق العناوين مقابل قائمة مناطق البلد المحدد أو تعطيله. يفشل التحقق إذا لم يتم العثور على المنطقة"
+        }
+      }
+    }
+  }
+}

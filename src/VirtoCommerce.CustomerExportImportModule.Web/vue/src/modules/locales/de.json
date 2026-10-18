@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "Importieren",
+      "EXPORT": "Exportieren",
+      "START_EXPORT": "Export starten",
+      "CANCEL": "Abbrechen",
+      "CLOSE": "Schließen"
+    },
+    "TYPES": {
+      "Contact": "Kontakte",
+      "Organization": "Organisationen"
+    },
+    "EXPORT": {
+      "TITLE": "Kontakte exportieren",
+      "SUMMARY": "In CSV exportieren",
+      "ALL": "Alle {contacts} Kontakte und {organizations} Organisationen werden in eine CSV-Datei exportiert.",
+      "SELECTED": "{contacts} Kontakte und {organizations} Organisationen werden in eine CSV-Datei exportiert.",
+      "FROM_ORGANIZATION": "{contacts} Kontakte und {organizations} Organisationen aus der Organisation „{organization}“ werden in eine CSV-Datei exportiert.",
+      "EMPTY": "Sie haben keine Kontakte oder Organisationen ausgewählt.",
+      "TOO_MANY": "Sie haben {count} Elemente ausgewählt (einschließlich der verschachtelten), können jedoch nicht mehr als {limit} Elemente exportieren: Wählen Sie eine gültige Anzahl von Elementen aus und versuchen Sie es erneut.",
+      "CONTACTS_FILE": "Kontakte herunterladen",
+      "ORGANIZATIONS_FILE": "Organisationen herunterladen"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "In Root importieren",
+      "TITLE_MEMBER": "In {member} importieren",
+      "SUBTITLE": "CSV hochladen",
+      "DATA_TYPE": "Datentyp",
+      "DATA_TYPE_PLACEHOLDER": "Datentyp zum Importieren auswählen",
+      "DATA_TYPE_HINT": "Wählen Sie den Datentyp aus, den Sie importieren möchten",
+      "DROP": "Ziehen Sie Ihre Datei hierher oder",
+      "BROWSE": "durchsuchen Sie Ihre Dateien",
+      "FAILED": "Hochladen fehlgeschlagen",
+      "SUCCESS": "Hochgeladen",
+      "MAX_SIZE_ERROR": "Die maximale Dateigröße beträgt {fileMaxSize}. Ihre Datei ist zu groß. Versuchen Sie, eine andere hochzuladen",
+      "FILE_TYPE_ERROR": "Die Datei, die Sie hochladen möchten, hat ein ungültiges Format. Laden Sie eine CSV-Datei hoch",
+      "PREVIEW": "Vorschau",
+      "DELETE": "Löschen",
+      "DELETE_CONFIRMATION": "Möchten Sie diese CSV-Datei wirklich löschen?",
+      "REPLACE_CONFIRMATION": "Möchten Sie die Vorschau wirklich schließen und diese Datei löschen? {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "Vorschau",
+      "SUBTITLE": "Vorschau der CSV-Datei, die Sie hochladen möchten",
+      "LEGEND": "Verwenden Sie horizontales Scrollen, um alle Spalten in der Importvorschau zu sehen",
+      "COUNT": "Vorschauanzahl: {count} von {total}",
+      "UNPARSED": "{count} von {preview} Zeilen konnten für die Vorschau nicht verarbeitet werden. Prüfen Sie nach dem Import den Abschlussbericht.",
+      "EMPTY": "Keine Daten",
+      "CONFIRM_CONTACTS": "{count} Kontaktzeilen werden importiert in: {target}.",
+      "CONFIRM_ORGANIZATIONS": "{count} Organisationszeilen werden importiert in: {target}.",
+      "ROOT": "Root",
+      "CURRENT_ORGANIZATION": "aktuelle Organisation „{name}“"
+    },
+    "PROCESSING": {
+      "TITLE": "Importfortschritt",
+      "CREATED": "Erstellte Zeilen",
+      "UPDATED": "Aktualisierte Zeilen",
+      "REPORT": "Fehlerbericht herunterladen",
+      "EXPORT_TITLE": "Exportfortschritt"
+    },
+    "JOB": {
+      "STARTED": "Start",
+      "FINISHED": "Ende",
+      "ELAPSED": "Verstrichen",
+      "PROCESSED": "Verarbeitet",
+      "ERRORS": "Fehler"
+    },
+    "VALIDATION": {
+      "file-not-existed": "Die Datei existiert nicht",
+      "exceeding-file-max-size": "Die maximale Dateigröße beträgt {fileMaxSize}. Ihre Datei ist zu groß. Versuchen Sie, eine andere hochzuladen",
+      "wrong-delimiter": "Ungültiges Trennzeichen. Verwenden Sie nur Semikolon (;) als Trennzeichen",
+      "exceeding-line-limits": "Ihre Datei kann nicht importiert werden, da die maximale Anzahl zu importierender Zeilen {importLimitOfLines} beträgt. Ihre Datei hat derzeit {linesCount} Zeilen",
+      "missing-required-columns": "Ihre Datei kann nicht importiert werden, da die folgenden erforderlichen Spalten fehlen: „{missedColumns}“",
+      "no-data": "Diese Datei enthält keine Daten"
+    }
+  }
+}

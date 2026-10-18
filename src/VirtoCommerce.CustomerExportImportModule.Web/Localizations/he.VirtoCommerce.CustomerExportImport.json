@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "customer:simpleExport": "ייצוא נתוני לקוחות",
+    "customer:simpleImport": "ייבוא נתוני לקוחות"
+  },
+  "settings": {
+    "CustomerExportImport": {
+      "Import": {
+        "AddressRegionStrongValidation": {
+          "title": "אימות קפדני של אזור בכתובת",
+          "description": "הפעלה/השבתה של אימות קפדני של אזורי הכתובות מול רשימת האזורים של המדינה שנבחרה. האימות נכשל אם האזור לא נמצא"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "インポート",
+      "EXPORT": "エクスポート",
+      "START_EXPORT": "エクスポートを開始",
+      "CANCEL": "キャンセル",
+      "CLOSE": "閉じる"
+    },
+    "TYPES": {
+      "Contact": "連絡先",
+      "Organization": "組織"
+    },
+    "EXPORT": {
+      "TITLE": "連絡先をエクスポート",
+      "SUMMARY": "CSV にエクスポート",
+      "ALL": "すべての連絡先 {contacts} 件と組織 {organizations} 件が CSV ファイルにエクスポートされます。",
+      "SELECTED": "連絡先 {contacts} 件と組織 {organizations} 件が CSV ファイルにエクスポートされます。",
+      "FROM_ORGANIZATION": "組織「{organization}」の連絡先 {contacts} 件と組織 {organizations} 件が CSV ファイルにエクスポートされます。",
+      "EMPTY": "連絡先または組織が選択されていません。",
+      "TOO_MANY": "{count} 件の項目（ネストされたものを含む）が選択されていますが、エクスポートできるのは最大 {limit} 件です。有効な数の項目を選択して、もう一度お試しください。",
+      "CONTACTS_FILE": "連絡先をダウンロード",
+      "ORGANIZATIONS_FILE": "組織をダウンロード"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "ルートにインポート",
+      "TITLE_MEMBER": "{member} にインポート",
+      "SUBTITLE": "CSV をアップロード",
+      "DATA_TYPE": "データタイプ",
+      "DATA_TYPE_PLACEHOLDER": "インポートするデータタイプを選択",
+      "DATA_TYPE_HINT": "インポートするデータのタイプを選択してください",
+      "DROP": "ここにファイルをドラッグ＆ドロップするか、",
+      "BROWSE": "ファイルを参照",
+      "FAILED": "アップロードに失敗しました",
+      "SUCCESS": "アップロード完了",
+      "MAX_SIZE_ERROR": "最大ファイルサイズは {fileMaxSize} です。ファイルサイズが大きすぎます。別のファイルをアップロードしてください",
+      "FILE_TYPE_ERROR": "アップロードしようとしているファイルの形式が無効です。CSV ファイルをアップロードしてください",
+      "PREVIEW": "プレビュー",
+      "DELETE": "削除",
+      "DELETE_CONFIRMATION": "この CSV ファイルを削除してもよろしいですか？",
+      "REPLACE_CONFIRMATION": "プレビューを閉じてこのファイルを削除してもよろしいですか？ {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "プレビュー",
+      "SUBTITLE": "アップロードする CSV ファイルのプレビュー",
+      "LEGEND": "インポートプレビューですべての列を表示するには、横スクロールを使用してください",
+      "COUNT": "プレビュー数: {count} / {total}",
+      "UNPARSED": "{preview} 行のうち {count} 行はプレビュー用に解析できませんでした。インポート後に最終レポートを確認してください。",
+      "EMPTY": "データがありません",
+      "CONFIRM_CONTACTS": "連絡先 {count} 行が{target}にインポートされます。",
+      "CONFIRM_ORGANIZATIONS": "組織 {count} 行が{target}にインポートされます。",
+      "ROOT": "ルート",
+      "CURRENT_ORGANIZATION": "現在の組織「{name}」"
+    },
+    "PROCESSING": {
+      "TITLE": "インポートの進行状況",
+      "CREATED": "作成された行",
+      "UPDATED": "更新された行",
+      "REPORT": "エラーレポートをダウンロード",
+      "EXPORT_TITLE": "エクスポートの進行状況"
+    },
+    "JOB": {
+      "STARTED": "開始",
+      "FINISHED": "終了",
+      "ELAPSED": "経過時間",
+      "PROCESSED": "処理済み",
+      "ERRORS": "エラー"
+    },
+    "VALIDATION": {
+      "file-not-existed": "ファイルが存在しません",
+      "exceeding-file-max-size": "最大ファイルサイズは {fileMaxSize} です。ファイルサイズが大きすぎます。別のファイルをアップロードしてください",
+      "wrong-delimiter": "無効な区切り文字です。区切り文字にはセミコロン（;）のみを使用してください",
+      "exceeding-line-limits": "ファイルをインポートできません。インポートできる最大行数は {importLimitOfLines} 行ですが、現在のファイルには {linesCount} 行あります",
+      "missing-required-columns": "ファイルをインポートできません。次の必須列がありません: \"{missedColumns}\"",
+      "no-data": "このファイルにはデータがありません"
+    }
+  }
+}

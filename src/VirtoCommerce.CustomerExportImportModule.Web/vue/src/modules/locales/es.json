@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "Importar",
+      "EXPORT": "Exportar",
+      "START_EXPORT": "Iniciar exportación",
+      "CANCEL": "Cancelar",
+      "CLOSE": "Cerrar"
+    },
+    "TYPES": {
+      "Contact": "Contactos",
+      "Organization": "Organizaciones"
+    },
+    "EXPORT": {
+      "TITLE": "Exportar contactos",
+      "SUMMARY": "Exportar a CSV",
+      "ALL": "Se exportarán todos los {contacts} contactos y {organizations} organizaciones a un archivo CSV.",
+      "SELECTED": "Se exportarán {contacts} contactos y {organizations} organizaciones a un archivo CSV.",
+      "FROM_ORGANIZATION": "Se exportarán {contacts} contactos y {organizations} organizaciones de la organización \"{organization}\" a un archivo CSV.",
+      "EMPTY": "No ha seleccionado ningún contacto u organización.",
+      "TOO_MANY": "Ha seleccionado {count} elementos (incluidos los anidados), pero no puede exportar más de {limit} elementos: seleccione un número válido de elementos e inténtelo de nuevo.",
+      "CONTACTS_FILE": "Descargar contactos",
+      "ORGANIZATIONS_FILE": "Descargar organizaciones"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "Importar en la raíz",
+      "TITLE_MEMBER": "Importar en {member}",
+      "SUBTITLE": "Subir CSV",
+      "DATA_TYPE": "Tipo de datos",
+      "DATA_TYPE_PLACEHOLDER": "Seleccione el tipo de datos a importar",
+      "DATA_TYPE_HINT": "Seleccione el tipo de datos que desea importar",
+      "DROP": "Arrastre y suelte su archivo aquí o",
+      "BROWSE": "busque sus archivos",
+      "FAILED": "Carga fallida",
+      "SUCCESS": "Cargado",
+      "MAX_SIZE_ERROR": "El tamaño máximo del archivo es {fileMaxSize}. Su archivo es demasiado grande. Intente cargar otro",
+      "FILE_TYPE_ERROR": "El archivo que está intentando cargar tiene un formato no válido. Cargue un archivo CSV",
+      "PREVIEW": "Vista previa",
+      "DELETE": "Eliminar",
+      "DELETE_CONFIRMATION": "¿Está seguro de que desea eliminar este archivo CSV?",
+      "REPLACE_CONFIRMATION": "¿Está seguro de que desea cerrar la vista previa y eliminar este archivo? {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "Vista previa",
+      "SUBTITLE": "Vista previa del archivo CSV que va a cargar",
+      "LEGEND": "Use el desplazamiento horizontal para ver todas las columnas en la vista previa de importación",
+      "COUNT": "Número de vista previa: {count} de {total}",
+      "UNPARSED": "No se han podido analizar {count} de {preview} líneas para la vista previa. Consulte el informe final después de la importación.",
+      "EMPTY": "Sin datos",
+      "CONFIRM_CONTACTS": "Se importarán {count} líneas de contactos en {target}.",
+      "CONFIRM_ORGANIZATIONS": "Se importarán {count} líneas de organizaciones en {target}.",
+      "ROOT": "la raíz",
+      "CURRENT_ORGANIZATION": "la organización actual \"{name}\""
+    },
+    "PROCESSING": {
+      "TITLE": "Progreso de importación",
+      "CREATED": "Líneas creadas",
+      "UPDATED": "Líneas actualizadas",
+      "REPORT": "Descargar informe de errores",
+      "EXPORT_TITLE": "Progreso de exportación"
+    },
+    "JOB": {
+      "STARTED": "Inicio",
+      "FINISHED": "Fin",
+      "ELAPSED": "Transcurrido",
+      "PROCESSED": "Procesado",
+      "ERRORS": "Errores"
+    },
+    "VALIDATION": {
+      "file-not-existed": "El archivo no existe",
+      "exceeding-file-max-size": "El tamaño máximo del archivo es {fileMaxSize}. Su archivo es demasiado grande. Intente cargar otro",
+      "wrong-delimiter": "Delimitador no válido. Use solo punto y coma (;) como delimitador",
+      "exceeding-line-limits": "No podemos importar su archivo, ya que el número máximo de líneas para importar es {importLimitOfLines}. Su archivo actualmente tiene {linesCount} líneas",
+      "missing-required-columns": "No podemos importar su archivo, ya que faltan las siguientes columnas requeridas: \"{missedColumns}\"",
+      "no-data": "Este archivo no tiene datos"
+    }
+  }
+}

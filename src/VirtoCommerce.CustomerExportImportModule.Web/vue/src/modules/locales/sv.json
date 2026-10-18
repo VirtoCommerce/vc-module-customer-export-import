@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "Importera",
+      "EXPORT": "Exportera",
+      "START_EXPORT": "Starta export",
+      "CANCEL": "Avbryt",
+      "CLOSE": "Stäng"
+    },
+    "TYPES": {
+      "Contact": "Kontakter",
+      "Organization": "Organisationer"
+    },
+    "EXPORT": {
+      "TITLE": "Exportera kontakter",
+      "SUMMARY": "Exportera till CSV",
+      "ALL": "Alla {contacts} kontakter och {organizations} organisationer exporteras till en CSV-fil.",
+      "SELECTED": "{contacts} kontakter och {organizations} organisationer exporteras till en CSV-fil.",
+      "FROM_ORGANIZATION": "{contacts} kontakter och {organizations} organisationer från organisationen \"{organization}\" exporteras till en CSV-fil.",
+      "EMPTY": "Du har inte valt några kontakter eller organisationer.",
+      "TOO_MANY": "Du har valt {count} objekt (inklusive de kapslade), men du kan inte exportera fler än {limit} objekt: välj ett giltigt antal objekt och försök igen.",
+      "CONTACTS_FILE": "Ladda ner kontakter",
+      "ORGANIZATIONS_FILE": "Ladda ner organisationer"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "Importera till roten",
+      "TITLE_MEMBER": "Importera till {member}",
+      "SUBTITLE": "Ladda upp CSV",
+      "DATA_TYPE": "Datatyp",
+      "DATA_TYPE_PLACEHOLDER": "Välj datatyp att importera",
+      "DATA_TYPE_HINT": "Välj vilken typ av data du vill importera",
+      "DROP": "Dra och släpp filen här eller",
+      "BROWSE": "bläddra bland dina filer",
+      "FAILED": "Uppladdningen misslyckades",
+      "SUCCESS": "Uppladdad",
+      "MAX_SIZE_ERROR": "Maximal filstorlek är {fileMaxSize}. Filen är för stor. Försök ladda upp en annan fil",
+      "FILE_TYPE_ERROR": "Filen du försöker ladda upp har ett ogiltigt format. Ladda upp en CSV-fil",
+      "PREVIEW": "Förhandsgranska",
+      "DELETE": "Radera",
+      "DELETE_CONFIRMATION": "Är du säker på att du vill radera den här CSV-filen?",
+      "REPLACE_CONFIRMATION": "Är du säker på att du vill stänga förhandsgranskningen och radera den här filen? {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "Förhandsgranskning",
+      "SUBTITLE": "Förhandsgranska CSV-filen du ska ladda upp",
+      "LEGEND": "Använd horisontell rullning för att se alla kolumner i importförhandsgranskningen",
+      "COUNT": "Antal i förhandsgranskning: {count} av {total}",
+      "UNPARSED": "{count} av {preview} rader kunde inte tolkas för förhandsgranskning. Kontrollera slutrapporten efter importen.",
+      "EMPTY": "Inga data",
+      "CONFIRM_CONTACTS": "{count} rader med kontakter importeras till {target}.",
+      "CONFIRM_ORGANIZATIONS": "{count} rader med organisationer importeras till {target}.",
+      "ROOT": "roten",
+      "CURRENT_ORGANIZATION": "nuvarande organisation \"{name}\""
+    },
+    "PROCESSING": {
+      "TITLE": "Importförlopp",
+      "CREATED": "Rader skapade",
+      "UPDATED": "Rader uppdaterade",
+      "REPORT": "Ladda ner felrapport",
+      "EXPORT_TITLE": "Exportförlopp"
+    },
+    "JOB": {
+      "STARTED": "Start",
+      "FINISHED": "Slut",
+      "ELAPSED": "Förfluten tid",
+      "PROCESSED": "Bearbetade",
+      "ERRORS": "Fel"
+    },
+    "VALIDATION": {
+      "file-not-existed": "Filen finns inte",
+      "exceeding-file-max-size": "Maximal filstorlek är {fileMaxSize}. Filen är för stor. Försök ladda upp en annan fil",
+      "wrong-delimiter": "Ogiltig avgränsare. Använd endast semikolon (;) som avgränsare",
+      "exceeding-line-limits": "Filen kan inte importeras eftersom det maximala antalet rader att importera är {importLimitOfLines}. Filen har för närvarande {linesCount} rader",
+      "missing-required-columns": "Filen kan inte importeras eftersom följande obligatoriska kolumner saknas: \"{missedColumns}\"",
+      "no-data": "Filen innehåller inga data"
+    }
+  }
+}

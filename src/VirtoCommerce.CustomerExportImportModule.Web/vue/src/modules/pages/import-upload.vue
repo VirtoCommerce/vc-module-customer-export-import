@@ -204,7 +204,7 @@ onBeforeClose(async () => {
   }
   &__errors {
     margin: 0;
-    padding-left: 18px;
+    padding-inline-start: 18px;
     color: var(--color-danger-600);
     font-size: 13px;
   }

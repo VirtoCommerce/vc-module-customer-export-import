@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "导入",
+      "EXPORT": "导出",
+      "START_EXPORT": "开始导出",
+      "CANCEL": "取消",
+      "CLOSE": "关闭"
+    },
+    "TYPES": {
+      "Contact": "联系人",
+      "Organization": "组织"
+    },
+    "EXPORT": {
+      "TITLE": "导出联系人",
+      "SUMMARY": "导出为 CSV",
+      "ALL": "全部 {contacts} 个联系人和 {organizations} 个组织将导出到 CSV 文件。",
+      "SELECTED": "{contacts} 个联系人和 {organizations} 个组织将导出到 CSV 文件。",
+      "FROM_ORGANIZATION": "组织“{organization}”中的 {contacts} 个联系人和 {organizations} 个组织将导出到 CSV 文件。",
+      "EMPTY": "您尚未选择任何联系人或组织。",
+      "TOO_MANY": "您已选择 {count} 项（包括嵌套项），但最多只能导出 {limit} 项：请选择有效的项数，然后重试。",
+      "CONTACTS_FILE": "下载联系人",
+      "ORGANIZATIONS_FILE": "下载组织"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "导入到根目录",
+      "TITLE_MEMBER": "导入到 {member}",
+      "SUBTITLE": "上传 CSV",
+      "DATA_TYPE": "数据类型",
+      "DATA_TYPE_PLACEHOLDER": "选择要导入的数据类型",
+      "DATA_TYPE_HINT": "选择您要导入的数据类型",
+      "DROP": "将文件拖放到此处，或",
+      "BROWSE": "浏览文件",
+      "FAILED": "上传失败",
+      "SUCCESS": "上传成功",
+      "MAX_SIZE_ERROR": "最大文件大小为 {fileMaxSize}。您的文件太大，请尝试上传其他文件",
+      "FILE_TYPE_ERROR": "您尝试上传的文件格式无效。请上传 CSV 文件",
+      "PREVIEW": "预览",
+      "DELETE": "删除",
+      "DELETE_CONFIRMATION": "确定要删除此 CSV 文件吗？",
+      "REPLACE_CONFIRMATION": "确定要关闭预览并删除此文件吗？{name}"
+    },
+    "PREVIEW": {
+      "TITLE": "预览",
+      "SUBTITLE": "预览您将要上传的 CSV 文件",
+      "LEGEND": "使用水平滚动查看导入预览中的所有列",
+      "COUNT": "预览计数：{count} / {total}",
+      "UNPARSED": "{preview} 行中有 {count} 行未能解析用于预览。导入后请查看最终报告。",
+      "EMPTY": "无数据",
+      "CONFIRM_CONTACTS": "{count} 行联系人将导入到{target}。",
+      "CONFIRM_ORGANIZATIONS": "{count} 行组织将导入到{target}。",
+      "ROOT": "根目录",
+      "CURRENT_ORGANIZATION": "当前组织“{name}”"
+    },
+    "PROCESSING": {
+      "TITLE": "导入进度",
+      "CREATED": "已创建的行",
+      "UPDATED": "已更新的行",
+      "REPORT": "下载错误报告",
+      "EXPORT_TITLE": "导出进度"
+    },
+    "JOB": {
+      "STARTED": "开始",
+      "FINISHED": "结束",
+      "ELAPSED": "已用时间",
+      "PROCESSED": "已处理",
+      "ERRORS": "错误"
+    },
+    "VALIDATION": {
+      "file-not-existed": "文件不存在",
+      "exceeding-file-max-size": "最大文件大小为 {fileMaxSize}。您的文件太大，请尝试上传其他文件",
+      "wrong-delimiter": "无效的分隔符。仅使用分号（;）作为分隔符",
+      "exceeding-line-limits": "无法导入您的文件，因为最大导入行数为 {importLimitOfLines}。您的文件当前有 {linesCount} 行",
+      "missing-required-columns": "无法导入您的文件，因为缺少以下必需列：“{missedColumns}”",
+      "no-data": "此文件没有数据"
+    }
+  }
+}

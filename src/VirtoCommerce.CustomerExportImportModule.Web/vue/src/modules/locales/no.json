@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "Importer",
+      "EXPORT": "Eksporter",
+      "START_EXPORT": "Start eksport",
+      "CANCEL": "Avbryt",
+      "CLOSE": "Lukk"
+    },
+    "TYPES": {
+      "Contact": "Kontakter",
+      "Organization": "Organisasjoner"
+    },
+    "EXPORT": {
+      "TITLE": "Eksporter kontakter",
+      "SUMMARY": "Eksporter til CSV",
+      "ALL": "Alle {contacts} kontakter og {organizations} organisasjoner blir eksportert til en CSV-fil.",
+      "SELECTED": "{contacts} kontakter og {organizations} organisasjoner blir eksportert til en CSV-fil.",
+      "FROM_ORGANIZATION": "{contacts} kontakter og {organizations} organisasjoner fra organisasjonen \"{organization}\" blir eksportert til en CSV-fil.",
+      "EMPTY": "Du har ikke valgt noen kontakter eller organisasjoner.",
+      "TOO_MANY": "Du har valgt {count} elementer (inkludert de nestede), men du kan ikke eksportere mer enn {limit} elementer: velg et gyldig antall elementer og prøv igjen.",
+      "CONTACTS_FILE": "Last ned kontakter",
+      "ORGANIZATIONS_FILE": "Last ned organisasjoner"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "Importer til roten",
+      "TITLE_MEMBER": "Importer til {member}",
+      "SUBTITLE": "Last opp CSV",
+      "DATA_TYPE": "Datatype",
+      "DATA_TYPE_PLACEHOLDER": "Velg datatype som skal importeres",
+      "DATA_TYPE_HINT": "Velg typen data du vil importere",
+      "DROP": "Dra og slipp filen her eller",
+      "BROWSE": "bla gjennom filene dine",
+      "FAILED": "Opplasting mislyktes",
+      "SUCCESS": "Lastet opp",
+      "MAX_SIZE_ERROR": "Maksimal filstørrelse er {fileMaxSize}. Filen er for stor. Prøv å laste opp en annen fil",
+      "FILE_TYPE_ERROR": "Filen du prøver å laste opp, har et ugyldig format. Last opp en CSV-fil",
+      "PREVIEW": "Forhåndsvisning",
+      "DELETE": "Slett",
+      "DELETE_CONFIRMATION": "Er du sikker på at du vil slette denne CSV-filen?",
+      "REPLACE_CONFIRMATION": "Er du sikker på at du vil lukke forhåndsvisningen og slette denne filen? {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "Forhåndsvisning",
+      "SUBTITLE": "Forhåndsvis CSV-filen du skal laste opp",
+      "LEGEND": "Bruk horisontal rulling for å se alle kolonner i importforhåndsvisningen",
+      "COUNT": "Antall i forhåndsvisning: {count} av {total}",
+      "UNPARSED": "{count} av {preview} rader kunne ikke tolkes for forhåndsvisning. Sjekk sluttrapporten etter importen.",
+      "EMPTY": "Ingen data",
+      "CONFIRM_CONTACTS": "{count} rader med kontakter blir importert til {target}.",
+      "CONFIRM_ORGANIZATIONS": "{count} rader med organisasjoner blir importert til {target}.",
+      "ROOT": "roten",
+      "CURRENT_ORGANIZATION": "nåværende organisasjon \"{name}\""
+    },
+    "PROCESSING": {
+      "TITLE": "Importfremdrift",
+      "CREATED": "Rader opprettet",
+      "UPDATED": "Rader oppdatert",
+      "REPORT": "Last ned feilrapport",
+      "EXPORT_TITLE": "Eksportfremdrift"
+    },
+    "JOB": {
+      "STARTED": "Start",
+      "FINISHED": "Slutt",
+      "ELAPSED": "Medgått tid",
+      "PROCESSED": "Behandlet",
+      "ERRORS": "Feil"
+    },
+    "VALIDATION": {
+      "file-not-existed": "Filen finnes ikke",
+      "exceeding-file-max-size": "Maksimal filstørrelse er {fileMaxSize}. Filen er for stor. Prøv å laste opp en annen fil",
+      "wrong-delimiter": "Ugyldig avgrenser. Bruk kun semikolon (;) som avgrenser",
+      "exceeding-line-limits": "Filen kan ikke importeres, fordi maksimalt antall rader som kan importeres er {importLimitOfLines}. Filen har for øyeblikket {linesCount} rader",
+      "missing-required-columns": "Filen kan ikke importeres, fordi følgende obligatoriske kolonner mangler: \"{missedColumns}\"",
+      "no-data": "Denne filen har ingen data"
+    }
+  }
+}

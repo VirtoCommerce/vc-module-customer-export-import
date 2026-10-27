@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "Tuo",
+      "EXPORT": "Vie",
+      "START_EXPORT": "Aloita vienti",
+      "CANCEL": "Peruuta",
+      "CLOSE": "Sulje"
+    },
+    "TYPES": {
+      "Contact": "Yhteystiedot",
+      "Organization": "Organisaatiot"
+    },
+    "EXPORT": {
+      "TITLE": "Vie yhteystiedot",
+      "SUMMARY": "Vie CSV-tiedostoon",
+      "ALL": "Kaikki {contacts} yhteystietoa ja {organizations} organisaatiota viedään CSV-tiedostoon.",
+      "SELECTED": "{contacts} yhteystietoa ja {organizations} organisaatiota viedään CSV-tiedostoon.",
+      "FROM_ORGANIZATION": "{contacts} yhteystietoa ja {organizations} organisaatiota organisaatiosta \"{organization}\" viedään CSV-tiedostoon.",
+      "EMPTY": "Et ole valinnut yhtään yhteystietoa tai organisaatiota.",
+      "TOO_MANY": "Olet valinnut {count} kohdetta (mukaan lukien sisäkkäiset), mutta voit viedä enintään {limit} kohdetta: valitse kelvollinen määrä kohteita ja yritä uudelleen.",
+      "CONTACTS_FILE": "Lataa yhteystiedot",
+      "ORGANIZATIONS_FILE": "Lataa organisaatiot"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "Tuo juureen",
+      "TITLE_MEMBER": "Tuo kohteeseen {member}",
+      "SUBTITLE": "Lataa CSV",
+      "DATA_TYPE": "Tietotyyppi",
+      "DATA_TYPE_PLACEHOLDER": "Valitse tuotava tietotyyppi",
+      "DATA_TYPE_HINT": "Valitse tietotyyppi, jonka haluat tuoda",
+      "DROP": "Vedä ja pudota tiedosto tähän tai",
+      "BROWSE": "selaa tiedostojasi",
+      "FAILED": "Lataus epäonnistui",
+      "SUCCESS": "Ladattu",
+      "MAX_SIZE_ERROR": "Tiedoston enimmäiskoko on {fileMaxSize}. Tiedostosi on liian suuri. Kokeile ladata toinen tiedosto",
+      "FILE_TYPE_ERROR": "Lataamasi tiedosto on väärässä muodossa. Lataa CSV-tiedosto",
+      "PREVIEW": "Esikatselu",
+      "DELETE": "Poista",
+      "DELETE_CONFIRMATION": "Haluatko varmasti poistaa tämän CSV-tiedoston?",
+      "REPLACE_CONFIRMATION": "Haluatko varmasti sulkea esikatselun ja poistaa tämän tiedoston? {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "Esikatselu",
+      "SUBTITLE": "Esikatsele CSV-tiedostoa, jonka aiot ladata",
+      "LEGEND": "Käytä vaakasuuntaista vieritystä nähdäksesi kaikki sarakkeet tuonnin esikatselussa",
+      "COUNT": "Esikatselun määrä: {count}/{total}",
+      "UNPARSED": "{count}/{preview} riviä ei voitu jäsentää esikatselua varten. Tarkista loppuraportti tuonnin jälkeen.",
+      "EMPTY": "Ei tietoja",
+      "CONFIRM_CONTACTS": "{count} yhteystietoriviä tuodaan kohteeseen {target}.",
+      "CONFIRM_ORGANIZATIONS": "{count} organisaatioriviä tuodaan kohteeseen {target}.",
+      "ROOT": "juuri",
+      "CURRENT_ORGANIZATION": "nykyinen organisaatio \"{name}\""
+    },
+    "PROCESSING": {
+      "TITLE": "Tuonnin edistyminen",
+      "CREATED": "Luodut rivit",
+      "UPDATED": "Päivitetyt rivit",
+      "REPORT": "Lataa virheraportti",
+      "EXPORT_TITLE": "Viennin edistyminen"
+    },
+    "JOB": {
+      "STARTED": "Alku",
+      "FINISHED": "Loppu",
+      "ELAPSED": "Kulunut aika",
+      "PROCESSED": "Käsitelty",
+      "ERRORS": "Virheet"
+    },
+    "VALIDATION": {
+      "file-not-existed": "Tiedostoa ei ole olemassa",
+      "exceeding-file-max-size": "Tiedoston enimmäiskoko on {fileMaxSize}. Tiedostosi on liian suuri. Kokeile ladata toinen tiedosto",
+      "wrong-delimiter": "Virheellinen erotin. Käytä vain puolipistettä (;) erottimena",
+      "exceeding-line-limits": "Tiedostoa ei voi tuoda, koska tuotavien rivien enimmäismäärä on {importLimitOfLines}. Tiedostossa on tällä hetkellä {linesCount} riviä",
+      "missing-required-columns": "Tiedostoa ei voi tuoda, koska seuraavat pakolliset sarakkeet puuttuvat: \"{missedColumns}\"",
+      "no-data": "Tiedostossa ei ole tietoja"
+    }
+  }
+}

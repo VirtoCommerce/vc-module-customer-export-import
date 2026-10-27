@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "ייבוא",
+      "EXPORT": "ייצוא",
+      "START_EXPORT": "התחלת ייצוא",
+      "CANCEL": "ביטול",
+      "CLOSE": "סגירה"
+    },
+    "TYPES": {
+      "Contact": "אנשי קשר",
+      "Organization": "ארגונים"
+    },
+    "EXPORT": {
+      "TITLE": "ייצוא אנשי קשר",
+      "SUMMARY": "ייצוא ל-CSV",
+      "ALL": "כל אנשי הקשר ({contacts}) והארגונים ({organizations}) ייוצאו לקובץ CSV.",
+      "SELECTED": "אנשי הקשר ({contacts}) והארגונים ({organizations}) שנבחרו ייוצאו לקובץ CSV.",
+      "FROM_ORGANIZATION": "אנשי הקשר ({contacts}) והארגונים ({organizations}) מהארגון '{organization}' ייוצאו לקובץ CSV.",
+      "EMPTY": "לא נבחרו אנשי קשר או ארגונים.",
+      "TOO_MANY": "פריטים שנבחרו (כולל פריטים מקוננים): {count}, והמספר המרבי לייצוא: {limit}. יש לבחור מספר תקין של פריטים ולנסות שוב.",
+      "CONTACTS_FILE": "הורדת אנשי קשר",
+      "ORGANIZATIONS_FILE": "הורדת ארגונים"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "ייבוא לרמת השורש",
+      "TITLE_MEMBER": "ייבוא אל {member}",
+      "SUBTITLE": "העלאת CSV",
+      "DATA_TYPE": "סוג נתונים",
+      "DATA_TYPE_PLACEHOLDER": "יש לבחור סוג נתונים לייבוא",
+      "DATA_TYPE_HINT": "יש לבחור את סוג הנתונים לייבוא",
+      "DROP": "יש לגרור את הקובץ לכאן או",
+      "BROWSE": "לעיין בקבצים",
+      "FAILED": "ההעלאה נכשלה",
+      "SUCCESS": "הועלה",
+      "MAX_SIZE_ERROR": "גודל הקובץ המרבי הוא {fileMaxSize}. הקובץ גדול מדי. יש לנסות להעלות קובץ אחר",
+      "FILE_TYPE_ERROR": "פורמט הקובץ שמנסים להעלות אינו תקין. יש להעלות קובץ CSV",
+      "PREVIEW": "תצוגה מקדימה",
+      "DELETE": "מחיקה",
+      "DELETE_CONFIRMATION": "האם למחוק את קובץ ה-CSV הזה?",
+      "REPLACE_CONFIRMATION": "האם לסגור את התצוגה המקדימה ולמחוק את הקובץ? {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "תצוגה מקדימה",
+      "SUBTITLE": "תצוגה מקדימה של קובץ ה-CSV שעומד להיות מועלה",
+      "LEGEND": "יש לגלול אופקית כדי לראות את כל העמודות בתצוגה המקדימה של הייבוא",
+      "COUNT": "בתצוגה המקדימה: {count} מתוך {total}",
+      "UNPARSED": "שורות מתוך {preview} שלא נותחו לתצוגה המקדימה: {count}. יש לבדוק את הדוח הסופי לאחר הייבוא.",
+      "EMPTY": "אין נתונים",
+      "CONFIRM_CONTACTS": "שורות של אנשי קשר לייבוא אל {target}: {count}.",
+      "CONFIRM_ORGANIZATIONS": "שורות של ארגונים לייבוא אל {target}: {count}.",
+      "ROOT": "רמת השורש",
+      "CURRENT_ORGANIZATION": "הארגון הנוכחי \"{name}\""
+    },
+    "PROCESSING": {
+      "TITLE": "התקדמות הייבוא",
+      "CREATED": "שורות שנוצרו",
+      "UPDATED": "שורות שעודכנו",
+      "REPORT": "הורדת דוח שגיאות",
+      "EXPORT_TITLE": "התקדמות הייצוא"
+    },
+    "JOB": {
+      "STARTED": "התחלה",
+      "FINISHED": "סיום",
+      "ELAPSED": "זמן שחלף",
+      "PROCESSED": "עובדו",
+      "ERRORS": "שגיאות"
+    },
+    "VALIDATION": {
+      "file-not-existed": "הקובץ אינו קיים",
+      "exceeding-file-max-size": "גודל הקובץ המרבי הוא {fileMaxSize}. הקובץ גדול מדי. יש לנסות להעלות קובץ אחר",
+      "wrong-delimiter": "מפריד לא תקין. יש להשתמש רק בנקודה-פסיק (;) כמפריד",
+      "exceeding-line-limits": "לא ניתן לייבא את הקובץ, כי המספר המרבי של שורות לייבוא הוא {importLimitOfLines}. מספר השורות בקובץ כעת: {linesCount}",
+      "missing-required-columns": "לא ניתן לייבא את הקובץ, כי חסרות בו העמודות הנדרשות הבאות: \"{missedColumns}\"",
+      "no-data": "אין נתונים בקובץ זה"
+    }
+  }
+}

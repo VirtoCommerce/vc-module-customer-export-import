@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "Importer",
+      "EXPORT": "Exporter",
+      "START_EXPORT": "Démarrer l'exportation",
+      "CANCEL": "Annuler",
+      "CLOSE": "Fermer"
+    },
+    "TYPES": {
+      "Contact": "Contacts",
+      "Organization": "Organisations"
+    },
+    "EXPORT": {
+      "TITLE": "Exporter les contacts",
+      "SUMMARY": "Exporter en CSV",
+      "ALL": "Tous les {contacts} contacts et {organizations} organisations seront exportés dans un fichier CSV.",
+      "SELECTED": "{contacts} contacts et {organizations} organisations seront exportés dans un fichier CSV.",
+      "FROM_ORGANIZATION": "{contacts} contacts et {organizations} organisations de l'organisation « {organization} » seront exportés dans un fichier CSV.",
+      "EMPTY": "Vous n'avez sélectionné aucun contact ni aucune organisation.",
+      "TOO_MANY": "Vous avez sélectionné {count} éléments (y compris les éléments imbriqués), alors que vous ne pouvez pas exporter plus de {limit} éléments : sélectionnez un nombre valide d'éléments et réessayez.",
+      "CONTACTS_FILE": "Télécharger les contacts",
+      "ORGANIZATIONS_FILE": "Télécharger les organisations"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "Importer dans la racine",
+      "TITLE_MEMBER": "Importer dans {member}",
+      "SUBTITLE": "Téléverser un CSV",
+      "DATA_TYPE": "Type de données",
+      "DATA_TYPE_PLACEHOLDER": "Sélectionnez le type de données à importer",
+      "DATA_TYPE_HINT": "Sélectionnez le type de données que vous souhaitez importer",
+      "DROP": "Glissez-déposez votre fichier ici ou",
+      "BROWSE": "parcourez vos fichiers",
+      "FAILED": "Échec du téléversement",
+      "SUCCESS": "Téléversé",
+      "MAX_SIZE_ERROR": "La taille maximale du fichier est de {fileMaxSize}. Votre fichier est trop volumineux. Essayez d'en téléverser un autre",
+      "FILE_TYPE_ERROR": "Le format du fichier que vous essayez de téléverser n'est pas valide. Téléversez un fichier CSV",
+      "PREVIEW": "Aperçu",
+      "DELETE": "Supprimer",
+      "DELETE_CONFIRMATION": "Voulez-vous vraiment supprimer ce fichier CSV ?",
+      "REPLACE_CONFIRMATION": "Voulez-vous vraiment fermer l'aperçu et supprimer ce fichier ? {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "Aperçu",
+      "SUBTITLE": "Aperçu du fichier CSV que vous allez téléverser",
+      "LEGEND": "Utilisez le défilement horizontal pour voir toutes les colonnes de l'aperçu de l'importation",
+      "COUNT": "Lignes en aperçu : {count} sur {total}",
+      "UNPARSED": "{count} lignes sur {preview} n'ont pas pu être analysées pour l'aperçu. Consultez le rapport final après l'importation.",
+      "EMPTY": "Aucune donnée",
+      "CONFIRM_CONTACTS": "{count} lignes de contacts seront importées dans {target}.",
+      "CONFIRM_ORGANIZATIONS": "{count} lignes d'organisations seront importées dans {target}.",
+      "ROOT": "la racine",
+      "CURRENT_ORGANIZATION": "l'organisation actuelle « {name} »"
+    },
+    "PROCESSING": {
+      "TITLE": "Progression de l'importation",
+      "CREATED": "Lignes créées",
+      "UPDATED": "Lignes mises à jour",
+      "REPORT": "Télécharger le rapport d'erreurs",
+      "EXPORT_TITLE": "Progression de l'exportation"
+    },
+    "JOB": {
+      "STARTED": "Début",
+      "FINISHED": "Fin",
+      "ELAPSED": "Durée écoulée",
+      "PROCESSED": "Traité",
+      "ERRORS": "Erreurs"
+    },
+    "VALIDATION": {
+      "file-not-existed": "Le fichier n'existe pas",
+      "exceeding-file-max-size": "La taille maximale du fichier est de {fileMaxSize}. Votre fichier est trop volumineux. Essayez d'en téléverser un autre",
+      "wrong-delimiter": "Délimiteur non valide. Utilisez uniquement le point-virgule (;) comme délimiteur",
+      "exceeding-line-limits": "Impossible d'importer votre fichier : le nombre maximal de lignes à importer est de {importLimitOfLines}. Votre fichier contient actuellement {linesCount} lignes",
+      "missing-required-columns": "Impossible d'importer votre fichier : les colonnes obligatoires suivantes sont manquantes : « {missedColumns} »",
+      "no-data": "Ce fichier ne contient aucune donnée"
+    }
+  }
+}

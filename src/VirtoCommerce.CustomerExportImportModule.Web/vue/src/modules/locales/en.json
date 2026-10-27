@@ -1,0 +1,78 @@
+{
+  "CUSTOMER_EXPORT_IMPORT": {
+    "TOOLBAR": {
+      "IMPORT": "Import",
+      "EXPORT": "Export",
+      "START_EXPORT": "Start export",
+      "CANCEL": "Cancel",
+      "CLOSE": "Close"
+    },
+    "TYPES": {
+      "Contact": "Contacts",
+      "Organization": "Organizations"
+    },
+    "EXPORT": {
+      "TITLE": "Export contacts",
+      "SUMMARY": "Export to CSV",
+      "ALL": "All {contacts} contacts & {organizations} organizations will be exported to a CSV file.",
+      "SELECTED": "{contacts} contacts & {organizations} organizations will be exported to a CSV file.",
+      "FROM_ORGANIZATION": "{contacts} contacts & {organizations} organizations from '{organization}' organization will be exported to a CSV file.",
+      "EMPTY": "You have not selected any contacts or organizations.",
+      "TOO_MANY": "You have selected {count} items (including the nested ones), while you cannot export more than {limit} items: select a valid number of items and try again.",
+      "CONTACTS_FILE": "Download contacts",
+      "ORGANIZATIONS_FILE": "Download organizations"
+    },
+    "UPLOAD": {
+      "TITLE_ROOT": "Import into root",
+      "TITLE_MEMBER": "Import into {member}",
+      "SUBTITLE": "Upload CSV",
+      "DATA_TYPE": "Data type",
+      "DATA_TYPE_PLACEHOLDER": "Select data type to import",
+      "DATA_TYPE_HINT": "Select the type of data you would like to import",
+      "DROP": "Drag and drop your file here or",
+      "BROWSE": "browse your files",
+      "FAILED": "Upload failed",
+      "SUCCESS": "Uploaded",
+      "MAX_SIZE_ERROR": "The maximum file size is {fileMaxSize}. Your file size is too large. Try uploading another one",
+      "FILE_TYPE_ERROR": "The file you are trying to upload has an invalid format. Upload a CSV file",
+      "PREVIEW": "Preview",
+      "DELETE": "Delete",
+      "DELETE_CONFIRMATION": "Are you sure you want to delete this CSV file?",
+      "REPLACE_CONFIRMATION": "Are you sure you want to close preview and delete this file? {name}"
+    },
+    "PREVIEW": {
+      "TITLE": "Preview",
+      "SUBTITLE": "Preview the CSV file you are going to upload",
+      "LEGEND": "Use horizontal scrolling to see all columns in the import preview",
+      "COUNT": "Preview count: {count} of {total}",
+      "UNPARSED": "{count} lines from {preview} have not been parsed for preview. Check final report after import.",
+      "EMPTY": "No data",
+      "CONFIRM_CONTACTS": "{count} lines of contacts will be imported into the {target}.",
+      "CONFIRM_ORGANIZATIONS": "{count} lines of organizations will be imported into the {target}.",
+      "ROOT": "root",
+      "CURRENT_ORGANIZATION": "current organization \"{name}\""
+    },
+    "PROCESSING": {
+      "TITLE": "Import progress",
+      "CREATED": "Lines created",
+      "UPDATED": "Lines updated",
+      "REPORT": "Download error report",
+      "EXPORT_TITLE": "Export progress"
+    },
+    "JOB": {
+      "STARTED": "Start",
+      "FINISHED": "End",
+      "ELAPSED": "Elapsed",
+      "PROCESSED": "Processed",
+      "ERRORS": "Errors"
+    },
+    "VALIDATION": {
+      "file-not-existed": "The file does not exist",
+      "exceeding-file-max-size": "The maximum file size is {fileMaxSize}. Your file size is too large. Try uploading another one",
+      "wrong-delimiter": "Invalid delimiter. Use only semicolon (;) as a delimiter",
+      "exceeding-line-limits": "We are unable to import your file, as the maximum number of lines to import is {importLimitOfLines}. Your file currently has {linesCount} lines",
+      "missing-required-columns": "We are unable to import your file, as the following required columns: \"{missedColumns}\" are missing",
+      "no-data": "This file has no data"
+    }
+  }
+}

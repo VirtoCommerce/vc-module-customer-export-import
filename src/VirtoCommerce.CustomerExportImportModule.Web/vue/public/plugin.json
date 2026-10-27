@@ -1,0 +1,3 @@
+{
+  "remote": { "name": "customerexportimport_admin", "exposed": "./Module" }
+}

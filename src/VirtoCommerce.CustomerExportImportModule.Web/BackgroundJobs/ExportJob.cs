@@ -1,17 +1,26 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Hangfire;
-using Hangfire.Server;
 using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerExportImportModule.Data.Helpers;
 using VirtoCommerce.Platform.Core.Exceptions;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.PushNotifications;
 
 namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
 {
-    public sealed class ExportJob
+    public class ExportJobPayload
+    {
+        public ExportDataRequest Request { get; set; }
+        public ExportPushNotification Notification { get; set; }
+    }
+
+    /// <summary>
+    /// Engine-agnostic customer export job. Replaces the former Hangfire job that used <c>PerformContext</c>: the job id
+    /// now comes from <see cref="IJobExecutionContext.JobId"/> and cancellation from the handler's <see cref="CancellationToken"/>.
+    /// </summary>
+    public sealed class ExportJob : IBackgroundJobHandler<ExportJobPayload>
     {
         private readonly IPushNotificationManager _pushNotificationManager;
         private readonly ICustomerDataExporter _customerDataExporter;
@@ -22,8 +31,11 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
             _customerDataExporter = customerDataExporter;
         }
 
-        public async Task ExportBackgroundAsync(ExportDataRequest request, ExportPushNotification pushNotification, CancellationToken cancellationToken, PerformContext context)
+        public async Task Execute(ExportJobPayload payload, IJobExecutionContext context, CancellationToken cancellationToken = default)
         {
+            var request = payload.Request;
+            var pushNotification = payload.Notification;
+
             ValidateParameters(pushNotification);
 
             try
@@ -32,7 +44,7 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
                     progressInfo => ProgressCallback(progressInfo, pushNotification, context),
                     cancellationToken);
             }
-            catch (JobAbortedException)
+            catch (OperationCanceledException)
             {
                 // job is aborted, do nothing
             }
@@ -50,10 +62,10 @@ namespace VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs
         }
 
 
-        private void ProgressCallback(ExportProgressInfo x, ExportPushNotification pushNotification, PerformContext context)
+        private void ProgressCallback(ExportProgressInfo x, ExportPushNotification pushNotification, IJobExecutionContext context)
         {
             pushNotification.Patch(x);
-            pushNotification.JobId = context.BackgroundJob.Id;
+            pushNotification.JobId = context.JobId;
             _pushNotificationManager.Send(pushNotification);
         }
 

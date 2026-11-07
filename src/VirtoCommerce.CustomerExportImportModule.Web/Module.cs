@@ -10,7 +10,9 @@ using VirtoCommerce.CustomerExportImportModule.Core.Models;
 using VirtoCommerce.CustomerExportImportModule.Core.Services;
 using VirtoCommerce.CustomerExportImportModule.Data.Services;
 using VirtoCommerce.CustomerExportImportModule.Data.Validation;
+using VirtoCommerce.CustomerExportImportModule.Web.BackgroundJobs;
 using VirtoCommerce.CustomerModule.Core.Services;
+using VirtoCommerce.Platform.Core.Jobs;
 using VirtoCommerce.Platform.Core.Modularity;
 using VirtoCommerce.Platform.Core.Security;
 using VirtoCommerce.Platform.Core.Settings;
@@ -28,6 +30,8 @@ namespace VirtoCommerce.CustomerExportImportModule.Web
             serviceCollection.AddTransient<ICustomerExportPagedDataSourceFactory, CustomerExportPagedDataSourceFactory>();
             serviceCollection.AddTransient<IExportWriterFactory, ExportWriterFactory>();
             serviceCollection.AddTransient<ICustomerDataExporter, CustomerDataExporter>();
+            serviceCollection.AddBackgroundJob<ExportJob>();
+            serviceCollection.AddBackgroundJob<ImportJob>();
 
             serviceCollection.AddTransient<IMemberSearchService, ExportImportMemberSearchService>();
             serviceCollection.AddSingleton<ICustomerImportPagedDataSourceFactory, CustomerImportPagedDataSourceFactory>();

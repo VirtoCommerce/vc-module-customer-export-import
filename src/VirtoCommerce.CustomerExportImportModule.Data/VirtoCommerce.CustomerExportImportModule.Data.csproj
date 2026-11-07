@@ -18,9 +18,8 @@
   </ItemGroup>
   <ItemGroup>
     
-    <PackageReference Include="VirtoCommerce.AssetsModule.Data" Version="3.1005.0" />
-    <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.1013.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.1039.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Hangfire" Version="3.1039.0" />
+    <PackageReference Include="VirtoCommerce.AssetsModule.Data" Version="3.1011.0" />
+    <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.1033.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.1095.0" />
   </ItemGroup>
 </Project>

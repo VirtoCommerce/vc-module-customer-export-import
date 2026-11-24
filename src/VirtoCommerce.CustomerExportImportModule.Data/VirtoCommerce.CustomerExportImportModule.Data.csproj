@@ -20,6 +20,6 @@
     
     <PackageReference Include="VirtoCommerce.AssetsModule.Data" Version="3.1011.0" />
     <PackageReference Include="VirtoCommerce.CustomerModule.Data" Version="3.1033.0" />
-    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.1095.0" />
+    <PackageReference Include="VirtoCommerce.Platform.Data" Version="3.1101.0" />
   </ItemGroup>
 </Project>
